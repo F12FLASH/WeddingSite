@@ -76,7 +76,7 @@ app.use((req, res, next) => {
       log(`📊 Environment: ${app.get("env")}`);
     });
 
-    // Xử lý lỗi server
+    // Handle server errors
     server.on('error', (error: any) => {
       if (error.code === 'EADDRINUSE') {
         log(`❌ Port ${port} is already in use. Try a different port.`);
@@ -87,7 +87,7 @@ app.use((req, res, next) => {
       }
     });
 
-    // Xử lý tín hiệu shutdown
+    // Handle shutdown signals
     process.on('SIGINT', () => {
       log('🛑 Shutting down server...');
       server.close(() => {

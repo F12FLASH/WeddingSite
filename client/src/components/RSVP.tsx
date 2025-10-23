@@ -322,19 +322,19 @@ export default function RSVP() {
                           Số Lượng Khách
                         </Label>
                         <div className="flex items-center gap-4 bg-muted/50 rounded-xl p-4">
-                          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              className="rounded-full w-12 h-12"
-                              onClick={() => setFormData({ ...formData, guestCount: Math.max(1, formData.guestCount - 1) })}
-                              data-testid="button-decrease-guests"
-                              disabled={createRsvpMutation.isPending}
-                            >
-                              -
-                            </Button>
-                          </motion.div>
+                          <MotionButton
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="rounded-full w-12 h-12"
+                            onClick={() => setFormData({ ...formData, guestCount: Math.max(1, formData.guestCount - 1) })}
+                            data-testid="button-decrease-guests"
+                            disabled={createRsvpMutation.isPending}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            -
+                          </MotionButton>
                           <motion.span
                             className="text-2xl font-bold w-16 text-center text-primary"
                             data-testid="text-guest-count"
@@ -345,19 +345,19 @@ export default function RSVP() {
                           >
                             {formData.guestCount}
                           </motion.span>
-                          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              className="rounded-full w-12 h-12"
-                              onClick={() => setFormData({ ...formData, guestCount: Math.min(10, formData.guestCount + 1) })}
-                              data-testid="button-increase-guests"
-                              disabled={createRsvpMutation.isPending}
-                            >
-                              +
-                            </Button>
-                          </motion.div>
+                          <MotionButton
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="rounded-full w-12 h-12"
+                            onClick={() => setFormData({ ...formData, guestCount: Math.min(10, formData.guestCount + 1) })}
+                            data-testid="button-increase-guests"
+                            disabled={createRsvpMutation.isPending}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                          >
+                            +
+                          </MotionButton>
                         </div>
                       </motion.div>
 
