@@ -21,13 +21,13 @@ export default function AdminMessages() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
-      toast({ title: "Message updated successfully" });
+      toast({ title: "Cập nhật tin nhắn thành công" });
     },
     onError: (error: Error) => {
       if (isUnauthorizedError(error)) {
         toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
+          title: "Không có quyền",
+          description: "Bạn đã đăng xuất. Đang đăng nhập lại...",
           variant: "destructive",
         });
         setTimeout(() => {
@@ -36,8 +36,8 @@ export default function AdminMessages() {
         return;
       }
       toast({
-        title: "Error",
-        description: "Failed to update message",
+        title: "Lỗi",
+        description: "Không thể cập nhật tin nhắn",
         variant: "destructive",
       });
     },
@@ -49,13 +49,13 @@ export default function AdminMessages() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/messages"] });
-      toast({ title: "Message deleted successfully" });
+      toast({ title: "Xóa tin nhắn thành công" });
     },
     onError: (error: Error) => {
       if (isUnauthorizedError(error)) {
         toast({
-          title: "Unauthorized",
-          description: "You are logged out. Logging in again...",
+          title: "Không có quyền",
+          description: "Bạn đã đăng xuất. Đang đăng nhập lại...",
           variant: "destructive",
         });
         setTimeout(() => {
@@ -64,8 +64,8 @@ export default function AdminMessages() {
         return;
       }
       toast({
-        title: "Error",
-        description: "Failed to delete message",
+        title: "Lỗi",
+        description: "Không thể xóa tin nhắn",
         variant: "destructive",
       });
     },
@@ -75,8 +75,8 @@ export default function AdminMessages() {
     return (
       <div>
         <div className="mb-8">
-          <h2 className="text-3xl font-serif mb-2 text-foreground">Guest Messages</h2>
-          <p className="text-muted-foreground">Moderate and manage guest wishes</p>
+          <h2 className="text-3xl font-serif mb-2 text-foreground">Tin Nhắn Khách Mời</h2>
+          <p className="text-muted-foreground">Kiểm duyệt và quản lý lời chúc của khách</p>
         </div>
         <div className="grid gap-4">
           {[...Array(3)].map((_, i) => (
@@ -100,14 +100,14 @@ export default function AdminMessages() {
     return (
       <div>
         <div className="mb-8">
-          <h2 className="text-3xl font-serif mb-2 text-foreground">Guest Messages</h2>
-          <p className="text-muted-foreground">Moderate and manage guest wishes</p>
+          <h2 className="text-3xl font-serif mb-2 text-foreground">Tin Nhắn Khách Mời</h2>
+          <p className="text-muted-foreground">Kiểm duyệt và quản lý lời chúc của khách</p>
         </div>
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Heart className="text-destructive mb-4" size={64} />
-            <p className="text-destructive text-lg mb-2">Failed to load messages</p>
-            <p className="text-muted-foreground">{error instanceof Error ? error.message : "Please try again later"}</p>
+            <p className="text-destructive text-lg mb-2">Không thể tải tin nhắn</p>
+            <p className="text-muted-foreground">{error instanceof Error ? error.message : "Vui lòng thử lại sau"}</p>
           </CardContent>
         </Card>
       </div>
@@ -118,10 +118,10 @@ export default function AdminMessages() {
     <div>
       <div className="mb-8">
         <h2 className="text-3xl font-serif mb-2 text-foreground" data-testid="heading-messages">
-          Guest Messages
+          Tin Nhắn Khách Mời
         </h2>
         <p className="text-muted-foreground">
-          Moderate and manage guest wishes
+          Kiểm duyệt và quản lý lời chúc của khách
         </p>
       </div>
 
@@ -129,7 +129,7 @@ export default function AdminMessages() {
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Heart className="text-muted-foreground mb-4" size={64} />
-            <p className="text-muted-foreground text-lg">No messages yet</p>
+            <p className="text-muted-foreground text-lg">Chưa có tin nhắn nào</p>
           </CardContent>
         </Card>
       ) : (
@@ -155,7 +155,7 @@ export default function AdminMessages() {
                         data-testid={`button-approve-${msg.id}`}
                       >
                         <Check size={16} className="mr-1" />
-                        Approve
+                        Phê duyệt
                       </Button>
                     )}
                     {msg.approved && (
@@ -167,7 +167,7 @@ export default function AdminMessages() {
                         data-testid={`button-unapprove-${msg.id}`}
                       >
                         <X size={16} className="mr-1" />
-                        Unapprove
+                        Hủy duyệt
                       </Button>
                     )}
                     <Button
@@ -188,11 +188,11 @@ export default function AdminMessages() {
                 <div className="mt-3">
                   {msg.approved ? (
                     <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                      Approved
+                      Đã phê duyệt
                     </span>
                   ) : (
                     <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
-                      Pending
+                      Chờ duyệt
                     </span>
                   )}
                 </div>

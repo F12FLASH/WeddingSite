@@ -36,7 +36,7 @@ export default function Hero() {
             className="text-muted-foreground text-lg md:text-xl mb-4"
             data-testid="text-wedding-announcement"
           >
-            We're Getting Married
+            Chúng Tôi Sắp Kết Hôn
           </p>
           <h1
             className="font-cursive text-5xl md:text-7xl lg:text-8xl mb-6 text-foreground"
@@ -48,7 +48,7 @@ export default function Hero() {
             className="font-serif text-2xl md:text-3xl text-foreground mb-8"
             data-testid="text-wedding-date"
           >
-            June 15, 2025
+            15 Tháng 6, 2025
           </p>
         </div>
 
@@ -58,10 +58,10 @@ export default function Hero() {
           data-testid="countdown-timer"
         >
           {[
-            { value: 120, label: "Days" },
-            { value: 5, label: "Hours" },
-            { value: 30, label: "Minutes" },
-            { value: 45, label: "Seconds" },
+            { value: 120, label: "Ngày" },
+            { value: 5, label: "Giờ" },
+            { value: 30, label: "Phút" },
+            { value: 45, label: "Giây" },
           ].map((item, i) => (
             <div
               key={i}
@@ -85,14 +85,14 @@ export default function Hero() {
             className="inline-flex items-center justify-center min-h-9 px-8 rounded-md bg-primary text-primary-foreground border border-primary-border hover-elevate active-elevate-2 font-medium shadow-lg"
             data-testid="button-rsvp"
           >
-            RSVP Now
+            Xác Nhận Tham Dự
           </a>
           <a
             href="#registry"
             className="inline-flex items-center justify-center min-h-9 px-8 rounded-md backdrop-blur-md bg-background/50 text-foreground border border-border hover-elevate active-elevate-2 font-medium"
             data-testid="button-registry"
           >
-            View Registry
+            Xem Danh Sách Quà
           </a>
         </div>
       </div>

@@ -10,7 +10,7 @@ export default function About() {
             className="font-serif text-4xl md:text-5xl mb-4 text-foreground"
             data-testid="heading-about"
           >
-            Our Story
+            Câu Chuyện Của Chúng Tôi
           </h2>
           <div className="w-24 h-1 bg-primary mx-auto" />
         </div>
@@ -40,9 +40,9 @@ export default function About() {
               Sarah
             </h3>
             <p className="text-muted-foreground max-w-sm mx-auto leading-relaxed">
-              A passionate designer who loves art, flowers, and creating
-              beautiful moments. She believes in the magic of love and the
-              power of togetherness.
+              Một nhà thiết kế đầy đam mê, yêu thích nghệ thuật, hoa và tạo ra 
+              những khoảnh khắc đẹp đẽ. Cô tin vào điều kỳ diệu của tình yêu và 
+              sức mạnh của sự gắn kết.
             </p>
           </div>
 
@@ -71,8 +71,8 @@ export default function About() {
               Michael
             </h3>
             <p className="text-muted-foreground max-w-sm mx-auto leading-relaxed">
-              An adventurous soul with a heart of gold. He enjoys photography,
-              traveling, and making Sarah laugh every single day.
+              Một tâm hồn phiêu lưu với trái tim nhân hậu. Anh thích nhiếp ảnh,
+              du lịch và làm cho Sarah cười mỗi ngày.
             </p>
           </div>
         </div>
@@ -83,15 +83,15 @@ export default function About() {
             className="text-lg md:text-xl leading-relaxed text-foreground mb-6"
             data-testid="text-our-story"
           >
-            We met on a rainy autumn day in a cozy coffee shop. What started as
-            a chance encounter over a shared love for cappuccinos turned into
-            endless conversations, adventures, and a bond that grew stronger
-            with each passing day.
+            Chúng tôi gặp nhau vào một ngày mưa mùa thu trong một quán cà phê ấm cúng. 
+            Điều bắt đầu từ một cuộc gặp gỡ tình cờ với tình yêu chung dành cho cappuccino 
+            đã biến thành những cuộc trò chuyện bất tận, những chuyến phiêu lưu và một mối liên kết 
+            ngày càng bền chặt theo thời gian.
           </p>
           <p className="text-lg md:text-xl leading-relaxed text-muted-foreground">
-            After three wonderful years together, Michael proposed during a
-            sunset picnic by the lake. Now, we're excited to celebrate our love
-            with the people who mean the most to us.
+            Sau ba năm tuyệt vời bên nhau, Michael đã cầu hôn trong một buổi dã ngoại 
+            hoàng hôn bên hồ. Giờ đây, chúng tôi rất phấn khích được chia sẻ tình yêu 
+            của mình với những người thân yêu nhất.
           </p>
         </div>
       </div>

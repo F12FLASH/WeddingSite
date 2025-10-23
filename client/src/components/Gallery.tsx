@@ -33,11 +33,11 @@ export default function Gallery() {
             className="font-serif text-4xl md:text-5xl mb-4 text-foreground"
             data-testid="heading-gallery"
           >
-            Our Gallery
+            Album Ảnh
           </h2>
           <div className="w-24 h-1 bg-primary mx-auto mb-4" />
           <p className="text-muted-foreground text-lg">
-            Memories we've created together
+            Những kỷ niệm chúng tôi đã tạo ra cùng nhau
           </p>
         </div>
 
@@ -53,13 +53,13 @@ export default function Gallery() {
         ) : isError ? (
           <div className="text-center py-16">
             <Heart className="mx-auto mb-4 text-destructive" size={64} />
-            <p className="text-destructive text-lg mb-2">Failed to load photos</p>
-            <p className="text-muted-foreground">{error instanceof Error ? error.message : "Please try again later"}</p>
+            <p className="text-destructive text-lg mb-2">Không thể tải ảnh</p>
+            <p className="text-muted-foreground">{error instanceof Error ? error.message : "Vui lòng thử lại sau"}</p>
           </div>
         ) : photos.length === 0 ? (
           <div className="text-center py-16">
             <Heart className="mx-auto mb-4 text-muted-foreground" size={64} />
-            <p className="text-muted-foreground text-lg">No photos yet. Check back soon!</p>
+            <p className="text-muted-foreground text-lg">Chưa có ảnh. Hãy quay lại sau!</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -73,7 +73,7 @@ export default function Gallery() {
               >
                 <img
                   src={photo.url}
-                  alt={photo.caption || "Wedding photo"}
+                  alt={photo.caption || "Ảnh cưới"}
                   className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 {photo.caption && (
@@ -130,7 +130,7 @@ export default function Gallery() {
             >
               <img
                 src={photos[selectedPhoto].url}
-                alt={photos[selectedPhoto].caption || "Wedding photo"}
+                alt={photos[selectedPhoto].caption || "Ảnh cưới"}
                 className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
                 data-testid="img-lightbox"
               />

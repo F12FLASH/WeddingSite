@@ -23,11 +23,11 @@ export default function Schedule() {
             className="font-serif text-4xl md:text-5xl mb-4 text-foreground"
             data-testid="heading-schedule"
           >
-            Wedding Day Schedule
+            Lịch Trình Ngày Cưới
           </h2>
           <div className="w-24 h-1 bg-primary mx-auto mb-4" />
           <p className="text-muted-foreground text-lg">
-            June 15, 2025 • Rose Garden Estate
+            15 Tháng 6, 2025 • Rose Garden Estate
           </p>
         </div>
 
@@ -42,13 +42,13 @@ export default function Schedule() {
         ) : isError ? (
           <div className="text-center py-16">
             <Heart className="mx-auto mb-4 text-destructive" size={64} />
-            <p className="text-destructive text-lg mb-2">Failed to load schedule</p>
-            <p className="text-muted-foreground">{error instanceof Error ? error.message : "Please try again later"}</p>
+            <p className="text-destructive text-lg mb-2">Không thể tải lịch trình</p>
+            <p className="text-muted-foreground">{error instanceof Error ? error.message : "Vui lòng thử lại sau"}</p>
           </div>
         ) : events.length === 0 ? (
           <div className="text-center py-16">
             <Heart className="mx-auto mb-4 text-muted-foreground" size={64} />
-            <p className="text-muted-foreground text-lg">Schedule coming soon!</p>
+            <p className="text-muted-foreground text-lg">Lịch trình sẽ sớm được cập nhật!</p>
           </div>
         ) : (
           <div className="relative">

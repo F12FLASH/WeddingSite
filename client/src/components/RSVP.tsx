@@ -35,8 +35,8 @@ export default function RSVP() {
     },
     onSuccess: () => {
       toast({
-        title: "RSVP Received!",
-        description: "Thank you for your response. We can't wait to celebrate with you!",
+        title: "Đã Nhận Xác Nhận!",
+        description: "Cảm ơn phản hồi của bạn. Chúng tôi rất mong được ăn mừng cùng bạn!",
       });
       setFormData({
         guestName: "",
@@ -50,8 +50,8 @@ export default function RSVP() {
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to submit RSVP. Please try again.",
+        title: "Lỗi",
+        description: "Không thể gửi xác nhận. Vui lòng thử lại.",
         variant: "destructive",
       });
     },
@@ -61,8 +61,8 @@ export default function RSVP() {
     e.preventDefault();
     if (!formData.guestName || !formData.email) {
       toast({
-        title: "Missing information",
-        description: "Please fill in all required fields",
+        title: "Thiếu thông tin",
+        description: "Vui lòng điền tất cả các trường bắt buộc",
         variant: "destructive",
       });
       return;
@@ -79,11 +79,11 @@ export default function RSVP() {
             className="font-serif text-4xl md:text-5xl mb-4 text-foreground"
             data-testid="heading-rsvp"
           >
-            RSVP
+            Xác Nhận Tham Dự
           </h2>
           <div className="w-24 h-1 bg-primary mx-auto mb-4" />
           <p className="text-muted-foreground text-lg">
-            Please respond by May 1, 2025
+            Vui lòng phản hồi trước ngày 01 Tháng 5, 2025
           </p>
         </div>
 
@@ -95,12 +95,12 @@ export default function RSVP() {
                 {/* Name */}
                 <div>
                   <Label htmlFor="name" className="text-foreground mb-2 block">
-                    Full Name *
+                    Họ Và Tên *
                   </Label>
                   <Input
                     id="name"
                     type="text"
-                    placeholder="John Doe"
+                    placeholder="Nguyễn Văn A"
                     className="rounded-xl"
                     required
                     value={formData.guestName}
@@ -123,7 +123,7 @@ export default function RSVP() {
                     <Input
                       id="email"
                       type="email"
-                      placeholder="john@example.com"
+                      placeholder="nguyen@example.com"
                       className="pl-10 rounded-xl"
                       required
                       value={formData.email}
@@ -137,7 +137,7 @@ export default function RSVP() {
                 {/* Phone */}
                 <div>
                   <Label htmlFor="phone" className="text-foreground mb-2 block">
-                    Phone Number
+                    Số Điện Thoại
                   </Label>
                   <div className="relative">
                     <Phone
@@ -147,7 +147,7 @@ export default function RSVP() {
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="+1 (555) 000-0000"
+                      placeholder="+84 (xxx) xxx-xxxx"
                       className="pl-10 rounded-xl"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -160,7 +160,7 @@ export default function RSVP() {
                 {/* Attending */}
                 <div>
                   <Label className="text-foreground mb-3 block">
-                    Will you be attending? *
+                    Bạn có tham dự không? *
                   </Label>
                   <RadioGroup
                     value={formData.attending ? "yes" : "no"}
@@ -172,13 +172,13 @@ export default function RSVP() {
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="yes" id="yes" />
                       <Label htmlFor="yes" className="cursor-pointer">
-                        Yes, I'll be there
+                        Có, tôi sẽ đến
                       </Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="no" id="no" />
                       <Label htmlFor="no" className="cursor-pointer">
-                        Sadly, I can't make it
+                        Rất tiếc, tôi không thể đến
                       </Label>
                     </div>
                   </RadioGroup>
@@ -190,7 +190,7 @@ export default function RSVP() {
                     <div>
                       <Label className="text-foreground mb-2 block flex items-center gap-2">
                         <Users size={18} />
-                        Number of Guests
+                        Số Lượng Khách
                       </Label>
                       <div className="flex items-center gap-3">
                         <Button
@@ -226,7 +226,7 @@ export default function RSVP() {
                     <div>
                       <Label htmlFor="meal" className="text-foreground mb-2 block flex items-center gap-2">
                         <Utensils size={18} />
-                        Meal Preference
+                        Lựa Chọn Món Ăn
                       </Label>
                       <Select
                         value={formData.mealPreference}
@@ -238,14 +238,14 @@ export default function RSVP() {
                           className="rounded-xl"
                           data-testid="select-meal"
                         >
-                          <SelectValue placeholder="Select your preference" />
+                          <SelectValue placeholder="Chọn món bạn thích" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="chicken">Chicken</SelectItem>
-                          <SelectItem value="beef">Beef</SelectItem>
-                          <SelectItem value="fish">Fish</SelectItem>
-                          <SelectItem value="vegetarian">Vegetarian</SelectItem>
-                          <SelectItem value="vegan">Vegan</SelectItem>
+                          <SelectItem value="chicken">Gà</SelectItem>
+                          <SelectItem value="beef">Bò</SelectItem>
+                          <SelectItem value="fish">Cá</SelectItem>
+                          <SelectItem value="vegetarian">Chay</SelectItem>
+                          <SelectItem value="vegan">Thuần Chay</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -253,11 +253,11 @@ export default function RSVP() {
                     {/* Special Requirements */}
                     <div>
                       <Label htmlFor="special" className="text-foreground mb-2 block">
-                        Special Requirements
+                        Yêu Cầu Đặc Biệt
                       </Label>
                       <Textarea
                         id="special"
-                        placeholder="Dietary restrictions, allergies, accessibility needs..."
+                        placeholder="Hạn chế chế độ ăn, dị ứng, nhu cầu tiếp cận..."
                         rows={3}
                         className="rounded-xl resize-none"
                         value={formData.specialRequirements}
@@ -277,7 +277,7 @@ export default function RSVP() {
                   disabled={createRsvpMutation.isPending}
                 >
                   <Calendar size={18} className="mr-2" />
-                  {createRsvpMutation.isPending ? "Submitting..." : "Submit RSVP"}
+                  {createRsvpMutation.isPending ? "Đang gửi..." : "Gửi Xác Nhận"}
                 </Button>
               </form>
             </div>
@@ -287,19 +287,19 @@ export default function RSVP() {
           <div className="lg:col-span-2 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
             <div className="bg-primary/5 rounded-2xl p-6 md:p-8 border border-primary/20 sticky top-4">
               <h3 className="font-serif text-2xl mb-6 text-foreground">
-                Event Details
+                Thông Tin Sự Kiện
               </h3>
               <div className="space-y-6">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Date</p>
-                  <p className="text-foreground font-medium">June 15, 2025</p>
+                  <p className="text-sm text-muted-foreground mb-1">Ngày</p>
+                  <p className="text-foreground font-medium">15 Tháng 6, 2025</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Time</p>
-                  <p className="text-foreground font-medium">3:00 PM</p>
+                  <p className="text-sm text-muted-foreground mb-1">Thời Gian</p>
+                  <p className="text-foreground font-medium">3:00 Chiều</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Venue</p>
+                  <p className="text-sm text-muted-foreground mb-1">Địa Điểm</p>
                   <p className="text-foreground font-medium">
                     Rose Garden Estate
                   </p>
@@ -309,10 +309,10 @@ export default function RSVP() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Dress Code
+                    Trang Phục
                   </p>
                   <p className="text-foreground font-medium">
-                    Formal / Black Tie Optional
+                    Trang Trọng / Vest Đen Tùy Chọn
                   </p>
                 </div>
               </div>

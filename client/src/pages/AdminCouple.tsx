@@ -10,22 +10,22 @@ export default function AdminCouple() {
     <div>
       <div className="mb-8">
         <h2 className="text-3xl font-serif mb-2 text-foreground" data-testid="heading-couple-info">
-          Couple Information
+          Thông Tin Cô Dâu Chú Rể
         </h2>
         <p className="text-muted-foreground">
-          Manage your wedding couple details
+          Quản lý thông tin chi tiết về cô dâu chú rể
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Edit Couple Details</CardTitle>
+          <CardTitle>Chỉnh Sửa Thông Tin Cặp Đôi</CardTitle>
         </CardHeader>
         <CardContent>
           <form className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="brideName">Bride's Name</Label>
+                <Label htmlFor="brideName">Tên Cô Dâu</Label>
                 <Input
                   id="brideName"
                   defaultValue="Sarah"
@@ -34,7 +34,7 @@ export default function AdminCouple() {
                 />
               </div>
               <div>
-                <Label htmlFor="groomName">Groom's Name</Label>
+                <Label htmlFor="groomName">Tên Chú Rể</Label>
                 <Input
                   id="groomName"
                   defaultValue="Michael"
@@ -45,7 +45,7 @@ export default function AdminCouple() {
             </div>
 
             <div>
-              <Label htmlFor="weddingDate">Wedding Date</Label>
+              <Label htmlFor="weddingDate">Ngày Cưới</Label>
               <Input
                 id="weddingDate"
                 type="date"
@@ -56,11 +56,11 @@ export default function AdminCouple() {
             </div>
 
             <div>
-              <Label htmlFor="ourStory">Our Story</Label>
+              <Label htmlFor="ourStory">Câu Chuyện Của Chúng Tôi</Label>
               <Textarea
                 id="ourStory"
                 rows={6}
-                defaultValue="We met on a rainy autumn day in a cozy coffee shop..."
+                defaultValue="Chúng tôi gặp nhau vào một ngày mùa thu mưa trong một quán cà phê ấm cúng..."
                 className="mt-2"
                 data-testid="input-our-story"
               />
@@ -68,19 +68,19 @@ export default function AdminCouple() {
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="bridePhoto">Bride Photo URL</Label>
+                <Label htmlFor="bridePhoto">URL Ảnh Cô Dâu</Label>
                 <Input
                   id="bridePhoto"
-                  placeholder="Upload or paste image URL"
+                  placeholder="Tải lên hoặc dán URL hình ảnh"
                   className="mt-2"
                   data-testid="input-bride-photo"
                 />
               </div>
               <div>
-                <Label htmlFor="groomPhoto">Groom Photo URL</Label>
+                <Label htmlFor="groomPhoto">URL Ảnh Chú Rể</Label>
                 <Input
                   id="groomPhoto"
-                  placeholder="Upload or paste image URL"
+                  placeholder="Tải lên hoặc dán URL hình ảnh"
                   className="mt-2"
                   data-testid="input-groom-photo"
                 />
@@ -88,10 +88,10 @@ export default function AdminCouple() {
             </div>
 
             <div>
-              <Label htmlFor="heroImage">Hero Background Image URL</Label>
+              <Label htmlFor="heroImage">URL Hình Nền Trang Chủ</Label>
               <Input
                 id="heroImage"
-                placeholder="Upload or paste image URL"
+                placeholder="Tải lên hoặc dán URL hình ảnh"
                 className="mt-2"
                 data-testid="input-hero-image"
               />
@@ -99,7 +99,7 @@ export default function AdminCouple() {
 
             <Button className="w-full md:w-auto" data-testid="button-save-couple">
               <Save size={18} className="mr-2" />
-              Save Changes
+              Lưu Thay Đổi
             </Button>
           </form>
         </CardContent>

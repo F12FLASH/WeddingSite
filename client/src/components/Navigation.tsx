@@ -3,14 +3,14 @@ import { Menu, X, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navLinks = [
-  { name: "Home", href: "#home" },
-  { name: "Our Story", href: "#about" },
-  { name: "Schedule", href: "#schedule" },
-  { name: "Gallery", href: "#gallery" },
-  { name: "Messages", href: "#messages" },
-  { name: "RSVP", href: "#rsvp" },
-  { name: "Location", href: "#location" },
-  { name: "Registry", href: "#registry" },
+  { name: "Trang Chủ", href: "#home" },
+  { name: "Câu Chuyện", href: "#about" },
+  { name: "Lịch Trình", href: "#schedule" },
+  { name: "Album Ảnh", href: "#gallery" },
+  { name: "Lời Chúc", href: "#messages" },
+  { name: "Xác Nhận Tham Dự", href: "#rsvp" },
+  { name: "Địa Điểm", href: "#location" },
+  { name: "Quà Mừng", href: "#registry" },
 ];
 
 export default function Navigation() {
@@ -57,6 +57,13 @@ export default function Navigation() {
                 {link.name}
               </a>
             ))}
+            <a
+              href="/admin"
+              className="ml-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all hover-elevate"
+              data-testid="nav-admin-login"
+            >
+              Đăng Nhập Admin
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -87,6 +94,14 @@ export default function Navigation() {
                 {link.name}
               </a>
             ))}
+            <a
+              href="/admin"
+              className="block px-4 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all text-center"
+              onClick={() => setIsOpen(false)}
+              data-testid="mobile-nav-admin-login"
+            >
+              Đăng Nhập Admin
+            </a>
           </div>
         </div>
       )}

@@ -14,24 +14,29 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-muted-foreground text-sm">
-              Join us in celebrating our love story
+              Cùng chia sẻ câu chuyện tình yêu của chúng tôi
             </p>
           </div>
 
           {/* Quick Links */}
           <div className="text-center">
             <h3 className="font-serif text-lg mb-4 text-foreground">
-              Quick Links
+              Liên Kết Nhanh
             </h3>
             <div className="space-y-2">
-              {["RSVP", "Registry", "Location", "Gallery"].map((link) => (
+              {[
+                { name: "Xác Nhận", href: "#rsvp" },
+                { name: "Quà Mừng", href: "#registry" },
+                { name: "Địa Điểm", href: "#location" },
+                { name: "Album Ảnh", href: "#gallery" }
+              ].map((link, idx) => (
                 <a
-                  key={link}
-                  href={`#${link.toLowerCase()}`}
+                  key={idx}
+                  href={link.href}
                   className="block text-muted-foreground hover:text-primary transition-colors text-sm"
-                  data-testid={`footer-link-${link.toLowerCase()}`}
+                  data-testid={`footer-link-${link.name.toLowerCase()}`}
                 >
-                  {link}
+                  {link.name}
                 </a>
               ))}
             </div>
@@ -40,7 +45,7 @@ export default function Footer() {
           {/* Social & Contact */}
           <div className="text-center md:text-right">
             <h3 className="font-serif text-lg mb-4 text-foreground">
-              Connect With Us
+              Kết Nối Với Chúng Tôi
             </h3>
             <div className="flex gap-3 justify-center md:justify-end mb-4">
               <a
@@ -74,13 +79,13 @@ export default function Footer() {
         {/* Copyright */}
         <div className="text-center pt-8 border-t border-card-border">
           <p className="text-muted-foreground text-sm">
-            © 2025 Sarah & Michael. Made with{" "}
+            © 2025 Sarah & Michael. Được tạo với{" "}
             <Heart
               size={14}
               className="inline text-primary"
               fill="currentColor"
             />{" "}
-            for our special day
+            cho ngày đặc biệt của chúng tôi
           </p>
         </div>
       </div>

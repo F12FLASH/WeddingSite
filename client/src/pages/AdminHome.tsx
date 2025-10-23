@@ -3,31 +3,31 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const stats = [
   {
-    title: "Total RSVPs",
+    title: "Tổng Số RSVP",
     value: "87",
     icon: Users,
-    description: "65 attending, 22 declined",
+    description: "65 tham dự, 22 từ chối",
     color: "text-primary",
   },
   {
-    title: "Guest Messages",
+    title: "Tin Nhắn Khách Mời",
     value: "124",
     icon: MessageSquare,
-    description: "12 pending approval",
+    description: "12 chờ phê duyệt",
     color: "text-chart-2",
   },
   {
-    title: "Days Until Wedding",
+    title: "Số Ngày Đến Đám Cưới",
     value: "120",
     icon: Calendar,
-    description: "June 15, 2025",
+    description: "Ngày 15 tháng 6, 2025",
     color: "text-chart-3",
   },
   {
-    title: "Photo Gallery",
+    title: "Thư Viện Ảnh",
     value: "48",
     icon: Heart,
-    description: "Photos uploaded",
+    description: "Ảnh đã tải lên",
     color: "text-primary",
   },
 ];
@@ -37,10 +37,10 @@ export default function AdminHome() {
     <div>
       <div className="mb-8">
         <h2 className="text-3xl font-serif mb-2 text-foreground" data-testid="heading-dashboard">
-          Dashboard Overview
+          Tổng Quan Bảng Điều Khiển
         </h2>
         <p className="text-muted-foreground">
-          Welcome to your wedding management dashboard
+          Chào mừng đến với bảng điều khiển quản lý đám cưới của bạn
         </p>
       </div>
 
@@ -72,14 +72,14 @@ export default function AdminHome() {
         {/* Recent RSVPs */}
         <Card>
           <CardHeader>
-            <CardTitle>Recent RSVPs</CardTitle>
+            <CardTitle>RSVP Gần Đây</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {[
-                { name: "Emily Johnson", status: "Attending", guests: 2 },
-                { name: "David Chen", status: "Attending", guests: 1 },
-                { name: "Maria Garcia", status: "Declined", guests: 0 },
+                { name: "Emily Johnson", status: "Tham dự", guests: 2 },
+                { name: "David Chen", status: "Tham dự", guests: 1 },
+                { name: "Maria Garcia", status: "Từ chối", guests: 0 },
               ].map((rsvp, i) => (
                 <div
                   key={i}
@@ -90,12 +90,12 @@ export default function AdminHome() {
                     <p className="font-medium">{rsvp.name}</p>
                     <p className="text-sm text-muted-foreground">
                       {rsvp.status}
-                      {rsvp.guests > 0 && ` • ${rsvp.guests} guests`}
+                      {rsvp.guests > 0 && ` • ${rsvp.guests} khách`}
                     </p>
                   </div>
                   <div
                     className={`w-2 h-2 rounded-full ${
-                      rsvp.status === "Attending"
+                      rsvp.status === "Tham dự"
                         ? "bg-primary"
                         : "bg-muted-foreground"
                     }`}
@@ -109,14 +109,14 @@ export default function AdminHome() {
         {/* Recent Messages */}
         <Card>
           <CardHeader>
-            <CardTitle>Recent Messages</CardTitle>
+            <CardTitle>Tin Nhắn Gần Đây</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {[
-                { name: "Sarah Miller", preview: "So excited for your big day!" },
-                { name: "John Smith", preview: "Congratulations to both of you..." },
-                { name: "Lisa Wang", preview: "Can't wait to celebrate with you!" },
+                { name: "Sarah Miller", preview: "Rất mong chờ ngày trọng đại của hai bạn!" },
+                { name: "John Smith", preview: "Chúc mừng cả hai..." },
+                { name: "Lisa Wang", preview: "Không thể chờ để ăn mừng cùng các bạn!" },
               ].map((msg, i) => (
                 <div
                   key={i}

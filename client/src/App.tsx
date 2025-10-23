@@ -11,55 +11,112 @@ import AdminHome from "@/pages/AdminHome";
 import AdminCouple from "@/pages/AdminCouple";
 import AdminMessages from "@/pages/AdminMessages";
 import AdminRSVPs from "@/pages/AdminRSVPs";
+import AdminSchedule from "@/pages/AdminSchedule";
+import AdminGallery from "@/pages/AdminGallery";
+import AdminRegistry from "@/pages/AdminRegistry";
+import AdminSettings from "@/pages/AdminSettings";
 
-function Router() {
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin text-primary">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    window.location.href = "/api/login";
+    return null;
+  }
+
+  return <>{children}</>;
+}
+
+function Router() {
   return (
     <Switch>
       {/* Public Landing Page */}
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
-        <>
-          {/* Admin Routes */}
-          <Route path="/admin">
-            {() => (
-              <AdminDashboard>
-                <AdminHome />
-              </AdminDashboard>
-            )}
-          </Route>
-          <Route path="/admin/couple">
-            {() => (
-              <AdminDashboard>
-                <AdminCouple />
-              </AdminDashboard>
-            )}
-          </Route>
-          <Route path="/admin/messages">
-            {() => (
-              <AdminDashboard>
-                <AdminMessages />
-              </AdminDashboard>
-            )}
-          </Route>
-          <Route path="/admin/rsvps">
-            {() => (
-              <AdminDashboard>
-                <AdminRSVPs />
-              </AdminDashboard>
-            )}
-          </Route>
-          {/* Redirect authenticated users to admin by default */}
-          <Route path="/">
-            {() => {
-              window.location.href = "/admin";
-              return null;
-            }}
-          </Route>
-        </>
-      )}
+      <Route path="/" component={Landing} />
+
+      {/* Protected Admin Routes */}
+      <Route path="/admin">
+        {() => (
+          <ProtectedRoute>
+            <AdminDashboard>
+              <AdminHome />
+            </AdminDashboard>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/couple">
+        {() => (
+          <ProtectedRoute>
+            <AdminDashboard>
+              <AdminCouple />
+            </AdminDashboard>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/messages">
+        {() => (
+          <ProtectedRoute>
+            <AdminDashboard>
+              <AdminMessages />
+            </AdminDashboard>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/rsvps">
+        {() => (
+          <ProtectedRoute>
+            <AdminDashboard>
+              <AdminRSVPs />
+            </AdminDashboard>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/schedule">
+        {() => (
+          <ProtectedRoute>
+            <AdminDashboard>
+              <AdminSchedule />
+            </AdminDashboard>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/gallery">
+        {() => (
+          <ProtectedRoute>
+            <AdminDashboard>
+              <AdminGallery />
+            </AdminDashboard>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/registry">
+        {() => (
+          <ProtectedRoute>
+            <AdminDashboard>
+              <AdminRegistry />
+            </AdminDashboard>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/settings">
+        {() => (
+          <ProtectedRoute>
+            <AdminDashboard>
+              <AdminSettings />
+            </AdminDashboard>
+          </ProtectedRoute>
+        )}
+      </Route>
+
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>

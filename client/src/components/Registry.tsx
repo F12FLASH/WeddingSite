@@ -16,13 +16,11 @@ export default function Registry() {
             className="font-serif text-4xl md:text-5xl mb-4 text-foreground"
             data-testid="heading-registry"
           >
-            Gift Registry
+            Danh Sách Quà Mừng
           </h2>
           <div className="w-24 h-1 bg-primary mx-auto mb-4" />
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Your presence at our wedding is the greatest gift. However, if you
-            wish to honor us with a gift, we've registered at the following
-            stores.
+            Sự hiện diện của bạn trong đám cưới là món quà lớn nhất. Tuy nhiên, nếu bạn muốn tặng chúng tôi quà, chúng tôi đã đăng ký tại các cửa hàng sau.
           </p>
         </div>
 
@@ -38,13 +36,13 @@ export default function Registry() {
         ) : isError ? (
           <div className="text-center py-16">
             <Heart className="mx-auto mb-4 text-destructive" size={64} />
-            <p className="text-destructive text-lg mb-2">Failed to load registry</p>
-            <p className="text-muted-foreground">{error instanceof Error ? error.message : "Please try again later"}</p>
+            <p className="text-destructive text-lg mb-2">Không thể tải danh sách quà</p>
+            <p className="text-muted-foreground">{error instanceof Error ? error.message : "Vui lòng thử lại sau"}</p>
           </div>
         ) : items.length === 0 ? (
           <div className="text-center py-16">
             <Heart className="mx-auto mb-4 text-muted-foreground" size={64} />
-            <p className="text-muted-foreground text-lg">Registry information coming soon!</p>
+            <p className="text-muted-foreground text-lg">Thông tin danh sách quà sẽ sớm được cập nhật!</p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -86,7 +84,7 @@ export default function Registry() {
                       data-testid={`button-registry-${index}`}
                     >
                       <ExternalLink size={18} className="mr-2" />
-                      Visit Registry
+                      Xem Danh Sách
                     </Button>
                   )}
                 </div>
@@ -100,8 +98,7 @@ export default function Registry() {
           <div className="bg-primary/5 rounded-2xl p-8 border border-primary/20 max-w-3xl mx-auto">
             <Gift className="mx-auto mb-4 text-primary" size={48} />
             <p className="text-lg text-foreground italic leading-relaxed">
-              "Your love, laughter, and company on our wedding day is the
-              greatest gift of all. Thank you for being part of our journey!"
+              "Tình yêu, tiếng cười và sự hiện diện của bạn trong ngày cưới của chúng tôi là món quà lớn nhất. Cảm ơn bạn đã là một phần trong hành trình của chúng tôi!"
             </p>
             <p className="text-primary font-cursive text-3xl mt-4">
               - Sarah & Michael

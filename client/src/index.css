@@ -76,9 +76,9 @@
   --chart-4: 280 65% 60%;
   --chart-5: 25 85% 55%;
 
-  --font-sans: Inter, sans-serif;
-  --font-serif: Playfair Display, serif;
-  --font-cursive: Great Vibes, cursive;
+  --font-sans: Poppins, sans-serif;
+  --font-serif: Cormorant Garamond, serif;
+  --font-cursive: Parisienne, cursive;
   --font-mono: Menlo, monospace;
   --radius: .5rem;
   --shadow-2xs: 0px 1px 2px 0px hsl(340 40% 30% / 0.05);

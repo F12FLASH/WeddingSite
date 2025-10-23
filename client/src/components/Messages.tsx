@@ -24,8 +24,8 @@ export default function Messages() {
     },
     onSuccess: () => {
       toast({
-        title: "Message sent!",
-        description: "Thank you for your wishes. We'll review it shortly.",
+        title: "Đã gửi lời chúc!",
+        description: "Cảm ơn lời chúc của bạn. Chúng tôi sẽ xem xét trong thời gian sớm nhất.",
       });
       setGuestName("");
       setMessage("");
@@ -34,8 +34,8 @@ export default function Messages() {
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
+        title: "Lỗi",
+        description: "Không thể gửi lời chúc. Vui lòng thử lại.",
         variant: "destructive",
       });
     },
@@ -45,8 +45,8 @@ export default function Messages() {
     e.preventDefault();
     if (!guestName.trim() || !message.trim()) {
       toast({
-        title: "Missing information",
-        description: "Please fill in both your name and message",
+        title: "Thiếu thông tin",
+        description: "Vui lòng điền cả tên và lời chúc của bạn",
         variant: "destructive",
       });
       return;
@@ -63,11 +63,11 @@ export default function Messages() {
             className="font-serif text-4xl md:text-5xl mb-4 text-foreground"
             data-testid="heading-messages"
           >
-            Guest Messages
+            Lời Chúc Khách Mời
           </h2>
           <div className="w-24 h-1 bg-primary mx-auto mb-4" />
           <p className="text-muted-foreground text-lg">
-            Share your wishes and blessings
+            Gửi lời chúc mừng và chúc phúc của bạn
           </p>
         </div>
 
@@ -77,13 +77,13 @@ export default function Messages() {
             <div className="bg-card rounded-2xl p-6 md:p-8 border border-card-border shadow-lg">
               <h3 className="font-serif text-2xl mb-6 text-foreground flex items-center gap-2">
                 <Heart className="text-primary" fill="currentColor" size={24} />
-                Leave a Message
+                Để Lại Lời Chúc
               </h3>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <Input
                     type="text"
-                    placeholder="Your Name"
+                    placeholder="Tên Của Bạn"
                     value={guestName}
                     onChange={(e) => setGuestName(e.target.value)}
                     className="rounded-xl"
@@ -93,7 +93,7 @@ export default function Messages() {
                 </div>
                 <div>
                   <Textarea
-                    placeholder="Your message for the couple..."
+                    placeholder="Lời chúc của bạn gửi đến cô dâu chú rể..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     rows={5}
@@ -109,7 +109,7 @@ export default function Messages() {
                   disabled={createMessageMutation.isPending}
                 >
                   <Send size={18} className="mr-2" />
-                  {createMessageMutation.isPending ? "Sending..." : "Send Message"}
+                  {createMessageMutation.isPending ? "Đang gửi..." : "Gửi Lời Chúc"}
                 </Button>
               </form>
             </div>
@@ -132,13 +132,13 @@ export default function Messages() {
               ) : isError ? (
                 <div className="bg-card rounded-2xl p-8 border border-card-border shadow-md text-center">
                   <Heart className="mx-auto mb-3 text-destructive" size={40} />
-                  <p className="text-destructive mb-2">Failed to load messages</p>
-                  <p className="text-muted-foreground">{error instanceof Error ? error.message : "Please try again later"}</p>
+                  <p className="text-destructive mb-2">Không thể tải lời chúc</p>
+                  <p className="text-muted-foreground">{error instanceof Error ? error.message : "Vui lòng thử lại sau"}</p>
                 </div>
               ) : messages.length === 0 ? (
                 <div className="bg-card rounded-2xl p-8 border border-card-border shadow-md text-center">
                   <Heart className="mx-auto mb-3 text-muted-foreground" size={40} />
-                  <p className="text-muted-foreground">No messages yet. Be the first to share your wishes!</p>
+                  <p className="text-muted-foreground">Chưa có lời chúc nào. Hãy là người đầu tiên chia sẻ lời chúc của bạn!</p>
                 </div>
               ) : (
                 messages.map((msg, index) => (

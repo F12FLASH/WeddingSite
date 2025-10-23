@@ -28,42 +28,42 @@ import {
 
 const menuItems = [
   {
-    title: "Dashboard",
+    title: "Tổng Quan",
     url: "/admin",
     icon: LayoutDashboard,
   },
   {
-    title: "Couple Info",
+    title: "Thông Tin Cô Dâu Chú Rể",
     url: "/admin/couple",
     icon: Heart,
   },
   {
-    title: "Schedule",
+    title: "Lịch Trình",
     url: "/admin/schedule",
     icon: Calendar,
   },
   {
-    title: "Gallery",
+    title: "Album Ảnh",
     url: "/admin/gallery",
     icon: Image,
   },
   {
-    title: "Guest Messages",
+    title: "Lời Chúc",
     url: "/admin/messages",
     icon: MessageSquare,
   },
   {
-    title: "RSVPs",
+    title: "Danh Sách Khách",
     url: "/admin/rsvps",
     icon: Users,
   },
   {
-    title: "Registry",
+    title: "Quà Mừng",
     url: "/admin/registry",
     icon: Gift,
   },
   {
-    title: "Settings",
+    title: "Cài Đặt",
     url: "/admin/settings",
     icon: Settings,
   },
@@ -77,8 +77,8 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
+        title: "Chưa đăng nhập",
+        description: "Bạn đã đăng xuất. Đang chuyển đến trang đăng nhập...",
         variant: "destructive",
       });
       setTimeout(() => {
@@ -110,7 +110,7 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
             <SidebarGroup>
               <SidebarGroupLabel className="text-lg font-cursive text-primary mb-4">
                 <Heart size={20} fill="currentColor" className="inline mr-2" />
-                Wedding Admin
+                Quản Lý Đám Cưới
               </SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
@@ -135,7 +135,7 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
                     <SidebarMenuButton asChild>
                       <a href="/api/logout" data-testid="button-logout">
                         <LogOut />
-                        <span>Logout</span>
+                        <span>Đăng Xuất</span>
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -149,7 +149,7 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
           <header className="flex items-center justify-between p-4 border-b bg-background">
             <SidebarTrigger data-testid="button-sidebar-toggle" />
             <h1 className="font-serif text-2xl text-foreground">
-              Wedding Management
+              Quản Lý Đám Cưới
             </h1>
             <div />
           </header>

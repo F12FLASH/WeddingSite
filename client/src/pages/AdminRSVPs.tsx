@@ -18,8 +18,8 @@ export default function AdminRSVPs() {
     return (
       <div>
         <div className="mb-8">
-          <h2 className="text-3xl font-serif mb-2 text-foreground">RSVP Management</h2>
-          <p className="text-muted-foreground">Track and manage guest responses</p>
+          <h2 className="text-3xl font-serif mb-2 text-foreground">Quản Lý RSVP</h2>
+          <p className="text-muted-foreground">Theo dõi và quản lý phản hồi của khách mời</p>
         </div>
         <div className="grid gap-6 md:grid-cols-3 mb-8">
           {[...Array(3)].map((_, i) => (
@@ -41,14 +41,14 @@ export default function AdminRSVPs() {
     return (
       <div>
         <div className="mb-8">
-          <h2 className="text-3xl font-serif mb-2 text-foreground">RSVP Management</h2>
-          <p className="text-muted-foreground">Track and manage guest responses</p>
+          <h2 className="text-3xl font-serif mb-2 text-foreground">Quản Lý RSVP</h2>
+          <p className="text-muted-foreground">Theo dõi và quản lý phản hồi của khách mời</p>
         </div>
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Heart className="text-destructive mb-4" size={64} />
-            <p className="text-destructive text-lg mb-2">Failed to load RSVPs</p>
-            <p className="text-muted-foreground">{error instanceof Error ? error.message : "Please try again later"}</p>
+            <p className="text-destructive text-lg mb-2">Không thể tải RSVP</p>
+            <p className="text-muted-foreground">{error instanceof Error ? error.message : "Vui lòng thử lại sau"}</p>
           </CardContent>
         </Card>
       </div>
@@ -59,10 +59,10 @@ export default function AdminRSVPs() {
     <div>
       <div className="mb-8">
         <h2 className="text-3xl font-serif mb-2 text-foreground" data-testid="heading-rsvps">
-          RSVP Management
+          Quản Lý RSVP
         </h2>
         <p className="text-muted-foreground">
-          Track and manage guest responses
+          Theo dõi và quản lý phản hồi của khách mời
         </p>
       </div>
 
@@ -70,7 +70,7 @@ export default function AdminRSVPs() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Total Responses
+              Tổng Phản Hồi
             </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -81,7 +81,7 @@ export default function AdminRSVPs() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Attending</CardTitle>
+            <CardTitle className="text-sm font-medium">Tham Dự</CardTitle>
             <Check className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
@@ -93,7 +93,7 @@ export default function AdminRSVPs() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Guests</CardTitle>
+            <CardTitle className="text-sm font-medium">Tổng Số Khách</CardTitle>
             <Users className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
@@ -104,13 +104,13 @@ export default function AdminRSVPs() {
 
       <Card>
         <CardHeader>
-          <CardTitle>All RSVPs</CardTitle>
+          <CardTitle>Tất Cả RSVP</CardTitle>
         </CardHeader>
         <CardContent>
           {rsvps.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">
               <Heart className="text-muted-foreground mb-4" size={64} />
-              <p className="text-muted-foreground text-lg">No RSVPs yet</p>
+              <p className="text-muted-foreground text-lg">Chưa có RSVP nào</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -130,17 +130,17 @@ export default function AdminRSVPs() {
                         <>
                           <p className="text-sm font-medium text-primary flex items-center gap-1">
                             <Check size={16} />
-                            Attending
+                            Tham dự
                           </p>
                           <p className="text-xs text-muted-foreground">
-                            {rsvp.guestCount} {rsvp.guestCount === 1 ? "guest" : "guests"}
+                            {rsvp.guestCount} {rsvp.guestCount === 1 ? "khách" : "khách"}
                             {rsvp.mealPreference && ` • ${rsvp.mealPreference}`}
                           </p>
                         </>
                       ) : (
                         <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
                           <X size={16} />
-                          Declined
+                          Từ chối
                         </p>
                       )}
                     </div>

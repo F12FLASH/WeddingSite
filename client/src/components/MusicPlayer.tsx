@@ -45,7 +45,7 @@ export default function MusicPlayer() {
 
           {/* Now Playing */}
           <div className="hidden md:block">
-            <p className="text-xs text-muted-foreground">Now Playing</p>
+            <p className="text-xs text-muted-foreground">Đang Phát</p>
             <p className="text-sm font-medium text-foreground">
               A Thousand Years
             </p>

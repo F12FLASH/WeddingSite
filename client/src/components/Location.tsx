@@ -11,11 +11,11 @@ export default function Location() {
             className="font-serif text-4xl md:text-5xl mb-4 text-foreground"
             data-testid="heading-location"
           >
-            Venue & Location
+            Địa Điểm Tổ Chức
           </h2>
           <div className="w-24 h-1 bg-primary mx-auto mb-4" />
           <p className="text-muted-foreground text-lg">
-            Join us at our beautiful venue
+            Hãy đến với chúng tôi tại địa điểm tuyệt đẹp
           </p>
         </div>
 
@@ -25,7 +25,7 @@ export default function Location() {
             <div className="rounded-2xl overflow-hidden shadow-xl mb-6">
               <img
                 src={venueImage}
-                alt="Wedding Venue"
+                alt="Địa Điểm Cưới"
                 className="w-full h-80 object-cover"
                 data-testid="img-venue"
               />
@@ -37,7 +37,7 @@ export default function Location() {
                 <div className="text-center">
                   <MapPin className="mx-auto mb-2 text-primary" size={48} />
                   <p className="text-muted-foreground">
-                    Interactive Map
+                    Bản Đồ Tương Tác
                   </p>
                   <p className="text-sm text-muted-foreground mt-1">
                     Rose Garden Estate
@@ -61,7 +61,7 @@ export default function Location() {
                     <MapPin className="text-primary" size={24} />
                   </div>
                   <div>
-                    <p className="font-medium text-foreground mb-1">Address</p>
+                    <p className="font-medium text-foreground mb-1">Địa Chỉ</p>
                     <p className="text-muted-foreground">
                       123 Garden Lane
                       <br />
@@ -76,7 +76,7 @@ export default function Location() {
                     <Phone className="text-primary" size={24} />
                   </div>
                   <div>
-                    <p className="font-medium text-foreground mb-1">Contact</p>
+                    <p className="font-medium text-foreground mb-1">Liên Hệ</p>
                     <p className="text-muted-foreground">
                       +1 (555) 123-4567
                       <br />
@@ -92,12 +92,12 @@ export default function Location() {
                   </div>
                   <div>
                     <p className="font-medium text-foreground mb-1">
-                      Event Time
+                      Thời Gian Sự Kiện
                     </p>
                     <p className="text-muted-foreground">
-                      June 15, 2025
+                      15 Tháng 6, 2025
                       <br />
-                      3:00 PM - 10:00 PM
+                      3:00 Chiều - 10:00 Tối
                     </p>
                   </div>
                 </div>
@@ -105,12 +105,10 @@ export default function Location() {
                 {/* Parking Info */}
                 <div className="bg-primary/5 rounded-xl p-4 border border-primary/20">
                   <p className="font-medium text-foreground mb-2">
-                    Parking Information
+                    Thông Tin Đỗ Xe
                   </p>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Complimentary valet parking available. Additional parking
-                    spaces are located in the north lot. Please arrive 15-20
-                    minutes early for parking.
+                    Dịch vụ đỗ xe miễn phí. Bãi đỗ xe bổ sung nằm ở phía bắc. Vui lòng đến sớm 15-20 phút để đỗ xe.
                   </p>
                 </div>
 
@@ -121,7 +119,7 @@ export default function Location() {
                   data-testid="button-directions"
                 >
                   <Navigation size={18} className="mr-2" />
-                  Get Directions
+                  Chỉ Đường
                 </Button>
               </div>
             </div>
