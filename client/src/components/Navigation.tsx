@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Heart } from "lucide-react";
+import { Menu, X, Heart, ChevronDown, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { name: "Trang Chủ", href: "#home" },
@@ -16,95 +17,318 @@ const navLinks = [
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
+      
+      // Update active section based on scroll position
+      const sections = navLinks.map(link => link.href.substring(1));
+      const current = sections.find(section => {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          return rect.top <= 100 && rect.bottom >= 100;
+        }
+        return false;
+      });
+      
+      if (current) {
+        setActiveSection(current);
+      }
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const scrollToSection = (href: string) => {
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+    setIsOpen(false);
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  const mobileMenuVariants = {
+    closed: {
+      opacity: 0,
+      height: 0,
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut"
+      }
+    },
+    open: {
+      opacity: 1,
+      height: "auto",
+      transition: {
+        duration: 0.4,
+        ease: "easeOut"
+      }
+    }
+  };
+
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <motion.nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled
-          ? "bg-background/95 backdrop-blur-lg shadow-lg"
+          ? "bg-background/95 backdrop-blur-xl shadow-2xl border-b border-border/50"
           : "bg-transparent"
       }`}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
     >
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <a
+          <motion.a
             href="#home"
-            className="flex items-center gap-2 font-cursive text-2xl md:text-3xl text-primary hover-elevate"
+            className="flex items-center gap-3 group"
+            onClick={(e) => {
+              e.preventDefault();
+              scrollToSection("#home");
+            }}
             data-testid="link-home"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            <Heart size={28} fill="currentColor" />
-            S & M
-          </a>
+            <motion.div
+              className="relative"
+              animate={{
+                rotate: [0, 10, -10, 0],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <Heart 
+                size={32} 
+                className="text-primary drop-shadow-lg" 
+                fill="currentColor" 
+              />
+            </motion.div>
+            <div className="flex flex-col">
+              <span className="font-cursive text-2xl md:text-3xl text-primary bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                Sarah & Michael
+              </span>
+              <span className="text-xs text-muted-foreground -mt-1">
+                15.06.2025
+              </span>
+            </div>
+          </motion.a>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="px-4 py-2 text-foreground hover:text-primary transition-colors rounded-lg hover-elevate"
-                data-testid={`nav-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
-              >
-                {link.name}
-              </a>
-            ))}
-            <a
+          <motion.div 
+            className="hidden lg:flex items-center gap-1"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.href.substring(1);
+              return (
+                <motion.a
+                  key={link.name}
+                  href={link.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection(link.href);
+                  }}
+                  className={`relative px-4 py-2 rounded-xl transition-all duration-300 group ${
+                    isActive
+                      ? "text-primary font-semibold"
+                      : "text-foreground hover:text-primary"
+                  }`}
+                  data-testid={`nav-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
+                  variants={itemVariants}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ y: 0 }}
+                >
+                  {link.name}
+                  
+                  {/* Active indicator */}
+                  {isActive && (
+                    <motion.div
+                      className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-primary rounded-full"
+                      layoutId="activeIndicator"
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    />
+                  )}
+                  
+                  {/* Hover effect */}
+                  <div className="absolute inset-0 bg-primary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </motion.a>
+              );
+            })}
+            
+            {/* Admin Login Button */}
+            <motion.a
               href="/admin"
-              className="ml-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all hover-elevate"
+              className="ml-4 px-6 py-2 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-xl hover:shadow-xl transition-all duration-300 flex items-center gap-2 group"
               data-testid="nav-admin-login"
+              variants={itemVariants}
+              whileHover={{ 
+                scale: 1.05,
+                y: -2
+              }}
+              whileTap={{ scale: 0.95 }}
             >
-              Đăng Nhập Admin
-            </a>
-          </div>
+              <User size={16} />
+              <span>Admin</span>
+              <ChevronDown 
+                size={14} 
+                className="transition-transform duration-300 group-hover:rotate-180" 
+              />
+            </motion.a>
+          </motion.div>
 
           {/* Mobile Menu Button */}
-          <Button
-            variant="ghost"
-            size="icon"
+          <motion.div
             className="lg:hidden"
-            onClick={() => setIsOpen(!isOpen)}
-            data-testid="button-menu-toggle"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative w-10 h-10"
+              onClick={() => setIsOpen(!isOpen)}
+              data-testid="button-menu-toggle"
+            >
+              <AnimatePresence mode="wait">
+                {isOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <X size={24} />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Menu size={24} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Button>
+          </motion.div>
         </div>
       </div>
 
       {/* Mobile Menu */}
-      {isOpen && (
-        <div className="lg:hidden bg-background border-t border-border animate-fade-in">
-          <div className="px-4 py-6 space-y-2">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="block px-4 py-3 text-foreground hover:text-primary hover:bg-card rounded-lg transition-colors"
-                onClick={() => setIsOpen(false)}
-                data-testid={`mobile-nav-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
-              >
-                {link.name}
-              </a>
-            ))}
-            <a
-              href="/admin"
-              className="block px-4 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all text-center"
-              onClick={() => setIsOpen(false)}
-              data-testid="mobile-nav-admin-login"
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="lg:hidden bg-background/95 backdrop-blur-xl border-t border-border/50 overflow-hidden"
+            variants={mobileMenuVariants}
+            initial="closed"
+            animate="open"
+            exit="closed"
+          >
+            <motion.div 
+              className="px-4 py-6 space-y-2"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
             >
-              Đăng Nhập Admin
-            </a>
-          </div>
-        </div>
-      )}
-    </nav>
+              {navLinks.map((link, index) => {
+                const isActive = activeSection === link.href.substring(1);
+                return (
+                  <motion.a
+                    key={link.name}
+                    href={link.href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(link.href);
+                    }}
+                    className={`block px-4 py-4 rounded-xl transition-all duration-300 ${
+                      isActive
+                        ? "bg-primary/10 text-primary font-semibold border border-primary/20"
+                        : "text-foreground hover:bg-card hover:text-primary"
+                    }`}
+                    data-testid={`mobile-nav-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
+                    variants={itemVariants}
+                    whileHover={{ x: 8 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span>{link.name}</span>
+                      {isActive && (
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: "spring", stiffness: 500 }}
+                        >
+                          <Heart size={16} className="text-primary" fill="currentColor" />
+                        </motion.div>
+                      )}
+                    </div>
+                  </motion.a>
+                );
+              })}
+              
+              {/* Mobile Admin Login */}
+              <motion.a
+                href="/admin"
+                className="block px-4 py-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-xl hover:shadow-xl transition-all duration-300 text-center font-semibold mt-4"
+                onClick={() => setIsOpen(false)}
+                data-testid="mobile-nav-admin-login"
+                variants={itemVariants}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="flex items-center justify-center gap-2">
+                  <User size={18} />
+                  <span>Đăng Nhập Admin</span>
+                </div>
+              </motion.a>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Scroll Progress Bar */}
+      <motion.div
+        className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary to-primary/60"
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: (window.scrollY / (document.body.scrollHeight - window.innerHeight)) }}
+        transition={{ duration: 0.1 }}
+      />
+    </motion.nav>
   );
 }

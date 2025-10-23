@@ -9,11 +9,13 @@ declare module 'http' {
     rawBody: unknown
   }
 }
+
 app.use(express.json({
   verify: (req, _res, buf) => {
     req.rawBody = buf;
   }
 }));
+
 app.use(express.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
@@ -47,35 +49,57 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  const server = await registerRoutes(app);
+  try {
+    const server = await registerRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
+    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+      const status = err.status || err.statusCode || 500;
+      const message = err.message || "Internal Server Error";
 
-    res.status(status).json({ message });
-    throw err;
-  });
+      res.status(status).json({ message });
+      console.error('Error:', err);
+    });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
+    // importantly only setup vite in development and after
+    // setting up all the other routes so the catch-all route
+    // doesn't interfere with the other routes
+    if (app.get("env") === "development") {
+      await setupVite(app, server);
+    } else {
+      serveStatic(app);
+    }
+
+    // ĐƠN GIẢN HÓA PHẦN KHỞI ĐỘNG SERVER
+    const port = parseInt(process.env.PORT || '3000', 10);
+    
+    // Cách 1: Đơn giản nhất - chỉ định port
+    server.listen(port, () => {
+      log(`🚀 Wedding site server running on http://localhost:${port}`);
+      log(`📊 Environment: ${app.get("env")}`);
+    });
+
+    // Xử lý lỗi server
+    server.on('error', (error: any) => {
+      if (error.code === 'EADDRINUSE') {
+        log(`❌ Port ${port} is already in use. Try a different port.`);
+        process.exit(1);
+      } else {
+        log(`❌ Server error: ${error.message}`);
+        process.exit(1);
+      }
+    });
+
+    // Xử lý tín hiệu shutdown
+    process.on('SIGINT', () => {
+      log('🛑 Shutting down server...');
+      server.close(() => {
+        log('✅ Server stopped');
+        process.exit(0);
+      });
+    });
+
+  } catch (error) {
+    console.error('❌ Failed to start server:', error);
+    process.exit(1);
   }
-
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
 })();

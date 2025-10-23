@@ -1,120 +1,394 @@
+import { HeartIcon, SparklesIcon } from "lucide-react";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import bridePhoto from "@assets/generated_images/Elegant_bride_portrait_photo_6abee8e2.png";
 import groomPhoto from "@assets/generated_images/Handsome_groom_portrait_photo_1678e40a.png";
 
 export default function About() {
+  const [headerRef, headerInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  const story = {
+    bride: {
+      name: "Sarah",
+      description: "Một nhà thiết kế đầy đam mê, yêu thích nghệ thuật, hoa và tạo ra những khoảnh khắc đẹp đẽ. Cô tin vào điều kỳ diệu của tình yêu và sức mạnh của sự gắn kết.",
+      photo: bridePhoto
+    },
+    groom: {
+      name: "Michael",
+      description: "Một tâm hồn phiêu lưu với trái tim nhân hậu. Anh thích nhiếp ảnh, du lịch và làm cho Sarah cười mỗi ngày.",
+      photo: groomPhoto
+    },
+    story: [
+      "Chúng tôi gặp nhau vào một ngày mưa mùa thu trong một quán cà phê ấm cúng. Điều bắt đầu từ một cuộc gặp gỡ tình cờ với tình yêu chung dành cho cappuccino đã biến thành những cuộc trò chuyện bất tận, những chuyến phiêu lưu và một mối liên kết ngày càng bền chặt theo thời gian.",
+      "Sau ba năm tuyệt vời bên nhau, Michael đã cầu hôn trong một buổi dã ngoại hoàng hôn bên hồ. Giờ đây, chúng tôi rất phấn khích được chia sẻ tình yêu của mình với những người thân yêu nhất."
+    ]
+  };
+
   return (
-    <section id="about" className="py-20 md:py-32 px-4 bg-card">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16 animate-fade-in-up">
-          <h2
-            className="font-serif text-4xl md:text-5xl mb-4 text-foreground"
+    <section id="about" className="section-padding bg-card overflow-hidden">
+      <div className="container-max">
+        {/* Floating Background Elements */}
+        <FloatingElements />
+        
+        {/* Section Header */}
+        <motion.div
+          ref={headerRef}
+          initial={{ opacity: 0, y: 50 }}
+          animate={headerInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="text-center mb-16"
+        >
+          <motion.h2 
+            className="section-heading"
             data-testid="heading-about"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={headerInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
             Câu Chuyện Của Chúng Tôi
-          </h2>
-          <div className="w-24 h-1 bg-primary mx-auto" />
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
-          {/* Bride */}
-          <div className="text-center animate-scale-in">
-            <div className="relative inline-block mb-6">
-              <div className="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-primary/20 shadow-xl">
-                <img
-                  src={bridePhoto}
-                  alt="Bride"
-                  className="w-full h-full object-cover"
-                  data-testid="img-bride"
-                />
-              </div>
-              <Heart
-                className="absolute -top-2 -right-2 text-primary animate-float"
-                size={40}
-                fill="currentColor"
-              />
-            </div>
-            <h3
-              className="font-cursive text-4xl md:text-5xl mb-2 text-primary"
-              data-testid="text-bride-name"
-            >
-              Sarah
-            </h3>
-            <p className="text-muted-foreground max-w-sm mx-auto leading-relaxed">
-              Một nhà thiết kế đầy đam mê, yêu thích nghệ thuật, hoa và tạo ra 
-              những khoảnh khắc đẹp đẽ. Cô tin vào điều kỳ diệu của tình yêu và 
-              sức mạnh của sự gắn kết.
-            </p>
-          </div>
-
-          {/* Groom */}
-          <div className="text-center animate-scale-in" style={{ animationDelay: "0.2s" }}>
-            <div className="relative inline-block mb-6">
-              <div className="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-primary/20 shadow-xl">
-                <img
-                  src={groomPhoto}
-                  alt="Groom"
-                  className="w-full h-full object-cover"
-                  data-testid="img-groom"
-                />
-              </div>
-              <Heart
-                className="absolute -top-2 -left-2 text-primary animate-float"
-                size={40}
-                fill="currentColor"
-                style={{ animationDelay: "1s" }}
-              />
-            </div>
-            <h3
-              className="font-cursive text-4xl md:text-5xl mb-2 text-primary"
-              data-testid="text-groom-name"
-            >
-              Michael
-            </h3>
-            <p className="text-muted-foreground max-w-sm mx-auto leading-relaxed">
-              Một tâm hồn phiêu lưu với trái tim nhân hậu. Anh thích nhiếp ảnh,
-              du lịch và làm cho Sarah cười mỗi ngày.
-            </p>
-          </div>
-        </div>
-
-        {/* Our Story Text */}
-        <div className="mt-20 max-w-3xl mx-auto text-center animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-          <p
-            className="text-lg md:text-xl leading-relaxed text-foreground mb-6"
-            data-testid="text-our-story"
+          </motion.h2>
+          <motion.p 
+            className="text-lg text-muted-foreground mt-2"
+            initial={{ opacity: 0 }}
+            animate={headerInView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.6, delay: 0.4 }}
           >
-            Chúng tôi gặp nhau vào một ngày mưa mùa thu trong một quán cà phê ấm cúng. 
-            Điều bắt đầu từ một cuộc gặp gỡ tình cờ với tình yêu chung dành cho cappuccino 
-            đã biến thành những cuộc trò chuyện bất tận, những chuyến phiêu lưu và một mối liên kết 
-            ngày càng bền chặt theo thời gian.
-          </p>
-          <p className="text-lg md:text-xl leading-relaxed text-muted-foreground">
-            Sau ba năm tuyệt vời bên nhau, Michael đã cầu hôn trong một buổi dã ngoại 
-            hoàng hôn bên hồ. Giờ đây, chúng tôi rất phấn khích được chia sẻ tình yêu 
-            của mình với những người thân yêu nhất.
-          </p>
+            Hành trình yêu thương của chúng tôi
+          </motion.p>
+          <motion.div 
+            className="section-divider"
+            initial={{ width: 0 }}
+            animate={headerInView ? { width: "6rem" } : {}}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          />
+        </motion.div>
+
+        {/* Couple Profiles */}
+        <div className="couple-profiles-grid">
+          <ProfileCard 
+            person={story.bride}
+            heartPosition="top-right"
+            delay={0.2}
+          />
+          <ProfileCard 
+            person={story.groom}
+            heartPosition="top-left"
+            delay={0.5}
+          />
         </div>
+
+        {/* Story Content */}
+        <StoryContent story={story.story} />
       </div>
     </section>
   );
 }
 
-function Heart({ className, size, fill, style }: { className?: string; size?: number; fill?: string; style?: React.CSSProperties }) {
+// Floating Background Elements
+function FloatingElements() {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size || 24}
-      height={size || 24}
-      viewBox="0 0 24 24"
-      fill={fill || "none"}
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-      style={style}
-    >
-      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-    </svg>
+    <>
+      <motion.div
+        className="absolute top-20 left-10 w-4 h-4 rounded-full bg-primary/20"
+        animate={{
+          y: [0, -20, 0],
+          scale: [1, 1.2, 1],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      />
+      <motion.div
+        className="absolute top-40 right-20 w-6 h-6 rounded-full bg-primary/10"
+        animate={{
+          y: [0, 30, 0],
+          scale: [1, 0.8, 1],
+        }}
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1,
+        }}
+      />
+      <motion.div
+        className="absolute bottom-40 left-20 w-3 h-3 rounded-full bg-primary/15"
+        animate={{
+          y: [0, -15, 0],
+          x: [0, 10, 0],
+        }}
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 0.5,
+        }}
+      />
+    </>
   );
 }
+
+// Profile Card with Enhanced Animations
+function ProfileCard({ 
+  person, 
+  heartPosition, 
+  delay 
+}: { 
+  person: { name: string; description: string; photo: string };
+  heartPosition: 'top-left' | 'top-right';
+  delay: number;
+}) {
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.2,
+  });
+
+  const heartPositionClasses = {
+    'top-left': '-top-2 -left-2',
+    'top-right': '-top-2 -right-2'
+  };
+
+  const imageVariants = {
+    hidden: { 
+      opacity: 0, 
+      scale: 0.8,
+      rotate: heartPosition === 'top-left' ? -5 : 5 
+    },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      rotate: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut",
+      }
+    }
+  };
+
+  const textVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.6,
+        delay: delay + 0.3,
+      }
+    }
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      className="text-center"
+    >
+      <motion.div className="relative inline-block mb-6">
+        <motion.div
+          className="profile-image-container relative overflow-hidden"
+          variants={imageVariants}
+          transition={{ duration: 0.8, delay }}
+          whileHover={{ 
+            scale: 1.05,
+            transition: { duration: 0.3 }
+          }}
+        >
+          <motion.img
+            src={person.photo}
+            alt={person.name}
+            className="profile-image"
+            data-testid={`img-${person.name.toLowerCase()}`}
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.5 }}
+          />
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
+        </motion.div>
+
+        {/* Animated Heart */}
+        <motion.div
+          className={`absolute ${heartPositionClasses[heartPosition]} text-primary`}
+          initial={{ scale: 0, rotate: -180 }}
+          animate={inView ? { scale: 1, rotate: 0 } : {}}
+          transition={{ 
+            type: "spring",
+            stiffness: 200,
+            damping: 10,
+            delay: delay + 0.5 
+          }}
+          whileHover={{
+            scale: 1.2,
+            rotate: 10,
+            transition: { duration: 0.2 }
+          }}
+        >
+          <HeartIcon 
+            size={40} 
+            className="text-primary fill-current drop-shadow-lg" 
+          />
+        </motion.div>
+
+        {/* Floating Sparkles */}
+        <motion.div
+          className="absolute -bottom-2 -right-2"
+          animate={{
+            rotate: 360,
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        >
+          <SparklesIcon size={24} className="text-yellow-400/60" />
+        </motion.div>
+      </motion.div>
+
+      <motion.h3 
+        className="profile-name"
+        data-testid={`text-${person.name.toLowerCase()}-name`}
+        variants={textVariants}
+      >
+        {person.name}
+      </motion.h3>
+      
+      <motion.p 
+        className="profile-description"
+        variants={textVariants}
+      >
+        {person.description}
+      </motion.p>
+    </motion.div>
+  );
+}
+
+// Story Content with Typing Animation
+function StoryContent({ story }: { story: string[] }) {
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.3,
+  });
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+        delayChildren: 0.2,
+      }
+    }
+  };
+
+  const paragraphVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 30,
+      filter: "blur(10px)"
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      filter: "blur(0px)",
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    }
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={inView ? "visible" : "hidden"}
+      variants={containerVariants}
+      className="story-content"
+    >
+      {story.map((paragraph, index) => (
+        <motion.p
+          key={index}
+          variants={paragraphVariants}
+          className={`story-paragraph ${index === 0 ? 'text-foreground' : 'text-muted-foreground'}`}
+          data-testid={`text-story-${index}`}
+        >
+          {paragraph}
+        </motion.p>
+      ))}
+      
+      {/* Decorative Element */}
+      <motion.div
+        className="flex justify-center mt-8 space-x-2"
+        initial={{ opacity: 0, scale: 0 }}
+        animate={inView ? { opacity: 1, scale: 1 } : {}}
+        transition={{ delay: 1.2, duration: 0.6 }}
+      >
+        {[1, 2, 3].map((i) => (
+          <motion.div
+            key={i}
+            className="w-2 h-2 rounded-full bg-primary/60"
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [0.5, 1, 0.5],
+            }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              delay: i * 0.2,
+            }}
+          />
+        ))}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// CSS Classes cần thêm
+/*
+.section-padding {
+  @apply py-20 md:py-32 px-4 relative;
+}
+
+.container-max {
+  @apply max-w-7xl mx-auto relative z-10;
+}
+
+.profile-image-container {
+  @apply w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-primary/20 shadow-xl cursor-pointer;
+}
+
+.profile-image {
+  @apply w-full h-full object-cover;
+}
+
+.profile-name {
+  @apply font-cursive text-4xl md:text-5xl mb-2 text-primary;
+}
+
+.profile-description {
+  @apply text-muted-foreground max-w-sm mx-auto leading-relaxed text-lg;
+}
+
+.story-content {
+  @apply mt-20 max-w-3xl mx-auto text-center;
+}
+
+.story-paragraph {
+  @apply text-lg md:text-xl leading-relaxed mb-6;
+}
+
+.section-heading {
+  @apply font-serif text-4xl md:text-5xl mb-4 text-foreground;
+}
+
+.section-divider {
+  @apply w-24 h-1 bg-primary mx-auto mt-4;
+}
+*/

@@ -1,10 +1,11 @@
-// Database configuration from javascript_database blueprint
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from "@shared/schema";
 
-neonConfig.webSocketConstructor = ws;
+console.log('DATABASE_URL loaded:', !!process.env.DATABASE_URL);
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
@@ -12,5 +13,31 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle({ client: pool, schema });
+// Sử dụng pg Pool thay vì Neon serverless
+export const pool = new Pool({ 
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  // Thêm các config để ổn định kết nối
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
+});
+
+export const db = drizzle(pool, { schema });
+
+// Test connection
+async function testConnection() {
+  try {
+    const client = await pool.connect();
+    console.log('✅ Connected to Neon database successfully!');
+    
+    const result = await client.query('SELECT NOW()');
+    console.log('📅 Database time:', result.rows[0].now);
+    
+    client.release();
+  } catch (error) {
+    console.error('❌ Failed to connect to Neon:', error);
+  }
+}
+
+testConnection();
