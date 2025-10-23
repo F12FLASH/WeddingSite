@@ -187,26 +187,6 @@ export default function Navigation() {
                 </motion.a>
               );
             })}
-            
-            {/* Admin Login Button */}
-            <motion.a
-              href="/admin"
-              className="ml-4 px-6 py-2 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-xl hover:shadow-xl transition-all duration-300 flex items-center gap-2 group"
-              data-testid="nav-admin-login"
-              variants={itemVariants}
-              whileHover={{ 
-                scale: 1.05,
-                y: -2
-              }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <User size={16} />
-              <span>Admin</span>
-              <ChevronDown 
-                size={14} 
-                className="transition-transform duration-300 group-hover:rotate-180" 
-              />
-            </motion.a>
           </motion.div>
 
           {/* Mobile Menu Button */}
@@ -301,22 +281,6 @@ export default function Navigation() {
                   </motion.a>
                 );
               })}
-              
-              {/* Mobile Admin Login */}
-              <motion.a
-                href="/admin"
-                className="block px-4 py-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground rounded-xl hover:shadow-xl transition-all duration-300 text-center font-semibold mt-4"
-                onClick={() => setIsOpen(false)}
-                data-testid="mobile-nav-admin-login"
-                variants={itemVariants}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="flex items-center justify-center gap-2">
-                  <User size={18} />
-                  <span>Đăng Nhập Admin</span>
-                </div>
-              </motion.a>
             </motion.div>
           </motion.div>
         )}

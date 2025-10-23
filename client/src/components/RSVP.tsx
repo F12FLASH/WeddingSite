@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Calendar, Mail, Phone, Users, Utensils, Heart, Clock, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MotionButton } from "@/components/ui/motion-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -409,7 +410,7 @@ export default function RSVP() {
                 </AnimatePresence>
 
                 <motion.div variants={itemVariants}>
-                  <Button
+                  <MotionButton
                     type="submit"
                     className="w-full rounded-xl h-14 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
                     size="lg"
@@ -434,7 +435,7 @@ export default function RSVP() {
                         "📨 Gửi Xác Nhận"
                       )}
                     </div>
-                  </Button>
+                  </MotionButton>
                 </motion.div>
               </motion.form>
             </motion.div>

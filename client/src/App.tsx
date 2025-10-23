@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
+import Login from "@/pages/Login";
 import AdminDashboard from "@/pages/AdminDashboard";
 import AdminHome from "@/pages/AdminHome";
 import AdminCouple from "@/pages/AdminCouple";
@@ -30,7 +31,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!isAuthenticated) {
-    window.location.href = "/api/login";
+    window.location.href = "/login";
     return null;
   }
 
@@ -42,6 +43,7 @@ function Router() {
     <Switch>
       {/* Public Landing Page */}
       <Route path="/" component={Landing} />
+      <Route path="/login" component={Login} />
 
       {/* Protected Admin Routes */}
       <Route path="/admin">
