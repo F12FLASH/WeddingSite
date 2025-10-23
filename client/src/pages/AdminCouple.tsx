@@ -5,40 +5,104 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Save, Upload, Image, User, Calendar, Heart, Camera } from "lucide-react";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
+import type { CoupleInfo, InsertCoupleInfo } from "@shared/schema";
+
+async function apiRequest(method: string, url: string, data?: any) {
+  const options: RequestInit = {
+    method,
+    headers: { "Content-Type": "application/json" },
+  };
+  if (data) {
+    options.body = JSON.stringify(data);
+  }
+  const res = await fetch(url, options);
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ message: "Network error" }));
+    throw new Error(error.message);
+  }
+  return res.json();
+}
+
+function isUnauthorizedError(error: Error) {
+  return error.message === "Unauthorized";
+}
 
 export default function AdminCouple() {
+  const { toast } = useToast();
+  
+  const { data: coupleInfo, isLoading: isLoadingData } = useQuery<CoupleInfo | null>({
+    queryKey: ["/api/couple"],
+  });
+
   const [formData, setFormData] = useState({
-    brideName: "Sarah",
-    groomName: "Michael",
-    weddingDate: "2025-06-15",
-    ourStory: "Chúng tôi gặp nhau vào một ngày mùa thu mưa trong một quán cà phê ấm cúng...",
+    brideName: "",
+    groomName: "",
+    weddingDate: "",
+    ourStory: "",
     bridePhoto: "",
     groomPhoto: "",
     heroImage: "",
-    brideDescription: "Một nhà thiết kế đầy đam mê, yêu thích nghệ thuật, hoa và tạo ra những khoảnh khắc đẹp đẽ.",
-    groomDescription: "Một tâm hồn phiêu lưu với trái tim nhân hậu. Anh thích nhiếp ảnh, du lịch và làm cho Sarah cười mỗi ngày."
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
+
+  useEffect(() => {
+    if (coupleInfo) {
+      setFormData({
+        brideName: coupleInfo.brideName || "",
+        groomName: coupleInfo.groomName || "",
+        weddingDate: coupleInfo.weddingDate ? new Date(coupleInfo.weddingDate).toISOString().split('T')[0] : "",
+        ourStory: coupleInfo.ourStory || "",
+        bridePhoto: coupleInfo.bridePhoto || "",
+        groomPhoto: coupleInfo.groomPhoto || "",
+        heroImage: coupleInfo.heroImage || "",
+      });
+    }
+  }, [coupleInfo]);
+
+  const updateMutation = useMutation({
+    mutationFn: async (data: InsertCoupleInfo) => {
+      return await apiRequest("POST", "/api/couple", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/couple"] });
+      toast({ 
+        title: "✅ Thành công!",
+        description: "Thông tin cặp đôi đã được cập nhật"
+      });
+    },
+    onError: (error: Error) => {
+      if (isUnauthorizedError(error)) {
+        window.location.href = "/api/login";
+        return;
+      }
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể cập nhật thông tin cặp đôi",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: "✅ Thành công!",
-        description: "Thông tin cặp đôi đã được cập nhật",
-      });
-    }, 1500);
+    const data: InsertCoupleInfo = {
+      brideName: formData.brideName,
+      groomName: formData.groomName,
+      weddingDate: new Date(formData.weddingDate),
+      ourStory: formData.ourStory,
+      bridePhoto: formData.bridePhoto || null,
+      groomPhoto: formData.groomPhoto || null,
+      heroImage: formData.heroImage || null,
+    };
+    
+    updateMutation.mutate(data);
   };
 
   const handleImageUpload = (field: string) => {
-    // Simulate image upload
     toast({
       title: "📸 Tải ảnh lên",
       description: `Tính năng tải ảnh lên cho ${field} sẽ được kích hoạt`,
@@ -337,15 +401,13 @@ export default function AdminCouple() {
                   type="submit" 
                   className="w-full md:w-auto min-w-48 h-12 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
                   data-testid="button-save-couple"
-                  disabled={isLoading}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  disabled={updateMutation.isPending}
                 >
                   {/* Button Shine Effect */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                   
                   <div className="flex items-center gap-2 relative z-10">
-                    {isLoading ? (
+                    {updateMutation.isPending ? (
                       <motion.div
                         animate={{ rotate: 360 }}
                         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}

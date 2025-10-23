@@ -55,6 +55,8 @@ export const insertCoupleInfoSchema = createInsertSchema(coupleInfo).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  weddingDate: z.coerce.date(),
 });
 
 export type InsertCoupleInfo = z.infer<typeof insertCoupleInfoSchema>;
@@ -77,6 +79,8 @@ export const insertScheduleEventSchema = createInsertSchema(scheduleEvents).omit
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  eventTime: z.coerce.date(),
 });
 
 export type InsertScheduleEvent = z.infer<typeof insertScheduleEventSchema>;
