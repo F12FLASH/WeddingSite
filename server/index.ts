@@ -69,12 +69,10 @@ app.use((req, res, next) => {
       serveStatic(app);
     }
 
-    // ĐƠN GIẢN HÓA PHẦN KHỞI ĐỘNG SERVER
-    const port = parseInt(process.env.PORT || '3000', 10);
+    const port = parseInt(process.env.PORT || '5000', 10);
     
-    // Cách 1: Đơn giản nhất - chỉ định port
-    server.listen(port, () => {
-      log(`🚀 Wedding site server running on http://localhost:${port}`);
+    server.listen(port, '0.0.0.0', () => {
+      log(`🚀 Wedding site server running on http://0.0.0.0:${port}`);
       log(`📊 Environment: ${app.get("env")}`);
     });
 
