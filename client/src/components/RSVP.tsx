@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar, Mail, Phone, Users, Utensils, Heart, Clock, MapPin } from "lucide-react";
+import { Calendar, Mail, Phone, Users, Utensils, Heart, Clock, MapPin, CheckCircle, XCircle, AlertCircle, User, Send, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MotionButton } from "@/components/ui/motion-button";
 import { Input } from "@/components/ui/input";
@@ -37,7 +37,7 @@ export default function RSVP() {
     },
     onSuccess: () => {
       toast({
-        title: "🎉 Đã Nhận Xác Nhận!",
+        title: "Đã Nhận Xác Nhận!",
         description: "Cảm ơn phản hồi của bạn. Chúng tôi rất mong được ăn mừng cùng bạn!",
       });
       setFormData({
@@ -52,7 +52,7 @@ export default function RSVP() {
     },
     onError: () => {
       toast({
-        title: "❌ Lỗi",
+        title: "Lỗi",
         description: "Không thể gửi xác nhận. Vui lòng thử lại.",
         variant: "destructive",
       });
@@ -63,7 +63,7 @@ export default function RSVP() {
     e.preventDefault();
     if (!formData.guestName || !formData.email) {
       toast({
-        title: "⚠️ Thiếu thông tin",
+        title: "Thiếu thông tin",
         description: "Vui lòng điền tất cả các trường bắt buộc",
         variant: "destructive",
       });
@@ -210,8 +210,9 @@ export default function RSVP() {
               >
                 {/* Name */}
                 <motion.div variants={itemVariants}>
-                  <Label htmlFor="name" className="text-foreground mb-3 block text-lg font-medium">
-                    👤 Họ Và Tên *
+                  <Label htmlFor="name" className="text-foreground mb-3 block text-lg font-medium flex items-center gap-2">
+                    <User size={18} />
+                    Họ Và Tên *
                   </Label>
                   <Input
                     id="name"
@@ -228,8 +229,9 @@ export default function RSVP() {
 
                 {/* Email */}
                 <motion.div variants={itemVariants}>
-                  <Label htmlFor="email" className="text-foreground mb-3 block text-lg font-medium">
-                    📧 Email *
+                  <Label htmlFor="email" className="text-foreground mb-3 block text-lg font-medium flex items-center gap-2">
+                    <Mail size={18} />
+                    Email *
                   </Label>
                   <div className="relative">
                     <Mail
@@ -252,8 +254,9 @@ export default function RSVP() {
 
                 {/* Phone */}
                 <motion.div variants={itemVariants}>
-                  <Label htmlFor="phone" className="text-foreground mb-3 block text-lg font-medium">
-                    📞 Số Điện Thoại
+                  <Label htmlFor="phone" className="text-foreground mb-3 block text-lg font-medium flex items-center gap-2">
+                    <Phone size={18} />
+                    Số Điện Thoại
                   </Label>
                   <div className="relative">
                     <Phone
@@ -275,8 +278,9 @@ export default function RSVP() {
 
                 {/* Attending */}
                 <motion.div variants={itemVariants}>
-                  <Label className="text-foreground mb-4 block text-lg font-medium">
-                    ❤️ Bạn có tham dự không? *
+                  <Label className="text-foreground mb-4 block text-lg font-medium flex items-center gap-2">
+                    <Heart size={18} />
+                    Bạn có tham dự không? *
                   </Label>
                   <RadioGroup
                     value={formData.attending ? "yes" : "no"}
@@ -290,8 +294,9 @@ export default function RSVP() {
                       whileHover={{ scale: 1.05 }}
                     >
                       <RadioGroupItem value="yes" id="yes" className="w-5 h-5" />
-                      <Label htmlFor="yes" className="cursor-pointer text-lg font-medium">
-                        Có, tôi sẽ đến 🎉
+                      <Label htmlFor="yes" className="cursor-pointer text-lg font-medium flex items-center gap-2">
+                        <CheckCircle size={18} />
+                        Có, tôi sẽ đến
                       </Label>
                     </motion.div>
                     <motion.div 
@@ -299,8 +304,9 @@ export default function RSVP() {
                       whileHover={{ scale: 1.05 }}
                     >
                       <RadioGroupItem value="no" id="no" className="w-5 h-5" />
-                      <Label htmlFor="no" className="cursor-pointer text-lg font-medium">
-                        Rất tiếc, tôi không thể đến 😔
+                      <Label htmlFor="no" className="cursor-pointer text-lg font-medium flex items-center gap-2">
+                        <XCircle size={18} />
+                        Rất tiếc, tôi không thể đến
                       </Label>
                     </motion.div>
                   </RadioGroup>
@@ -377,22 +383,23 @@ export default function RSVP() {
                             className="rounded-xl h-12 text-lg border-2 focus:border-primary transition-all duration-300"
                             data-testid="select-meal"
                           >
-                            <SelectValue placeholder="🍽️ Chọn món bạn thích" />
+                            <SelectValue placeholder="Chọn món bạn thích" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="chicken">🍗 Gà</SelectItem>
-                            <SelectItem value="beef">🥩 Bò</SelectItem>
-                            <SelectItem value="fish">🐟 Cá</SelectItem>
-                            <SelectItem value="vegetarian">🥗 Chay</SelectItem>
-                            <SelectItem value="vegan">🌱 Thuần Chay</SelectItem>
+                            <SelectItem value="chicken">Gà</SelectItem>
+                            <SelectItem value="beef">Bò</SelectItem>
+                            <SelectItem value="fish">Cá</SelectItem>
+                            <SelectItem value="vegetarian">Chay</SelectItem>
+                            <SelectItem value="vegan">Thuần Chay</SelectItem>
                           </SelectContent>
                         </Select>
                       </motion.div>
 
                       {/* Special Requirements */}
                       <motion.div variants={itemVariants}>
-                        <Label htmlFor="special" className="text-foreground mb-3 block text-lg font-medium">
-                          💫 Yêu Cầu Đặc Biệt
+                        <Label htmlFor="special" className="text-foreground mb-3 block text-lg font-medium flex items-center gap-2">
+                          <Sparkles size={18} />
+                          Yêu Cầu Đặc Biệt
                         </Label>
                         <Textarea
                           id="special"
@@ -423,16 +430,21 @@ export default function RSVP() {
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
                     
                     <div className="flex items-center gap-3 relative z-10">
-                      <Calendar size={20} />
                       {createRsvpMutation.isPending ? (
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        >
-                          ⏳
-                        </motion.div>
+                        <>
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                          >
+                            <Clock size={20} />
+                          </motion.div>
+                          Đang gửi...
+                        </>
                       ) : (
-                        "📨 Gửi Xác Nhận"
+                        <>
+                          <Send size={20} />
+                          Gửi Xác Nhận
+                        </>
                       )}
                     </div>
                   </MotionButton>
