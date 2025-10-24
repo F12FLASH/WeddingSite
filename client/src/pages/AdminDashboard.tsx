@@ -124,6 +124,8 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
   const { toast } = useToast();
   const [location] = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [previousNotificationCount, setPreviousNotificationCount] = useState(0);
+  const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
 
   const { data: rsvps = [] } = useQuery<Rsvp[]>({
     queryKey: ["/api/rsvps"],
@@ -136,6 +138,102 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
   const recentRsvps = rsvps.slice(-5).reverse();
   const recentMessages = messages.filter(m => !m.approved).slice(-5);
   const notifications = recentRsvps.length + recentMessages.length;
+
+  // Initialize AudioContext once on first user interaction
+  useEffect(() => {
+    const initAudioContext = () => {
+      if (!audioContext) {
+        try {
+          const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+          setAudioContext(ctx);
+          // Resume context on user interaction (required by browsers)
+          if (ctx.state === 'suspended') {
+            ctx.resume();
+          }
+        } catch (error) {
+          console.error('Error initializing audio context:', error);
+        }
+      }
+    };
+
+    // Initialize on first click
+    const handleClick = () => {
+      initAudioContext();
+      document.removeEventListener('click', handleClick);
+    };
+
+    document.addEventListener('click', handleClick);
+    
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [audioContext]);
+
+  // Cleanup AudioContext on unmount
+  useEffect(() => {
+    return () => {
+      if (audioContext && audioContext.state !== 'closed') {
+        audioContext.close();
+      }
+    };
+  }, [audioContext]);
+
+  // Play notification sound when count increases
+  useEffect(() => {
+    if (previousNotificationCount > 0 && notifications > previousNotificationCount) {
+      // Play notification sound using Web Audio API
+      playNotificationSound();
+      
+      toast({
+        title: "🔔 Thông báo mới!",
+        description: `Bạn có ${notifications - previousNotificationCount} thông báo mới`,
+      });
+    }
+    setPreviousNotificationCount(notifications);
+  }, [notifications]);
+
+  // Function to play notification sound using shared AudioContext
+  const playNotificationSound = () => {
+    if (!audioContext || audioContext.state === 'closed') {
+      console.warn('AudioContext not available');
+      return;
+    }
+
+    try {
+      // Resume context if suspended
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+
+      // Create oscillator for beep sound
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      // Configure sound
+      oscillator.frequency.value = 800; // Frequency in Hz
+      oscillator.type = 'sine';
+      
+      // Volume envelope
+      gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+      
+      // Play sound
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.3);
+      
+      // Clean up oscillator after it stops
+      oscillator.onended = () => {
+        oscillator.disconnect();
+        gainNode.disconnect();
+      };
+    } catch (error) {
+      console.error('Error playing notification sound:', error);
+    }
+  };
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {

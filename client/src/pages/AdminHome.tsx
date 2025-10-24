@@ -120,12 +120,20 @@ export default function AdminHome() {
 
   // Get recent RSVPs
   const recentRsvps = [...rsvps]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    })
     .slice(0, 5);
 
   // Get recent messages
   const recentMessages = [...messages]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    })
     .slice(0, 3);
 
   // Get recent activity
@@ -134,13 +142,13 @@ export default function AdminHome() {
       type: 'rsvp',
       name: r.guestName,
       action: r.attending ? 'confirmed' : 'declined',
-      time: formatTimeAgo(new Date(r.createdAt))
+      time: r.createdAt ? formatTimeAgo(new Date(r.createdAt)) : 'Vừa xong'
     })),
     ...messages.slice(-2).reverse().map(m => ({
       type: 'message',
       name: m.guestName,
       action: 'sent message',
-      time: formatTimeAgo(new Date(m.createdAt))
+      time: m.createdAt ? formatTimeAgo(new Date(m.createdAt)) : 'Vừa xong'
     })),
   ].sort((a, b) => {
     // Sort by most recent
@@ -426,7 +434,7 @@ export default function AdminHome() {
                           </div>
                         </div>
                         <div className="text-sm text-muted-foreground whitespace-nowrap bg-muted/50 px-3 py-1 rounded-full">
-                          {formatTimeAgo(new Date(rsvp.createdAt))}
+                          {rsvp.createdAt ? formatTimeAgo(new Date(rsvp.createdAt)) : 'Vừa xong'}
                         </div>
                       </motion.div>
                     ))}
@@ -473,7 +481,7 @@ export default function AdminHome() {
                         <div className="flex items-start justify-between mb-3">
                           <p className="font-semibold text-foreground text-base">{msg.guestName}</p>
                           <div className="text-sm text-muted-foreground whitespace-nowrap bg-muted/50 px-3 py-1 rounded-full">
-                            {formatTimeAgo(new Date(msg.createdAt))}
+                            {msg.createdAt ? formatTimeAgo(new Date(msg.createdAt)) : 'Vừa xong'}
                           </div>
                         </div>
                         <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed group-hover:text-foreground/80 transition-colors">
