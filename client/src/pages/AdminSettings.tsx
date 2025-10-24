@@ -415,7 +415,7 @@ export default function AdminSettings() {
                                   type="datetime-local"
                                   className="h-12"
                                   data-testid="input-event-start-time"
-                                  value={field.value || ""}
+                                  value={(typeof field.value === 'string' ? field.value : '') || ""}
                                   onChange={(e) => field.onChange(e.target.value || undefined)}
                                 />
                               </FormControl>
@@ -438,7 +438,7 @@ export default function AdminSettings() {
                                   type="datetime-local"
                                   className="h-12"
                                   data-testid="input-event-end-time"
-                                  value={field.value || ""}
+                                  value={(typeof field.value === 'string' ? field.value : '') || ""}
                                   onChange={(e) => field.onChange(e.target.value || undefined)}
                                 />
                               </FormControl>
