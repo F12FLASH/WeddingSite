@@ -1,6 +1,8 @@
 import { HeartIcon, SparklesIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { useQuery } from "@tanstack/react-query";
+import type { CoupleInfo } from "@shared/schema";
 import bridePhoto from "@assets/generated_images/Elegant_bride_portrait_photo_6abee8e2.png";
 import groomPhoto from "@assets/generated_images/Handsome_groom_portrait_photo_1678e40a.png";
 
@@ -10,21 +12,29 @@ export default function About() {
     threshold: 0.1,
   });
 
+  // Fetch couple info from database
+  const { data: coupleInfo } = useQuery<CoupleInfo | null>({
+    queryKey: ["/api/couple"],
+  });
+
+  // Use database data if available, otherwise use default
   const story = {
     bride: {
-      name: "Sarah",
-      description: "Một nhà thiết kế đầy đam mê, yêu thích nghệ thuật, hoa và tạo ra những khoảnh khắc đẹp đẽ. Cô tin vào điều kỳ diệu của tình yêu và sức mạnh của sự gắn kết.",
-      photo: bridePhoto
+      name: coupleInfo?.brideName || "Sarah",
+      description: coupleInfo?.brideDescription || "Một nhà thiết kế đầy đam mê, yêu thích nghệ thuật, hoa và tạo ra những khoảnh khắc đẹp đẽ. Cô tin vào điều kỳ diệu của tình yêu và sức mạnh của sự gắn kết.",
+      photo: coupleInfo?.bridePhoto || bridePhoto
     },
     groom: {
-      name: "Michael",
-      description: "Một tâm hồn phiêu lưu với trái tim nhân hậu. Anh thích nhiếp ảnh, du lịch và làm cho Sarah cười mỗi ngày.",
-      photo: groomPhoto
+      name: coupleInfo?.groomName || "Michael",
+      description: coupleInfo?.groomDescription || "Một tâm hồn phiêu lưu với trái tim nhân hậu. Anh thích nhiếp ảnh, du lịch và làm cho Sarah cười mỗi ngày.",
+      photo: coupleInfo?.groomPhoto || groomPhoto
     },
-    story: [
-      "Chúng tôi gặp nhau vào một ngày mưa mùa thu trong một quán cà phê ấm cúng. Điều bắt đầu từ một cuộc gặp gỡ tình cờ với tình yêu chung dành cho cappuccino đã biến thành những cuộc trò chuyện bất tận, những chuyến phiêu lưu và một mối liên kết ngày càng bền chặt theo thời gian.",
-      "Sau ba năm tuyệt vời bên nhau, Michael đã cầu hôn trong một buổi dã ngoại hoàng hôn bên hồ. Giờ đây, chúng tôi rất phấn khích được chia sẻ tình yêu của mình với những người thân yêu nhất."
-    ]
+    story: coupleInfo?.ourStory 
+      ? coupleInfo.ourStory.split('\n\n') 
+      : [
+          "Chúng tôi gặp nhau vào một ngày mưa mùa thu trong một quán cà phê ấm cúng. Điều bắt đầu từ một cuộc gặp gỡ tình cờ với tình yêu chung dành cho cappuccino đã biến thành những cuộc trò chuyện bất tận, những chuyến phiêu lưu và một mối liên kết ngày càng bền chặt theo thời gian.",
+          "Sau ba năm tuyệt vời bên nhau, Michael đã cầu hôn trong một buổi dã ngoại hoàng hôn bên hồ. Giờ đây, chúng tôi rất phấn khích được chia sẻ tình yêu của mình với những người thân yêu nhất."
+        ]
   };
 
   return (
@@ -349,4 +359,3 @@ function StoryContent({ story }: { story: string[] }) {
     </motion.div>
   );
 }
-

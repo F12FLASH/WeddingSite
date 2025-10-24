@@ -1,97 +1,151 @@
-import { Users, MessageSquare, Calendar, Heart, Gift, Image, TrendingUp, Clock, CheckCircle, XCircle, Plus, Settings, Eye } from "lucide-react";
+import { Users, MessageSquare, Calendar, Heart, Gift, Image, TrendingUp, Clock, CheckCircle, XCircle, Eye } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-
-const stats = [
-  {
-    title: "Tổng Số RSVP",
-    value: "87",
-    icon: Users,
-    description: "65 tham dự, 22 từ chối",
-    color: "text-blue-500",
-    bgColor: "bg-blue-500/10",
-    borderColor: "border-blue-500/20",
-    trend: "+12 tuần này",
-    trendUp: true,
-    progress: 75
-  },
-  {
-    title: "Tin Nhắn Khách Mời",
-    value: "124",
-    icon: MessageSquare,
-    description: "12 chờ phê duyệt",
-    color: "text-green-500",
-    bgColor: "bg-green-500/10",
-    borderColor: "border-green-500/20",
-    trend: "+8 mới",
-    trendUp: true,
-    progress: 90
-  },
-  {
-    title: "Số Ngày Đến Đám Cưới",
-    value: "120",
-    icon: Calendar,
-    description: "Ngày 15 tháng 6, 2025",
-    color: "text-orange-500",
-    bgColor: "bg-orange-500/10",
-    borderColor: "border-orange-500/20",
-    trend: "Đang đếm ngược",
-    trendUp: false,
-    progress: 60
-  },
-  {
-    title: "Thư Viện Ảnh",
-    value: "48",
-    icon: Image,
-    description: "Ảnh đã tải lên",
-    color: "text-purple-500",
-    bgColor: "bg-purple-500/10",
-    borderColor: "border-purple-500/20",
-    trend: "+5 mới",
-    trendUp: true,
-    progress: 40
-  },
-  {
-    title: "Quà Đã Đăng Ký",
-    value: "23",
-    icon: Gift,
-    description: "15 đã được mua",
-    color: "text-pink-500",
-    bgColor: "bg-pink-500/10",
-    borderColor: "border-pink-500/20",
-    trend: "65% hoàn thành",
-    trendUp: true,
-    progress: 65
-  },
-  {
-    title: "Tỷ Lệ Phản Hồi",
-    value: "78%",
-    icon: TrendingUp,
-    description: "87/112 đã phản hồi",
-    color: "text-cyan-500",
-    bgColor: "bg-cyan-500/10",
-    borderColor: "border-cyan-500/20",
-    trend: "+5% so với tuần trước",
-    trendUp: true,
-    progress: 78
-  },
-];
+import type { Rsvp, GuestMessage, Photo, RegistryItem, CoupleInfo } from "@shared/schema";
 
 export default function AdminHome() {
-  const { data: recentActivity = [] } = useQuery({
-    queryKey: ['/api/admin/activity'],
-    placeholderData: [
-      { type: 'rsvp', name: 'Emily Johnson', action: 'confirmed', time: '2 phút trước' },
-      { type: 'message', name: 'David Chen', action: 'sent message', time: '5 phút trước' },
-      { type: 'gift', name: 'Maria Garcia', action: 'purchased gift', time: '1 giờ trước' },
-      { type: 'photo', name: 'System', action: 'new photo uploaded', time: '2 giờ trước' },
-      { type: 'rsvp', name: 'John Smith', action: 'declined', time: '3 giờ trước' },
-    ]
+  // Fetch real data from database
+  const { data: rsvps = [] } = useQuery<Rsvp[]>({
+    queryKey: ['/api/rsvps'],
   });
+
+  const { data: messages = [] } = useQuery<GuestMessage[]>({
+    queryKey: ['/api/messages'],
+  });
+
+  const { data: photos = [] } = useQuery<Photo[]>({
+    queryKey: ['/api/photos'],
+  });
+
+  const { data: registryItems = [] } = useQuery<RegistryItem[]>({
+    queryKey: ['/api/registry'],
+  });
+
+  const { data: coupleInfo } = useQuery<CoupleInfo | null>({
+    queryKey: ['/api/couple'],
+  });
+
+  // Calculate real statistics
+  const attendingCount = rsvps.filter(r => r.attending).length;
+  const decliningCount = rsvps.filter(r => !r.attending).length;
+  const pendingMessages = messages.filter(m => !m.approved).length;
+  const purchasedItems = registryItems.filter(i => i.isPurchased).length;
+  const totalGuests = rsvps.reduce((sum, rsvp) => sum + (rsvp.attending ? rsvp.guestCount : 0), 0);
+  const responseRate = rsvps.length > 0 ? Math.round((rsvps.length / (rsvps.length + 25)) * 100) : 0; // Assuming 25 more expected
+  const purchaseProgress = registryItems.length > 0 ? Math.round((purchasedItems / registryItems.length) * 100) : 0;
+
+  // Calculate days until wedding
+  const weddingDate = coupleInfo?.weddingDate ? new Date(coupleInfo.weddingDate) : new Date('2025-06-15');
+  const today = new Date();
+  const daysUntilWedding = Math.max(0, Math.ceil((weddingDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
+
+  const stats = [
+    {
+      title: "Tổng Số RSVP",
+      value: rsvps.length.toString(),
+      icon: Users,
+      description: `${attendingCount} tham dự, ${decliningCount} từ chối`,
+      color: "text-blue-500",
+      bgColor: "bg-blue-500/10",
+      borderColor: "border-blue-500/20",
+      trend: `${totalGuests} khách tổng`,
+      trendUp: true,
+      progress: attendingCount > 0 ? Math.round((attendingCount / rsvps.length) * 100) : 0
+    },
+    {
+      title: "Tin Nhắn Khách Mời",
+      value: messages.length.toString(),
+      icon: MessageSquare,
+      description: `${pendingMessages} chờ phê duyệt`,
+      color: "text-green-500",
+      bgColor: "bg-green-500/10",
+      borderColor: "border-green-500/20",
+      trend: pendingMessages > 0 ? `+${pendingMessages} mới` : "Đã xử lý hết",
+      trendUp: messages.length > 0,
+      progress: messages.length > 0 ? Math.round(((messages.length - pendingMessages) / messages.length) * 100) : 100
+    },
+    {
+      title: "Số Ngày Đến Đám Cưới",
+      value: daysUntilWedding.toString(),
+      icon: Calendar,
+      description: weddingDate.toLocaleDateString('vi-VN', { day: '2-digit', month: 'long', year: 'numeric' }),
+      color: "text-orange-500",
+      bgColor: "bg-orange-500/10",
+      borderColor: "border-orange-500/20",
+      trend: "Đang đếm ngược",
+      trendUp: false,
+      progress: Math.max(0, 100 - Math.round((daysUntilWedding / 365) * 100))
+    },
+    {
+      title: "Thư Viện Ảnh",
+      value: photos.length.toString(),
+      icon: Image,
+      description: "Ảnh đã tải lên",
+      color: "text-purple-500",
+      bgColor: "bg-purple-500/10",
+      borderColor: "border-purple-500/20",
+      trend: photos.length > 0 ? `${photos.length} ảnh` : "Chưa có ảnh",
+      trendUp: photos.length > 0,
+      progress: Math.min(100, photos.length * 2)
+    },
+    {
+      title: "Quà Đã Đăng Ký",
+      value: registryItems.length.toString(),
+      icon: Gift,
+      description: `${purchasedItems} đã được mua`,
+      color: "text-pink-500",
+      bgColor: "bg-pink-500/10",
+      borderColor: "border-pink-500/20",
+      trend: `${purchaseProgress}% hoàn thành`,
+      trendUp: purchasedItems > 0,
+      progress: purchaseProgress
+    },
+    {
+      title: "Tỷ Lệ Phản Hồi",
+      value: `${responseRate}%`,
+      icon: TrendingUp,
+      description: `${rsvps.length} đã phản hồi`,
+      color: "text-cyan-500",
+      bgColor: "bg-cyan-500/10",
+      borderColor: "border-cyan-500/20",
+      trend: rsvps.length > 0 ? `${rsvps.length} phản hồi` : "Chưa có phản hồi",
+      trendUp: true,
+      progress: responseRate
+    },
+  ];
+
+  // Get recent RSVPs
+  const recentRsvps = [...rsvps]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 5);
+
+  // Get recent messages
+  const recentMessages = [...messages]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 3);
+
+  // Get recent activity
+  const recentActivity = [
+    ...rsvps.slice(-3).reverse().map(r => ({
+      type: 'rsvp',
+      name: r.guestName,
+      action: r.attending ? 'confirmed' : 'declined',
+      time: formatTimeAgo(new Date(r.createdAt))
+    })),
+    ...messages.slice(-2).reverse().map(m => ({
+      type: 'message',
+      name: m.guestName,
+      action: 'sent message',
+      time: formatTimeAgo(new Date(m.createdAt))
+    })),
+  ].sort((a, b) => {
+    // Sort by most recent
+    return 0; // Keep insertion order for now
+  }).slice(0, 5);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -157,6 +211,16 @@ export default function AdminHome() {
     }
   };
 
+  function formatTimeAgo(date: Date): string {
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) return `${diffInSeconds} giây trước`;
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} phút trước`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} giờ trước`;
+    return `${Math.floor(diffInSeconds / 86400)} ngày trước`;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -178,34 +242,6 @@ export default function AdminHome() {
           <p className="text-xl text-muted-foreground">
             Chào mừng trở lại! Đây là tổng quan về đám cưới của bạn.
           </p>
-        </motion.div>
-
-        {/* Welcome Card */}
-        <motion.div variants={itemVariants}>
-          <Card className="bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-semibold text-foreground">
-                    💝 Chúc mừng đám cưới!
-                  </h3>
-                  <p className="text-muted-foreground text-lg">
-                    Mọi thứ đang diễn ra tuyệt vời. Tiếp tục phát huy nhé!
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Button variant="outline" className="rounded-xl">
-                    <Settings size={18} className="mr-2" />
-                    Cài Đặt
-                  </Button>
-                  <Button className="rounded-xl bg-primary hover:bg-primary/90">
-                    <Plus size={18} className="mr-2" />
-                    Thêm Mới
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </motion.div>
       </motion.div>
 
@@ -249,7 +285,7 @@ export default function AdminHome() {
                     <h3 className="text-sm font-medium text-foreground/80 mb-1">
                       {stat.title}
                     </h3>
-                    <div className="text-3xl font-bold text-foreground mb-2">
+                    <div className="text-3xl font-bold text-foreground mb-2" data-testid={`stat-${stat.title.toLowerCase().replace(/\s+/g, '-')}`}>
                       {stat.value}
                     </div>
                     <p className="text-sm text-muted-foreground leading-relaxed">
@@ -257,7 +293,7 @@ export default function AdminHome() {
                     </p>
                   </div>
 
-                  {stat.progress && (
+                  {stat.progress !== undefined && (
                     <div className="space-y-2">
                       <Progress value={stat.progress} className="h-2 bg-muted/50" />
                       <div className="flex justify-between text-xs text-muted-foreground">
@@ -296,38 +332,40 @@ export default function AdminHome() {
                     </CardDescription>
                   </div>
                 </CardTitle>
-                <Button variant="ghost" size="sm" className="rounded-lg">
-                  <Eye size={16} className="mr-2" />
-                  Xem tất cả
-                </Button>
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="divide-y divide-border/50">
-                {recentActivity.map((activity, i) => (
-                  <motion.div
-                    key={i}
-                    className="flex items-center gap-4 p-6 hover:bg-muted/30 transition-all duration-300 group"
-                    variants={itemVariants}
-                    whileHover={{ x: 8 }}
-                  >
-                    <div className={`p-3 rounded-xl border ${getActivityColor(activity.type)}`}>
-                      {getActivityIcon(activity.type)}
-                    </div>
-                    <div className="flex-1 min-w-0 space-y-1">
-                      <p className="font-semibold text-foreground text-base">
-                        {activity.name}
-                      </p>
-                      <p className="text-sm text-muted-foreground capitalize">
-                        {activity.action}
-                      </p>
-                    </div>
-                    <div className="text-sm text-muted-foreground whitespace-nowrap bg-muted/50 px-3 py-1 rounded-full">
-                      {activity.time}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+              {recentActivity.length > 0 ? (
+                <div className="divide-y divide-border/50">
+                  {recentActivity.map((activity, i) => (
+                    <motion.div
+                      key={i}
+                      className="flex items-center gap-4 p-6 hover:bg-muted/30 transition-all duration-300 group"
+                      variants={itemVariants}
+                      whileHover={{ x: 8 }}
+                    >
+                      <div className={`p-3 rounded-xl border ${getActivityColor(activity.type)}`}>
+                        {getActivityIcon(activity.type)}
+                      </div>
+                      <div className="flex-1 min-w-0 space-y-1">
+                        <p className="font-semibold text-foreground text-base">
+                          {activity.name}
+                        </p>
+                        <p className="text-sm text-muted-foreground capitalize">
+                          {activity.action}
+                        </p>
+                      </div>
+                      <div className="text-sm text-muted-foreground whitespace-nowrap bg-muted/50 px-3 py-1 rounded-full">
+                        {activity.time}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-12 text-center text-muted-foreground">
+                  Chưa có hoạt động nào
+                </div>
+              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -355,49 +393,49 @@ export default function AdminHome() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="divide-y divide-border/50">
-                  {[
-                    { name: "Emily Johnson", status: "Tham dự", guests: 2, time: "2 phút trước" },
-                    { name: "David Chen", status: "Tham dự", guests: 1, time: "15 phút trước" },
-                    { name: "Maria Garcia", status: "Từ chối", guests: 0, time: "1 giờ trước" },
-                    { name: "John Smith", status: "Tham dự", guests: 3, time: "2 giờ trước" },
-                    { name: "Sarah Wilson", status: "Tham dự", guests: 2, time: "3 giờ trước" },
-                  ].map((rsvp, i) => (
-                    <motion.div
-                      key={i}
-                      className="flex items-center justify-between p-6 hover:bg-muted/30 transition-all duration-300 group"
-                      variants={itemVariants}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className={`p-2 rounded-xl ${
-                          rsvp.status === "Tham dự" 
-                            ? "bg-green-500/10 text-green-600 border border-green-500/20" 
-                            : "bg-red-500/10 text-red-600 border border-red-500/20"
-                        }`}>
-                          {rsvp.status === "Tham dự" ? 
-                            <CheckCircle size={18} /> : 
-                            <XCircle size={18} />
-                          }
-                        </div>
-                        <div className="space-y-1">
-                          <p className="font-semibold text-foreground text-base">{rsvp.name}</p>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <span>{rsvp.status}</span>
-                            {rsvp.guests > 0 && (
-                              <>
-                                <span>•</span>
-                                <span>{rsvp.guests} khách</span>
-                              </>
-                            )}
+                {recentRsvps.length > 0 ? (
+                  <div className="divide-y divide-border/50">
+                    {recentRsvps.map((rsvp, i) => (
+                      <motion.div
+                        key={rsvp.id}
+                        className="flex items-center justify-between p-6 hover:bg-muted/30 transition-all duration-300 group"
+                        variants={itemVariants}
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className={`p-2 rounded-xl ${
+                            rsvp.attending
+                              ? "bg-green-500/10 text-green-600 border border-green-500/20" 
+                              : "bg-red-500/10 text-red-600 border border-red-500/20"
+                          }`}>
+                            {rsvp.attending ? 
+                              <CheckCircle size={18} /> : 
+                              <XCircle size={18} />
+                            }
+                          </div>
+                          <div className="space-y-1">
+                            <p className="font-semibold text-foreground text-base">{rsvp.guestName}</p>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <span>{rsvp.attending ? "Tham dự" : "Từ chối"}</span>
+                              {rsvp.guestCount > 0 && rsvp.attending && (
+                                <>
+                                  <span>•</span>
+                                  <span>{rsvp.guestCount} khách</span>
+                                </>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="text-sm text-muted-foreground whitespace-nowrap bg-muted/50 px-3 py-1 rounded-full">
-                        {rsvp.time}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
+                        <div className="text-sm text-muted-foreground whitespace-nowrap bg-muted/50 px-3 py-1 rounded-full">
+                          {formatTimeAgo(new Date(rsvp.createdAt))}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-8 text-center text-muted-foreground">
+                    Chưa có RSVP nào
+                  </div>
+                )}
               </CardContent>
             </Card>
           </motion.div>
@@ -423,30 +461,32 @@ export default function AdminHome() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <div className="divide-y divide-border/50">
-                  {[
-                    { name: "Sarah Miller", preview: "Rất mong chờ ngày trọng đại của hai bạn! Chúc các bạn hạnh phúc mãi mãi...", time: "5 phút trước" },
-                    { name: "John Smith", preview: "Chúc mừng cả hai! Thật tuyệt vời khi được chứng kiến tình yêu của các bạn...", time: "30 phút trước" },
-                    { name: "Lisa Wang", preview: "Không thể chờ để ăn mừng cùng các bạn! Chúc các bạn một cuộc sống hôn nhân...", time: "1 giờ trước" },
-                  ].map((msg, i) => (
-                    <motion.div
-                      key={i}
-                      className="p-6 hover:bg-muted/30 transition-all duration-300 group cursor-pointer"
-                      variants={itemVariants}
-                      whileHover={{ x: 4 }}
-                    >
-                      <div className="flex items-start justify-between mb-3">
-                        <p className="font-semibold text-foreground text-base">{msg.name}</p>
-                        <div className="text-sm text-muted-foreground whitespace-nowrap bg-muted/50 px-3 py-1 rounded-full">
-                          {msg.time}
+                {recentMessages.length > 0 ? (
+                  <div className="divide-y divide-border/50">
+                    {recentMessages.map((msg, i) => (
+                      <motion.div
+                        key={msg.id}
+                        className="p-6 hover:bg-muted/30 transition-all duration-300 group cursor-pointer"
+                        variants={itemVariants}
+                        whileHover={{ x: 4 }}
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <p className="font-semibold text-foreground text-base">{msg.guestName}</p>
+                          <div className="text-sm text-muted-foreground whitespace-nowrap bg-muted/50 px-3 py-1 rounded-full">
+                            {formatTimeAgo(new Date(msg.createdAt))}
+                          </div>
                         </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed group-hover:text-foreground/80 transition-colors">
-                        {msg.preview}
-                      </p>
-                    </motion.div>
-                  ))}
-                </div>
+                        <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed group-hover:text-foreground/80 transition-colors">
+                          {msg.message}
+                        </p>
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-8 text-center text-muted-foreground">
+                    Chưa có tin nhắn nào
+                  </div>
+                )}
               </CardContent>
             </Card>
           </motion.div>

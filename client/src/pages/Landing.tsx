@@ -1,6 +1,7 @@
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Schedule from "@/components/Schedule";
+import WeddingParty from "@/components/WeddingParty";
 import Gallery from "@/components/Gallery";
 import Messages from "@/components/Messages";
 import RSVP from "@/components/RSVP";
@@ -154,6 +155,17 @@ export default function Landing() {
         transition={{ delay: 0.3 }}
       >
         <Schedule />
+      </motion.section>
+
+      {/* Wedding Party Section */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={sectionVariants}
+        transition={{ delay: 0.35 }}
+      >
+        <WeddingParty />
       </motion.section>
 
       {/* Gallery Section */}
