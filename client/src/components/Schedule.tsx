@@ -412,9 +412,12 @@ export default function Schedule() {
                                   animate={{ opacity: 1, y: 0 }}
                                   transition={{ delay: 0.4 }}
                                 >
-                                  {new Date(event.eventTime).toLocaleTimeString('vi-VN', {
-                                    hour: 'numeric',
+                                  {new Date(event.eventTime).toLocaleString('vi-VN', {
+                                    hour: '2-digit',
                                     minute: '2-digit',
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
                                   })}
                                 </motion.p>
                               </div>
@@ -441,24 +444,6 @@ export default function Schedule() {
                               >
                                 {event.description}
                               </motion.p>
-                            )}
-
-                            {/* Enhanced Duration Badge */}
-                            {event.duration && (
-                              <motion.div
-                                className={`inline-flex items-center gap-2 bg-gradient-to-r from-primary/20 to-primary/10 text-primary px-4 py-2 rounded-full text-base font-semibold border border-primary/20 ${isLeft ? "float-right" : ""}`}
-                                initial={{ scale: 0, rotate: -180 }}
-                                animate={{ scale: 1, rotate: 0 }}
-                                transition={{ type: "spring", stiffness: 200, delay: 0.7 }}
-                                whileHover={{
-                                  scale: 1.05,
-                                  backgroundColor: "hsl(var(--primary))",
-                                  color: "white"
-                                }}
-                              >
-                                <Clock size={18} />
-                                {event.duration}
-                              </motion.div>
                             )}
                           </div>
 

@@ -8,6 +8,7 @@ const navLinks = [
   { name: "Chúng tôi", href: "#about" },
   { name: "Lịch", href: "#schedule" },
   { name: "Ảnh", href: "#gallery" },
+  { name: "Lời chúc", href: "#messages" },
   { name: "Xác nhận", href: "#rsvp" },
   { name: "Địa điểm", href: "#location" },
 ];

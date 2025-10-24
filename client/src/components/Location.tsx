@@ -16,11 +16,14 @@ export default function Location() {
     queryKey: ["/api/settings"],
   });
 
+  const venueName = settings?.venueName || "Rose Garden Estate";
+  const venueAddress = settings?.venueAddress || "123 Garden Lane, Spring Valley, CA 91977";
+  
   const venueDetails = {
-    name: "Rose Garden Estate",
+    name: venueName,
     address: {
-      line1: "123 Garden Lane",
-      line2: "Spring Valley, CA 91977"
+      line1: venueAddress.split(',')[0] || venueAddress,
+      line2: venueAddress.split(',').slice(1).join(',').trim() || ""
     },
     contact: {
       phone: "+1 (555) 123-4567",
