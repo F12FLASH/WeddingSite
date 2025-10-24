@@ -96,9 +96,9 @@ async function seed() {
   await storage.upsertSettings({
     venueName: "Rose Garden Estate",
     venueAddress: "123 Garden Lane, Spring Valley, CA 91977",
-    venueLatitude: 32.7157,
-    venueLongitude: -117.1611,
-    musicUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    venueLatitude: "32.7157",
+    venueLongitude: "-117.1611",
+    backgroundMusicUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
   });
   console.log("✅ Created settings");
 
