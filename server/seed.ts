@@ -94,6 +94,18 @@ async function seed() {
   }
   console.log(`✅ Created ${registryItems.length} registry items`);
 
+  // Create wedding party members
+  const weddingParty = [
+    { name: "Nguyễn Thu Thảo", role: "Phù Dâu", description: "Bạn thân của cô dâu từ thời cấp 3", photoUrl: "https://i.pravatar.cc/300?img=5", order: 1 },
+    { name: "Lê Hương Giang", role: "Phù Dâu", description: "Đồng nghiệp thân thiết của cô dâu", photoUrl: "https://i.pravatar.cc/300?img=10", order: 2 },
+    { name: "Trần Quang Huy", role: "Phù Rể", description: "Bạn thân từ nhỏ của chú rể", photoUrl: "https://i.pravatar.cc/300?img=12", order: 3 },
+    { name: "Vũ Đức Anh", role: "Phù Rể", description: "Đồng nghiệp thân thiết của chú rể", photoUrl: "https://i.pravatar.cc/300?img=15", order: 4 },
+  ];
+  for (const member of weddingParty) {
+    await storage.createWeddingPartyMember(member);
+  }
+  console.log(`✅ Created ${weddingParty.length} wedding party members`);
+
   // Create settings
   await storage.upsertSettings({
     venueName: "Rose Garden Estate",

@@ -44,7 +44,7 @@ export default function AdminRSVPs() {
     responseRate: rsvps.length > 0 ? Math.round((rsvps.length / 150) * 100) : 0, // Assuming 150 invited
   };
 
-  const mealPreferences = Array.from(new Set(rsvps.map(r => r.mealPreference).filter(Boolean)));
+  const mealPreferences = Array.from(new Set(rsvps.map(r => r.mealPreference).filter((meal): meal is string => Boolean(meal))));
 
   const containerVariants = {
     hidden: { opacity: 0 },
