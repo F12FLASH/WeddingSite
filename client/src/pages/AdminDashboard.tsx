@@ -94,6 +94,14 @@ const menuItems = [
     bgColor: "bg-cyan-50 dark:bg-cyan-950/20"
   },
   {
+    title: "Đội Ngũ Đám Cưới",
+    url: "/admin/wedding-party",
+    icon: Users,
+    description: "Quản lý phù dâu, phù rể",
+    color: "text-rose-500",
+    bgColor: "bg-rose-50 dark:bg-rose-950/20"
+  },
+  {
     title: "Quà Mừng",
     url: "/admin/registry",
     icon: Gift,

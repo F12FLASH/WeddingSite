@@ -8,6 +8,7 @@ import {
   rsvps,
   registryItems,
   settings,
+  weddingParty,
   type User,
   type UpsertUser,
   type CoupleInfo,
@@ -24,6 +25,8 @@ import {
   type InsertRegistryItem,
   type Settings,
   type InsertSettings,
+  type WeddingParty,
+  type InsertWeddingParty,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
@@ -75,6 +78,13 @@ export interface IStorage {
   // Settings
   getSettings(): Promise<Settings | undefined>;
   upsertSettings(settings: InsertSettings): Promise<Settings>;
+
+  // Wedding Party
+  getAllWeddingParty(): Promise<WeddingParty[]>;
+  getWeddingPartyMember(id: string): Promise<WeddingParty | undefined>;
+  createWeddingPartyMember(member: InsertWeddingParty): Promise<WeddingParty>;
+  updateWeddingPartyMember(id: string, member: Partial<InsertWeddingParty>): Promise<WeddingParty | undefined>;
+  deleteWeddingPartyMember(id: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -276,6 +286,34 @@ export class DatabaseStorage implements IStorage {
     }
     const [created] = await db.insert(settings).values(settingsData).returning();
     return created;
+  }
+
+  // Wedding Party
+  async getAllWeddingParty(): Promise<WeddingParty[]> {
+    return await db.select().from(weddingParty).orderBy(weddingParty.order);
+  }
+
+  async getWeddingPartyMember(id: string): Promise<WeddingParty | undefined> {
+    const [member] = await db.select().from(weddingParty).where(eq(weddingParty.id, id));
+    return member;
+  }
+
+  async createWeddingPartyMember(member: InsertWeddingParty): Promise<WeddingParty> {
+    const [created] = await db.insert(weddingParty).values(member).returning();
+    return created;
+  }
+
+  async updateWeddingPartyMember(id: string, memberData: Partial<InsertWeddingParty>): Promise<WeddingParty | undefined> {
+    const [updated] = await db
+      .update(weddingParty)
+      .set({ ...memberData, updatedAt: new Date() })
+      .where(eq(weddingParty.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteWeddingPartyMember(id: string): Promise<void> {
+    await db.delete(weddingParty).where(eq(weddingParty.id, id));
   }
 }
 

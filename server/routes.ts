@@ -10,6 +10,7 @@ import {
   insertRsvpSchema,
   insertRegistryItemSchema,
   insertSettingsSchema,
+  insertWeddingPartySchema,
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -286,6 +287,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error updating settings:", error);
       res.status(400).json({ message: error.message || "Failed to update settings" });
+    }
+  });
+
+  // ===== Wedding Party Routes =====
+  app.get("/api/wedding-party", async (req, res) => {
+    try {
+      const members = await storage.getAllWeddingParty();
+      res.json(members);
+    } catch (error) {
+      console.error("Error fetching wedding party:", error);
+      res.status(500).json({ message: "Failed to fetch wedding party" });
+    }
+  });
+
+  app.post("/api/wedding-party", isAuthenticated, async (req, res) => {
+    try {
+      const validated = insertWeddingPartySchema.parse(req.body);
+      const member = await storage.createWeddingPartyMember(validated);
+      res.json(member);
+    } catch (error: any) {
+      console.error("Error creating wedding party member:", error);
+      res.status(400).json({ message: error.message || "Failed to create wedding party member" });
+    }
+  });
+
+  app.patch("/api/wedding-party/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validated = insertWeddingPartySchema.partial().parse(req.body);
+      const member = await storage.updateWeddingPartyMember(id, validated);
+      if (!member) {
+        return res.status(404).json({ message: "Wedding party member not found" });
+      }
+      res.json(member);
+    } catch (error: any) {
+      console.error("Error updating wedding party member:", error);
+      res.status(400).json({ message: error.message || "Failed to update wedding party member" });
+    }
+  });
+
+  app.delete("/api/wedding-party/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteWeddingPartyMember(id);
+      res.json({ message: "Wedding party member deleted" });
+    } catch (error) {
+      console.error("Error deleting wedding party member:", error);
+      res.status(500).json({ message: "Failed to delete wedding party member" });
     }
   });
 
