@@ -72,6 +72,16 @@
 [x] 48. Verified application is working - Wedding homepage displays correctly
 [x] 49. Migration completed successfully - Project is ready to use!
 
+## Bug Fixes (Oct 24, 2025 - Evening)
+[x] 50. Fixed Hero.tsx to fetch couple info from database (issue #1)
+[x] 51. Fixed Hero.tsx to fetch venue name from settings (issue #7)
+[x] 52. Fixed CSV export UTF-8 encoding with BOM for Vietnamese characters (issue #3)
+[x] 53. Fixed RSVP form AnimatePresence to show fields when switching from No to Yes (issue #4)
+[x] 54. Made notification bell functional with popover showing recent RSVPs and messages (issue #5)
+[x] 55. Fixed LSP errors in AdminDashboard.tsx (isApproved -> approved)
+[x] 56. Fixed LSP errors in AdminRSVPs.tsx (Set iteration)
+[x] 57. All fixes applied successfully!
+
 ## Notes
 - Server is running successfully on port 5000
 - FE/BE connection is working (API calls successful)

@@ -2,40 +2,53 @@ import { Heart, Calendar, MapPin, Clock } from "lucide-react";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useState } from "react";
 import heroImage from "@assets/generated_images/Romantic_wedding_couple_hero_background_0afd25e7.png";
+import { useQuery } from "@tanstack/react-query";
+import type { CoupleInfo, Settings } from "@shared/schema";
 
 export default function Hero() {
   const [isVisible, setIsVisible] = useState(false);
   const count = useMotionValue(0);
   const rounded = useTransform(count, Math.round);
 
-  // Real countdown calculation
-  const calculateTimeLeft = () => {
-    const weddingDate = new Date('2025-06-15T00:00:00');
-    const now = new Date();
-    const difference = weddingDate.getTime() - now.getTime();
-    
-    if (difference > 0) {
-      return {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60)
-      };
-    }
-    return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-  };
+  const { data: coupleInfo } = useQuery<CoupleInfo | null>({
+    queryKey: ["/api/couple"],
+  });
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const { data: settings } = useQuery<Settings | null>({
+    queryKey: ["/api/settings"],
+  });
+
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
     setIsVisible(true);
+    
+    const calculateTimeLeft = () => {
+      const weddingDate = coupleInfo?.weddingDate 
+        ? new Date(coupleInfo.weddingDate)
+        : new Date('2025-06-15T00:00:00');
+      const now = new Date();
+      const difference = weddingDate.getTime() - now.getTime();
+      
+      if (difference > 0) {
+        return {
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minutes: Math.floor((difference / 1000 / 60) % 60),
+          seconds: Math.floor((difference / 1000) % 60)
+        };
+      }
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    };
+
+    setTimeLeft(calculateTimeLeft());
     
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [coupleInfo?.weddingDate]);
 
   // Animate numbers
   useEffect(() => {
@@ -199,7 +212,7 @@ export default function Hero() {
             variants={itemVariants}
           >
             <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
-              Sarah & Michael
+              {coupleInfo ? `${coupleInfo.brideName} & ${coupleInfo.groomName}` : "Sarah & Michael"}
             </span>
             {/* Decorative underline */}
             <motion.div
@@ -219,7 +232,15 @@ export default function Hero() {
               whileHover={{ scale: 1.05 }}
             >
               <Calendar className="text-primary" size={28} />
-              <span className="font-serif">15 Tháng 6, 2025</span>
+              <span className="font-serif">
+                {coupleInfo?.weddingDate 
+                  ? new Date(coupleInfo.weddingDate).toLocaleDateString('vi-VN', { 
+                      day: 'numeric', 
+                      month: 'long', 
+                      year: 'numeric' 
+                    })
+                  : "15 Tháng 6, 2025"}
+              </span>
             </motion.div>
             
             <motion.div
@@ -227,7 +248,9 @@ export default function Hero() {
               whileHover={{ scale: 1.05 }}
             >
               <MapPin className="text-primary" size={28} />
-              <span className="font-serif">Grand Ballroom</span>
+              <span className="font-serif">
+                {settings?.venueName || "Grand Ballroom"}
+              </span>
             </motion.div>
           </motion.div>
         </motion.div>

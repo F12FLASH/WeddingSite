@@ -312,7 +312,7 @@ export default function RSVP() {
                   </RadioGroup>
                 </motion.div>
 
-                <AnimatePresence mode="wait">
+                <AnimatePresence>
                   {formData.attending && (
                     <motion.div
                       key="attending-fields"
@@ -320,7 +320,7 @@ export default function RSVP() {
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.3 }}
-                      className="space-y-6 overflow-hidden"
+                      className="space-y-6"
                     >
                       {/* Guest Count */}
                       <motion.div variants={itemVariants}>

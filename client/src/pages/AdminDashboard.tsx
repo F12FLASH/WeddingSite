@@ -18,6 +18,7 @@ import {
   Sparkles,
   Home,
   ExternalLink,
+  CheckCircle,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import {
@@ -35,6 +36,13 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useQuery } from "@tanstack/react-query";
+import type { Rsvp, GuestMessage } from "@shared/schema";
 
 const menuItems = [
   {
@@ -107,8 +115,19 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
   const { isAuthenticated, isLoading, user } = useAuth();
   const { toast } = useToast();
   const [location] = useLocation();
-  const [notifications, setNotifications] = useState(3);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const { data: rsvps = [] } = useQuery<Rsvp[]>({
+    queryKey: ["/api/rsvps"],
+  });
+
+  const { data: messages = [] } = useQuery<GuestMessage[]>({
+    queryKey: ["/api/messages"],
+  });
+
+  const recentRsvps = rsvps.slice(-5).reverse();
+  const recentMessages = messages.filter(m => !m.approved).slice(-5);
+  const notifications = recentRsvps.length + recentMessages.length;
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -405,28 +424,83 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
 
             <div className="flex items-center gap-4">
               {/* Notifications */}
-              <motion.div 
-                className="relative"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="relative w-12 h-12 rounded-xl border border-border/50 hover:bg-accent/50"
-                >
-                  <Bell size={22} />
-                  {notifications > 0 && (
-                    <motion.span
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="absolute -top-1 -right-1 w-6 h-6 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center font-medium border-2 border-background"
+              <Popover>
+                <PopoverTrigger asChild>
+                  <motion.div 
+                    className="relative"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="relative w-12 h-12 rounded-xl border border-border/50 hover:bg-accent/50"
+                      data-testid="button-notifications"
                     >
-                      {notifications}
-                    </motion.span>
-                  )}
-                </Button>
-              </motion.div>
+                      <Bell size={22} />
+                      {notifications > 0 && (
+                        <motion.span
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="absolute -top-1 -right-1 w-6 h-6 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center font-medium border-2 border-background"
+                        >
+                          {notifications}
+                        </motion.span>
+                      )}
+                    </Button>
+                  </motion.div>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-0" align="end">
+                  <div className="p-4 border-b bg-muted/50">
+                    <h3 className="font-semibold text-lg flex items-center gap-2">
+                      <Bell size={18} />
+                      Thông Báo
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {notifications > 0 ? `Bạn có ${notifications} thông báo mới` : "Không có thông báo mới"}
+                    </p>
+                  </div>
+                  <div className="max-h-96 overflow-y-auto">
+                    {notifications === 0 ? (
+                      <div className="p-8 text-center text-muted-foreground">
+                        <CheckCircle className="mx-auto mb-2" size={32} />
+                        <p>Bạn đã xem hết thông báo</p>
+                      </div>
+                    ) : (
+                      <div className="divide-y">
+                        {recentRsvps.length > 0 && (
+                          <div className="p-3">
+                            <p className="text-xs font-semibold text-muted-foreground mb-2">RSVP MỚI</p>
+                            {recentRsvps.map((rsvp) => (
+                              <Link key={rsvp.id} href="/admin/rsvps">
+                                <div className="p-2 hover:bg-muted rounded-lg cursor-pointer mb-1">
+                                  <p className="text-sm font-medium">{rsvp.guestName}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {rsvp.attending ? "✅ Tham dự" : "❌ Từ chối"} • {rsvp.guestCount} khách
+                                  </p>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                        {recentMessages.length > 0 && (
+                          <div className="p-3">
+                            <p className="text-xs font-semibold text-muted-foreground mb-2">LỜI CHÚC CHỜ DUYỆT</p>
+                            {recentMessages.map((msg) => (
+                              <Link key={msg.id} href="/admin/messages">
+                                <div className="p-2 hover:bg-muted rounded-lg cursor-pointer mb-1">
+                                  <p className="text-sm font-medium">{msg.guestName}</p>
+                                  <p className="text-xs text-muted-foreground line-clamp-1">{msg.message}</p>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
 
               {/* User Profile */}
               <motion.div
