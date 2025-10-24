@@ -46,6 +46,21 @@
 [x] 37. Verified server is running successfully
 [x] 38. All migration tasks completed - Project ready for use!
 
+## Database Import (Oct 24, 2025)
+[x] 39. Added wedding_party and faqs tables to schema
+[x] 40. Pushed new tables to database using drizzle-kit
+[x] 41. Imported all data from database_backup.sql:
+    - ✓ couple_info (1 record)
+    - ✓ schedule_events (5 records)
+    - ✓ photos (7 records)
+    - ✓ guest_messages (6 records)
+    - ✓ rsvps (5 records)
+    - ✓ registry_items (6 records)
+    - ✓ settings (1 record)
+    - ✓ wedding_party (4 records)
+    - ✓ faqs (4 records)
+[x] 42. Database import completed successfully!
+
 ## Notes
 - Server is running successfully on port 5000
 - FE/BE connection is working (API calls successful)

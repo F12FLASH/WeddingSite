@@ -187,3 +187,43 @@ export const insertSettingsSchema = createInsertSchema(settings).omit({
 
 export type InsertSettings = z.infer<typeof insertSettingsSchema>;
 export type Settings = typeof settings.$inferSelect;
+
+// Wedding party members
+export const weddingParty = pgTable("wedding_party", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  role: varchar("role").notNull(),
+  description: text("description"),
+  photoUrl: text("photo_url"),
+  order: integer("order").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertWeddingPartySchema = createInsertSchema(weddingParty).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertWeddingParty = z.infer<typeof insertWeddingPartySchema>;
+export type WeddingParty = typeof weddingParty.$inferSelect;
+
+// FAQs
+export const faqs = pgTable("faqs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  question: text("question").notNull(),
+  answer: text("answer").notNull(),
+  order: integer("order").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertFaqSchema = createInsertSchema(faqs).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertFaq = z.infer<typeof insertFaqSchema>;
+export type Faq = typeof faqs.$inferSelect;
