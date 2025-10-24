@@ -60,6 +60,10 @@
     - ✓ wedding_party (4 records)
     - ✓ faqs (4 records)
 [x] 42. Database import completed successfully!
+[x] 43. Fixed login issue - Ran seed script to create admin user
+    - Username: admin
+    - Password: admin123
+[x] 44. All database data imported and admin account created!
 
 ## Notes
 - Server is running successfully on port 5000
