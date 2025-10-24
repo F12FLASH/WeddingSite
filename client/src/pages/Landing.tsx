@@ -27,7 +27,7 @@ export default function Landing() {
     // Simulate loading time for assets
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 100);
 
     return () => clearTimeout(timer);
   }, []);
@@ -77,7 +77,7 @@ export default function Landing() {
             transition={{ delay: 0.5 }}
             className="font-cursive text-4xl md:text-6xl text-foreground mb-4"
           >
-            Sarah & Michael
+            Trang Web Cưới
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}

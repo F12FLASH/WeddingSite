@@ -21,6 +21,8 @@ async function seed() {
     groomName: "Trần Minh Tuấn",
     bridePhoto: "/attached_assets/generated_images/Elegant_bride_portrait_photo_6abee8e2.png",
     groomPhoto: "/attached_assets/generated_images/Handsome_groom_portrait_photo_1678e40a.png",
+    brideDescription: "Cô dâu Thu Hà - Người phụ nữ dịu dàng, xinh đẹp và tài năng. Cô là một giáo viên mầm non với tấm lòng nhân hậu và luôn yêu thương trẻ em.",
+    groomDescription: "Chú rể Minh Tuấn - Chàng trai lịch lãm, tài giỏi và có trách nhiệm. Anh là kỹ sư phần mềm với niềm đam mê công nghệ và khát vọng xây dựng tương lai tươi sáng.",
     ourStory: "Chúng tôi gặp nhau vào một buổi chiều xuân ấm áp tại công viên Hồ Gươm. Từ ánh mắt đầu tiên, chúng tôi đã biết rằng đây là duyên phận trời định. Sau 3 năm bên nhau, chúng tôi quyết định bước vào hôn nhân để cùng nhau xây dựng một tổ ấm hạnh phúc.",
     weddingDate: new Date("2025-06-15"),
     heroImage: "/attached_assets/generated_images/Romantic_wedding_couple_hero_background_0afd25e7.png",
@@ -81,11 +83,11 @@ async function seed() {
 
   // Create registry items
   const registryItems = [
-    { name: "Bộ Đồ Ăn Cao Cấp", description: "Bộ đồ ăn sứ cao cấp 24 món", price: 2500000, imageUrl: "https://placehold.co/400x300/pink/white?text=Bộ+Đồ+Ăn", purchaseUrl: "https://example.com", order: 1, purchased: false },
-    { name: "Máy Hút Bụi Thông Minh", description: "Máy hút bụi tự động thông minh", price: 8000000, imageUrl: "https://placehold.co/400x300/blue/white?text=Máy+Hút+Bụi", purchaseUrl: "https://example.com", order: 2, purchased: false },
-    { name: "Nồi Cơm Điện Cao Cấp", description: "Nồi cơm điện tử cao cấp 1.8L", price: 3500000, imageUrl: "https://placehold.co/400x300/green/white?text=Nồi+Cơm", purchaseUrl: "https://example.com", order: 3, purchased: true },
-    { name: "Bàn Ăn Gỗ Tự Nhiên", description: "Bàn ăn gỗ tự nhiên 6 ghế", price: 15000000, imageUrl: "https://placehold.co/400x300/brown/white?text=Bàn+Ăn", purchaseUrl: "https://example.com", order: 4, purchased: false },
-    { name: "Máy Giặt Cửa Trước", description: "Máy giặt cửa trước 9kg", price: 12000000, imageUrl: "https://placehold.co/400x300/purple/white?text=Máy+Giặt", purchaseUrl: "https://example.com", order: 5, purchased: false },
+    { name: "Bộ Đồ Ăn Cao Cấp", description: "Bộ đồ ăn sứ cao cấp 24 món", price: 2500000, imageUrl: "https://placehold.co/400x300/pink/white?text=Bộ+Đồ+Ăn", purchaseUrl: "https://example.com", order: 1, isPurchased: false },
+    { name: "Máy Hút Bụi Thông Minh", description: "Máy hút bụi tự động thông minh", price: 8000000, imageUrl: "https://placehold.co/400x300/blue/white?text=Máy+Hút+Bụi", purchaseUrl: "https://example.com", order: 2, isPurchased: false },
+    { name: "Nồi Cơm Điện Cao Cấp", description: "Nồi cơm điện tử cao cấp 1.8L", price: 3500000, imageUrl: "https://placehold.co/400x300/green/white?text=Nồi+Cơm", purchaseUrl: "https://example.com", order: 3, isPurchased: true },
+    { name: "Bàn Ăn Gỗ Tự Nhiên", description: "Bàn ăn gỗ tự nhiên 6 ghế", price: 15000000, imageUrl: "https://placehold.co/400x300/brown/white?text=Bàn+Ăn", purchaseUrl: "https://example.com", order: 4, isPurchased: false },
+    { name: "Máy Giặt Cửa Trước", description: "Máy giặt cửa trước 9kg", price: 12000000, imageUrl: "https://placehold.co/400x300/purple/white?text=Máy+Giặt", purchaseUrl: "https://example.com", order: 5, isPurchased: false },
   ];
   for (const item of registryItems) {
     await storage.createRegistryItem(item);
@@ -97,6 +99,10 @@ async function seed() {
     venueName: "Rose Garden Estate",
     venueAddress: "123 Garden Lane, Spring Valley, CA 91977",
     venueMapLink: "https://www.google.com/maps/search/?api=1&query=Rose+Garden+Estate+Spring+Valley+CA",
+    venuePhone: "0123 456 789",
+    venueEmail: "contact@rosegarden.com",
+    eventStartTime: new Date("2025-06-15T18:00:00"),
+    eventEndTime: new Date("2025-06-15T22:00:00"),
     backgroundMusicUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
     backgroundMusicType: "mp3",
   });

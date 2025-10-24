@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Menu, X, Heart, ChevronDown, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import type { CoupleInfo } from "@shared/schema";
 
 const navLinks = [
   { name: "Chủ", href: "#home" },
@@ -17,6 +19,10 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  
+  const { data: coupleInfo } = useQuery<CoupleInfo | null>({
+    queryKey: ["/api/couple"],
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -135,10 +141,12 @@ export default function Navigation() {
             </motion.div>
             <div className="flex flex-col">
               <span className="font-cursive text-2xl md:text-3xl text-primary bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                Sarah & Michael
+                {coupleInfo ? `${coupleInfo.brideName.split(' ').pop()} & ${coupleInfo.groomName.split(' ').pop()}` : "Trang Web Cưới"}
               </span>
               <span className="text-xs text-muted-foreground -mt-1">
-                15.06.2025
+                {coupleInfo?.weddingDate 
+                  ? new Date(coupleInfo.weddingDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '.')
+                  : ""}
               </span>
             </div>
           </motion.a>

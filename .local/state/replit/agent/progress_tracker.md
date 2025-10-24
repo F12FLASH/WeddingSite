@@ -96,6 +96,29 @@
 [x] 70. Restarted workflow - server running successfully with no errors
 [x] 71. Final Import Migration Completed - All tasks marked as done!
 
+## Database Recreation & Migration (Oct 24, 2025 - Latest Session) ✅ COMPLETED
+[x] 72. Reinstalled cross-env package after migration restart
+[x] 73. Fixed workflow configuration to run npm run dev only (removed db:push and seed from workflow)
+[x] 74. Created fresh database with drizzle-kit push
+[x] 75. Fixed seed.ts - Updated purchased -> isPurchased field name
+[x] 76. Added brideDescription and groomDescription to seed data
+[x] 77. Added venuePhone, venueEmail, eventStartTime, eventEndTime to settings in seed data
+[x] 78. Successfully seeded database with complete sample data:
+    - ✓ Admin user (username: admin, password: admin123)
+    - ✓ Couple info (Nguyễn Thu Hà & Trần Minh Tuấn)
+    - ✓ 5 schedule events
+    - ✓ 6 photos
+    - ✓ 5 guest messages
+    - ✓ 4 RSVPs
+    - ✓ 5 registry items
+    - ✓ Settings with full venue information
+[x] 79. Fixed Landing.tsx loading screen - Changed hardcoded "Sarah & Michael" to "Trang Web Cưới"
+[x] 80. Reduced loading screen timeout from 2000ms to 100ms for better UX
+[x] 81. Updated Navigation.tsx to fetch couple info from database
+[x] 82. Navigation now displays dynamic couple names (last names only) and wedding date from database
+[x] 83. Verified all data is displaying correctly from database
+[x] 84. Wedding website fully functional with new database! 🎉
+
 ## Notes
 - Server is running successfully on port 5000 ✅
 - FE/BE connection is working (API calls successful) ✅
@@ -108,4 +131,8 @@
 - Bride and groom individual bios/descriptions supported ✅
 - Comprehensive bilingual README documentation complete ✅
 - Database backup script ready for production use ✅
+- **NEW DATABASE CREATED WITH FRESH DATA** ✅
+- All hardcoded "Sarah & Michael" replaced with dynamic database content ✅
+- Loading screen uses generic text instead of hardcoded names ✅
+- Navigation logo displays couple names from database ✅
 - All migration tasks completed successfully! ✅
