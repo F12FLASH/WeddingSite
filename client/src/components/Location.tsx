@@ -4,10 +4,17 @@ import { motion, useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import venueImage from "@assets/generated_images/Wedding_venue_ceremony_setup_4b2b0b2c.png";
 
+import { useQuery } from "@tanstack/react-query";
+import type { Settings } from "@shared/schema";
+
 export default function Location() {
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, threshold: 0.1 });
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
+
+  const { data: settings } = useQuery<Settings | null>({
+    queryKey: ["/api/settings"],
+  });
 
   const venueDetails = {
     name: "Rose Garden Estate",
@@ -65,8 +72,12 @@ export default function Location() {
   };
 
   const getDirections = () => {
-    const address = encodeURIComponent(`${venueDetails.address.line1}, ${venueDetails.address.line2}`);
-    window.open(`https://www.google.com/maps/dir/?api=1&destination=${address}`, '_blank');
+    if (settings?.venueMapLink) {
+      window.open(settings.venueMapLink, '_blank');
+    } else {
+      const address = encodeURIComponent(`${venueDetails.address.line1}, ${venueDetails.address.line2}`);
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${address}`, '_blank');
+    }
   };
 
   return (
@@ -359,14 +370,16 @@ export default function Location() {
                 </motion.div>
 
                 {/* Directions Button */}
-                <motion.div variants={itemVariants}>
+                <motion.div 
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
                   <Button
                     className="w-full rounded-xl py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                     size="lg"
                     onClick={getDirections}
                     data-testid="button-directions"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
                   >
                     <motion.div
                       animate={{ x: [0, 5, 0] }}

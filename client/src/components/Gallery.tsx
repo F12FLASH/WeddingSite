@@ -174,10 +174,10 @@ export default function Gallery() {
           </motion.p>
         </motion.div>
 
-        {/* Photo Grid */}
+        {/* Photo Grid - Masonry Layout */}
         {isLoading ? (
           <motion.div
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+            className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -186,7 +186,8 @@ export default function Gallery() {
               <motion.div
                 key={i}
                 variants={itemVariants}
-                className="rounded-2xl overflow-hidden h-64 bg-gradient-to-br from-muted to-muted/50 animate-pulse"
+                className="rounded-2xl overflow-hidden bg-gradient-to-br from-muted to-muted/50 animate-pulse break-inside-avoid mb-4"
+                style={{ height: `${200 + (i % 3) * 80}px` }}
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.3 }}
               />
@@ -232,7 +233,7 @@ export default function Gallery() {
           </motion.div>
         ) : (
           <motion.div
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+            className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -242,21 +243,22 @@ export default function Gallery() {
               <motion.div
                 key={photo.id}
                 variants={itemVariants}
-                className="group relative overflow-hidden rounded-2xl cursor-pointer shadow-lg bg-background"
+                className="group relative overflow-hidden rounded-2xl cursor-pointer shadow-lg bg-background break-inside-avoid mb-4"
                 whileHover={{ 
-                  scale: 1.05,
-                  rotate: index % 2 === 0 ? 0.5 : -0.5
+                  scale: 1.02,
+                  y: -4,
+                  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
                 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 onClick={() => openLightbox(index)}
                 data-testid={`photo-${index}`}
               >
                 <motion.img
                   src={photo.url}
                   alt={photo.caption || "Ảnh cưới"}
-                  className="w-full h-64 object-cover"
-                  whileHover={{ scale: 1.1 }}
+                  className="w-full h-auto object-cover"
+                  whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.5 }}
                 />
                 

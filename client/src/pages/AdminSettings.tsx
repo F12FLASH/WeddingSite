@@ -60,15 +60,9 @@ export default function AdminSettings() {
     const data: InsertSettings = {
       venueName: formData.get("venueName") as string,
       venueAddress: formData.get("venueAddress") as string,
-      venueLatitude: formData.get("venueLatitude") as string,
-      venueLongitude: formData.get("venueLongitude") as string,
+      venueMapLink: formData.get("venueMapLink") as string,
       backgroundMusicUrl: formData.get("backgroundMusicUrl") as string,
-      websiteTitle: formData.get("websiteTitle") as string,
-      primaryColor: formData.get("primaryColor") as string,
-      enableMusic: formData.get("enableMusic") === "on",
-      enableMessages: formData.get("enableMessages") === "on",
-      enableRSVP: formData.get("enableRSVP") === "on",
-      enableGallery: formData.get("enableGallery") === "on",
+      backgroundMusicType: formData.get("backgroundMusicType") as string,
     };
 
     updateMutation.mutate(data);
@@ -194,21 +188,6 @@ export default function AdminSettings() {
                         Thông Tin Cơ Bản
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4 pt-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="websiteTitle" className="text-sm font-medium">Tiêu Đề Website</Label>
-                        <Input
-                          id="websiteTitle"
-                          name="websiteTitle"
-                          placeholder="Đám cưới Sarah & Michael"
-                          defaultValue={settings?.websiteTitle || ""}
-                          className="h-12 text-lg"
-                        />
-                        <p className="text-xs text-muted-foreground">
-                          Tiêu đề hiển thị trên trình duyệt và SEO
-                        </p>
-                      </div>
-                    </CardContent>
                   </Card>
 
                   <Card>
@@ -242,33 +221,19 @@ export default function AdminSettings() {
                           className="text-lg resize-none"
                         />
                       </div>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="venueLatitude" className="text-sm font-medium">Vĩ Độ</Label>
-                          <Input
-                            id="venueLatitude"
-                            name="venueLatitude"
-                            placeholder="10.8231"
-                            defaultValue={settings?.venueLatitude || ""}
-                            className="h-12"
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            Để hiển thị bản đồ chính xác
-                          </p>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="venueLongitude" className="text-sm font-medium">Kinh Độ</Label>
-                          <Input
-                            id="venueLongitude"
-                            name="venueLongitude"
-                            placeholder="106.6297"
-                            defaultValue={settings?.venueLongitude || ""}
-                            className="h-12"
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            Để hiển thị bản đồ chính xác
-                          </p>
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="venueMapLink" className="text-sm font-medium">Link Google Maps</Label>
+                        <Input
+                          id="venueMapLink"
+                          name="venueMapLink"
+                          type="url"
+                          placeholder="https://www.google.com/maps/search/?api=1&query=..."
+                          defaultValue={settings?.venueMapLink || ""}
+                          className="h-12"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Link Google Maps để khách mời có thể chỉ đường dễ dàng
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
@@ -286,34 +251,10 @@ export default function AdminSettings() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 pt-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="primaryColor" className="text-sm font-medium">Màu Chủ Đạo</Label>
-                        <Select name="primaryColor" defaultValue={settings?.primaryColor || "blue"}>
-                          <SelectTrigger className="h-12">
-                            <SelectValue placeholder="Chọn màu chủ đạo" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="rose">🌹 Hồng - Lãng mạn</SelectItem>
-                            <SelectItem value="blue">🔵 Xanh dương - Cổ điển</SelectItem>
-                            <SelectItem value="emerald">💚 Xanh ngọc - Tươi mới</SelectItem>
-                            <SelectItem value="purple">🟣 Tím - Quý phái</SelectItem>
-                            <SelectItem value="amber">🟠 Cam - Ấm áp</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <p className="text-xs text-muted-foreground">
-                          Màu sắc chủ đạo cho toàn bộ website
+                      <div className="p-4 bg-muted/50 rounded-lg">
+                        <p className="text-sm text-muted-foreground">
+                          Các tùy chỉnh giao diện sẽ được bổ sung trong phiên bản tiếp theo
                         </p>
-                      </div>
-                      
-                      <div className="grid grid-cols-3 gap-3 p-4 bg-muted/50 rounded-lg">
-                        {['rose', 'blue', 'emerald', 'purple', 'amber'].map((color) => (
-                          <div
-                            key={color}
-                            className={`h-8 rounded-lg cursor-pointer border-2 ${
-                              settings?.primaryColor === color ? 'border-foreground' : 'border-transparent'
-                            } bg-${color}-500`}
-                          />
-                        ))}
                       </div>
                     </CardContent>
                   </Card>
@@ -324,80 +265,6 @@ export default function AdminSettings() {
               {activeTab === "features" && (
                 <div className="space-y-6">
                   <Card>
-                    <CardHeader className="bg-gradient-to-r from-green-500/5 to-green-500/10 border-b">
-                      <CardTitle className="flex items-center gap-2">
-                        <Bell className="text-green-500" size={20} />
-                        Quản Lý Tính Năng
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4 pt-6">
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="space-y-1">
-                          <Label htmlFor="enableMusic" className="text-sm font-medium cursor-pointer">
-                            🎵 Nhạc Nền
-                          </Label>
-                          <p className="text-xs text-muted-foreground">
-                            Bật/tắt nhạc nền trên website
-                          </p>
-                        </div>
-                        <Switch
-                          id="enableMusic"
-                          name="enableMusic"
-                          defaultChecked={settings?.enableMusic ?? true}
-                        />
-                      </div>
-
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="space-y-1">
-                          <Label htmlFor="enableRSVP" className="text-sm font-medium cursor-pointer">
-                            📋 RSVP
-                          </Label>
-                          <p className="text-xs text-muted-foreground">
-                            Cho phép khách mời xác nhận tham dự
-                          </p>
-                        </div>
-                        <Switch
-                          id="enableRSVP"
-                          name="enableRSVP"
-                          defaultChecked={settings?.enableRSVP ?? true}
-                        />
-                      </div>
-
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="space-y-1">
-                          <Label htmlFor="enableMessages" className="text-sm font-medium cursor-pointer">
-                            💌 Lời Chúc
-                          </Label>
-                          <p className="text-xs text-muted-foreground">
-                            Cho phép khách mời gửi lời chúc
-                          </p>
-                        </div>
-                        <Switch
-                          id="enableMessages"
-                          name="enableMessages"
-                          defaultChecked={settings?.enableMessages ?? true}
-                        />
-                      </div>
-
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="space-y-1">
-                          <Label htmlFor="enableGallery" className="text-sm font-medium cursor-pointer">
-                            📸 Thư Viện Ảnh
-                          </Label>
-                          <p className="text-xs text-muted-foreground">
-                            Hiển thị album ảnh đám cưới
-                          </p>
-                        </div>
-                        <Switch
-                          id="enableGallery"
-                          name="enableGallery"
-                          defaultChecked={settings?.enableGallery ?? true}
-                        />
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
                     <CardHeader className="bg-gradient-to-r from-orange-500/5 to-orange-500/10 border-b">
                       <CardTitle className="flex items-center gap-2">
                         <Music className="text-orange-500" size={20} />
@@ -406,13 +273,29 @@ export default function AdminSettings() {
                     </CardHeader>
                     <CardContent className="space-y-4 pt-6">
                       <div className="space-y-2">
-                        <Label htmlFor="backgroundMusicUrl" className="text-sm font-medium">URL Nhạc Nền</Label>
+                        <Label htmlFor="backgroundMusicType" className="text-sm font-medium">Loại Nhạc Nền</Label>
+                        <Select name="backgroundMusicType" defaultValue={settings?.backgroundMusicType || "mp3"}>
+                          <SelectTrigger className="h-12">
+                            <SelectValue placeholder="Chọn loại nhạc" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="youtube">🎬 YouTube Link</SelectItem>
+                            <SelectItem value="mp3">🎵 MP3 URL</SelectItem>
+                            <SelectItem value="upload">📤 Upload File</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <p className="text-xs text-muted-foreground">
+                          Chọn nguồn nhạc nền cho website
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="backgroundMusicUrl" className="text-sm font-medium">Link/URL Nhạc Nền</Label>
                         <div className="flex gap-2">
                           <Input
                             id="backgroundMusicUrl"
                             name="backgroundMusicUrl"
                             type="url"
-                            placeholder="https://example.com/our-wedding-song.mp3"
+                            placeholder="https://www.youtube.com/watch?v=... hoặc .mp3 link"
                             defaultValue={settings?.backgroundMusicUrl || ""}
                             className="h-12 flex-1"
                           />
@@ -421,7 +304,7 @@ export default function AdminSettings() {
                           </Button>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          URL tới file MP3 cho nhạc nền trên trang chủ
+                          YouTube link, MP3 URL, hoặc bấm Upload để tải file lên
                         </p>
                       </div>
                     </CardContent>
