@@ -29,6 +29,17 @@
 [x] 24. Final verification - cross-env package reinstalled and server running on port 5000
 [x] 25. All migration tasks completed successfully!
 
+## v1.0.1 Updates (Oct 24, 2025)
+[x] 26. Fixed LSP errors in AdminDashboard.tsx - Added User interface to useAuth
+[x] 27. Created database backup system with scripts/create_backup.ts
+[x] 28. Fixed backup SQL to properly quote reserved keywords (order column)
+[x] 29. Logout now redirects to homepage instead of login page
+[x] 30. Redesigned AdminDashboard sidebar - more compact (w-72 instead of w-80)
+[x] 31. Added "View Homepage" button in admin sidebar
+[x] 32. Rewrote comprehensive README.md (Vietnamese + English)
+[x] 33. Updated PROJECT_STATUS.md with latest status and features
+[x] 34. All improvements tested and verified working!
+
 ## Notes
 - Server is running successfully on port 5000
 - FE/BE connection is working (API calls successful)

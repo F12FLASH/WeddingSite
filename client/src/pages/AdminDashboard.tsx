@@ -16,6 +16,8 @@ import {
   Bell,
   User,
   Sparkles,
+  Home,
+  ExternalLink,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import {
@@ -112,20 +114,25 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
     if (!isLoading && !isAuthenticated) {
       toast({
         title: "🔐 Chưa đăng nhập",
-        description: "Bạn đã đăng xuất. Đang chuyển đến trang đăng nhập...",
+        description: "Vui lòng đăng nhập để truy cập trang quản lý",
         variant: "destructive",
       });
       setTimeout(() => {
-        window.location.href = "/api/login";
+        window.location.href = "/login";
       }, 500);
     }
   }, [isAuthenticated, isLoading, toast]);
 
-  const handleLogout = () => {
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
     toast({
-      title: "👋 Đã đăng xuất",
-      description: "Bạn đã đăng xuất thành công",
+      title: "👋 Đang đăng xuất...",
+      description: "Đang chuyển về trang chủ",
     });
+    
+    setTimeout(() => {
+      window.location.href = "/api/logout";
+    }, 300);
   };
 
   if (isLoading || !isAuthenticated) {
@@ -216,58 +223,33 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className="z-50"
         >
-          <Sidebar className="w-80 border-r border-border/40 bg-sidebar/95 backdrop-blur-xl shadow-2xl">
+          <Sidebar className="w-72 border-r border-border/40 bg-sidebar/98 backdrop-blur-xl shadow-xl">
             <SidebarContent className="gap-0">
               <SidebarGroup>
                 {/* Header */}
                 <motion.div
-                  className="p-8 pb-6 border-b border-border/40"
+                  className="p-6 pb-4 border-b border-border/40"
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                 >
-                  <SidebarGroupLabel className="text-2xl font-cursive text-primary mb-3 flex items-center gap-3">
-                    <motion.div
-                      animate={{
-                        rotate: [0, 10, -10, 0],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                      className="relative"
-                    >
-                      <Heart size={28} fill="currentColor" />
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                        className="absolute -inset-2"
-                      >
-                        <Sparkles size={32} className="text-primary/30" />
-                      </motion.div>
-                    </motion.div>
+                  <SidebarGroupLabel className="text-xl font-cursive text-primary mb-2 flex items-center gap-2">
+                    <Heart size={22} fill="currentColor" />
                     Quản Lý Đám Cưới
                   </SidebarGroupLabel>
-                  <div className="space-y-2">
-                    <p className="text-base text-muted-foreground font-medium">
-                      Chào mừng trở lại!
-                    </p>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground/80">
-                      <User size={14} />
-                      <span>{user?.name || "Admin"}</span>
-                    </div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground/80 mt-2">
+                    <User size={12} />
+                    <span>{user?.name || user?.username || "Admin"}</span>
                   </div>
                 </motion.div>
 
-                <SidebarGroupContent className="p-6">
+                <SidebarGroupContent className="p-4">
                   <motion.div
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
                   >
-                    <SidebarMenu className="space-y-3">
+                    <SidebarMenu className="space-y-2">
                       {menuItems.map((item, index) => {
                         const isActive = location === item.url;
                         return (
@@ -276,56 +258,41 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
                               <SidebarMenuButton
                                 asChild
                                 className={cn(
-                                  "relative group transition-all duration-400 rounded-2xl p-4 h-auto min-h-[72px]",
-                                  "hover:scale-[1.02] hover:shadow-lg border-2",
+                                  "relative group transition-all duration-300 rounded-xl p-3 h-auto",
+                                  "hover:shadow-md border",
                                   isActive
                                     ? cn(
-                                        "bg-sidebar-accent text-foreground border-primary/30 shadow-lg",
+                                        "bg-sidebar-accent text-foreground border-primary/40 shadow-md",
                                         item.bgColor
                                       )
-                                    : "border-transparent hover:border-border bg-transparent"
+                                    : "border-transparent hover:border-border/50 bg-transparent"
                                 )}
                               >
                                 <Link 
                                   href={item.url} 
                                   data-testid={`nav-${item.title.toLowerCase().replace(/\s+/g, '-')}`}
                                   onClick={() => setIsMobileMenuOpen(false)}
-                                  className="flex items-start gap-4"
+                                  className="flex items-center gap-3"
                                 >
-                                  <motion.div
-                                    whileHover={{ scale: 1.15 }}
-                                    whileTap={{ scale: 0.95 }}
+                                  <div
                                     className={cn(
-                                      "p-2 rounded-xl transition-colors",
-                                      isActive && "bg-white/50 dark:bg-black/20"
+                                      "p-1.5 rounded-lg transition-colors",
+                                      isActive ? "bg-white/50 dark:bg-black/20" : "bg-transparent"
                                     )}
                                   >
-                                    <item.icon size={22} className={item.color} />
-                                  </motion.div>
+                                    <item.icon size={18} className={item.color} />
+                                  </div>
                                   
-                                  <div className="flex-1 text-left space-y-1.5">
-                                    <span className="font-semibold text-base leading-tight block">
+                                  <div className="flex-1 text-left">
+                                    <span className="font-medium text-sm leading-tight block">
                                       {item.title}
                                     </span>
-                                    <p className="text-xs text-muted-foreground leading-relaxed">
-                                      {item.description}
-                                    </p>
                                   </div>
                                   
                                   {/* Active indicator */}
                                   {isActive && (
-                                    <motion.div
-                                      className="absolute right-3 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-primary rounded-full"
-                                      layoutId="activeIndicator"
-                                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                    />
+                                    <div className="w-1.5 h-1.5 bg-primary rounded-full" />
                                   )}
-
-                                  {/* Hover effect */}
-                                  <motion.div
-                                    className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/5 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                    initial={false}
-                                  />
                                 </Link>
                               </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -333,9 +300,39 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
                         );
                       })}
                       
-                      {/* Logout Button - Spaced out */}
+                      {/* View Homepage Button */}
                       <motion.div 
-                        className="pt-8 mt-4 border-t border-border/40"
+                        className="pt-6 mt-3"
+                        variants={itemVariants}
+                      >
+                        <SidebarMenuItem>
+                          <SidebarMenuButton asChild>
+                            <Link 
+                              href="/" 
+                              data-testid="link-homepage"
+                              className="group relative rounded-2xl p-3.5 h-auto min-h-[60px] text-primary hover:bg-primary/10 hover:text-primary transition-all duration-400 border-2 border-transparent hover:border-primary/20"
+                            >
+                              <div className="flex items-center gap-3">
+                                <motion.div
+                                  whileHover={{ scale: 1.1 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  className="p-1.5 rounded-lg bg-primary/10"
+                                >
+                                  <Home size={18} />
+                                </motion.div>
+                                <div className="flex-1 text-left">
+                                  <span className="font-medium text-sm block">Xem Trang Chủ</span>
+                                </div>
+                                <ExternalLink size={14} className="opacity-60" />
+                              </div>
+                            </Link>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      </motion.div>
+
+                      {/* Logout Button */}
+                      <motion.div 
+                        className="pt-3 mt-3 border-t border-border/40"
                         variants={itemVariants}
                       >
                         <SidebarMenuItem>
@@ -344,29 +341,20 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
                               href="/api/logout" 
                               data-testid="button-logout"
                               onClick={handleLogout}
-                              className="group relative rounded-2xl p-4 h-auto min-h-[72px] text-destructive hover:bg-destructive/10 hover:text-destructive transition-all duration-400 border-2 border-transparent hover:border-destructive/20"
+                              className="group relative rounded-2xl p-3.5 h-auto min-h-[60px] text-destructive hover:bg-destructive/10 hover:text-destructive transition-all duration-400 border-2 border-transparent hover:border-destructive/20"
                             >
-                              <div className="flex items-center gap-4">
+                              <div className="flex items-center gap-3">
                                 <motion.div
-                                  whileHover={{ scale: 1.15, x: 2 }}
+                                  whileHover={{ scale: 1.1, x: 2 }}
                                   whileTap={{ scale: 0.95 }}
-                                  className="p-2 rounded-xl bg-destructive/10"
+                                  className="p-1.5 rounded-lg bg-destructive/10"
                                 >
-                                  <LogOut size={22} />
+                                  <LogOut size={18} />
                                 </motion.div>
                                 <div className="flex-1 text-left">
-                                  <span className="font-semibold text-base block">Đăng Xuất</span>
-                                  <p className="text-xs text-muted-foreground mt-1">
-                                    Kết thúc phiên làm việc
-                                  </p>
+                                  <span className="font-medium text-sm block">Đăng Xuất</span>
                                 </div>
                               </div>
-                              
-                              {/* Hover effect */}
-                              <motion.div
-                                className="absolute inset-0 rounded-2xl bg-destructive/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                initial={false}
-                              />
                             </a>
                           </SidebarMenuButton>
                         </SidebarMenuItem>

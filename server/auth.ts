@@ -97,6 +97,15 @@ export async function setupAuth(app: Express) {
     });
   });
 
+  app.get("/api/logout", (req, res) => {
+    req.logout((err) => {
+      if (err) {
+        return res.redirect("/?error=logout_failed");
+      }
+      res.redirect("/");
+    });
+  });
+
   app.get("/api/auth/user", isAuthenticated, async (req, res) => {
     res.json(req.user);
   });
