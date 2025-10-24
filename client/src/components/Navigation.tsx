@@ -4,14 +4,12 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
-  { name: "Trang Chủ", href: "#home" },
-  { name: "Câu Chuyện", href: "#about" },
-  { name: "Lịch Trình", href: "#schedule" },
-  { name: "Album Ảnh", href: "#gallery" },
-  { name: "Lời Chúc", href: "#messages" },
-  { name: "Xác Nhận Tham Dự", href: "#rsvp" },
-  { name: "Địa Điểm", href: "#location" },
-  { name: "Quà Mừng", href: "#registry" },
+  { name: "Chủ", href: "#home" },
+  { name: "Chúng tôi", href: "#about" },
+  { name: "Lịch", href: "#schedule" },
+  { name: "Ảnh", href: "#gallery" },
+  { name: "Xác nhận", href: "#rsvp" },
+  { name: "Địa điểm", href: "#location" },
 ];
 
 export default function Navigation() {

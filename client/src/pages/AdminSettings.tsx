@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Save, Settings as SettingsIcon, Music, MapPin, Palette, Bell, Shield } from "lucide-react";
+import { Save, Settings as SettingsIcon, Music, MapPin, Palette, Bell, Shield, Eye, Upload } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import type { Settings } from "@shared/schema";

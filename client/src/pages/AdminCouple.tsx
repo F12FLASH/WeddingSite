@@ -11,52 +11,9 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import type { CoupleInfo, InsertCoupleInfo } from "@shared/schema";
 
-// Cloudinary configuration
-const CLOUDINARY_CLOUD_NAME = "your-cloudinary-cloud-name"; // Thay bằng cloud name của bạn
-const CLOUDINARY_UPLOAD_PRESET = "your-upload-preset"; // Thay bằng upload preset của bạn
-
-async function apiRequest(method: string, url: string, data?: any) {
-  const options: RequestInit = {
-    method,
-    headers: { "Content-Type": "application/json" },
-  };
-  if (data) {
-    options.body = JSON.stringify(data);
-  }
-  const res = await fetch(url, options);
-  if (!res.ok) {
-    const error = await res.json().catch(() => ({ message: "Network error" }));
-    throw new Error(error.message);
-  }
-  return res.json();
-}
-
-function isUnauthorizedError(error: Error) {
-  return error.message === "Unauthorized";
-}
-
-// Upload image to Cloudinary
-async function uploadImageToCloudinary(file: File): Promise<string> {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-  formData.append('cloud_name', CLOUDINARY_CLOUD_NAME);
-
-  const response = await fetch(
-    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-    {
-      method: 'POST',
-      body: formData,
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error('Upload failed');
-  }
-
-  const data = await response.json();
-  return data.secure_url;
-}
+import { apiRequest } from "@/lib/queryClient";
+import { isUnauthorizedError } from "@/lib/authUtils";
+import { uploadImageToCloudinary } from "@/lib/imageUpload";
 
 export default function AdminCouple() {
   const { toast } = useToast();
@@ -73,8 +30,6 @@ export default function AdminCouple() {
     bridePhoto: "",
     groomPhoto: "",
     heroImage: "",
-    brideDescription: "",
-    groomDescription: "",
   });
 
   const [uploading, setUploading] = useState<string | null>(null);
@@ -94,8 +49,6 @@ export default function AdminCouple() {
         bridePhoto: coupleInfo.bridePhoto || "",
         groomPhoto: coupleInfo.groomPhoto || "",
         heroImage: coupleInfo.heroImage || "",
-        brideDescription: coupleInfo.brideDescription || "",
-        groomDescription: coupleInfo.groomDescription || "",
       });
     }
   }, [coupleInfo]);
@@ -135,8 +88,6 @@ export default function AdminCouple() {
       bridePhoto: formData.bridePhoto || null,
       groomPhoto: formData.groomPhoto || null,
       heroImage: formData.heroImage || null,
-      brideDescription: formData.brideDescription || null,
-      groomDescription: formData.groomDescription || null,
     };
     
     updateMutation.mutate(data);
@@ -337,40 +288,6 @@ export default function AdminCouple() {
                   className="h-12 text-lg border-2 focus:border-primary transition-all duration-300"
                   data-testid="input-wedding-date"
                 />
-              </motion.div>
-
-              {/* Descriptions */}
-              <motion.div 
-                className="grid md:grid-cols-2 gap-6 p-4 bg-card rounded-xl border"
-                variants={itemVariants}
-                whileHover={{ scale: 1.01 }}
-              >
-                <div className="space-y-3">
-                  <Label htmlFor="brideDescription" className="text-lg font-medium flex items-center gap-2">
-                    💝 Mô Tả Cô Dâu
-                  </Label>
-                  <Textarea
-                    id="brideDescription"
-                    value={formData.brideDescription}
-                    onChange={(e) => setFormData({ ...formData, brideDescription: e.target.value })}
-                    rows={4}
-                    className="text-lg border-2 focus:border-pink-500 transition-all duration-300 resize-none"
-                    placeholder="Mô tả tính cách và sở thích của cô dâu..."
-                  />
-                </div>
-                <div className="space-y-3">
-                  <Label htmlFor="groomDescription" className="text-lg font-medium flex items-center gap-2">
-                    💼 Mô Tả Chú Rể
-                  </Label>
-                  <Textarea
-                    id="groomDescription"
-                    value={formData.groomDescription}
-                    onChange={(e) => setFormData({ ...formData, groomDescription: e.target.value })}
-                    rows={4}
-                    className="text-lg border-2 focus:border-blue-500 transition-all duration-300 resize-none"
-                    placeholder="Mô tả tính cách và sở thích của chú rể..."
-                  />
-                </div>
               </motion.div>
 
               {/* Our Story */}

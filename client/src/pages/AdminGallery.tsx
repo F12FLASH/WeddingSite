@@ -39,45 +39,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-
-// Cloudinary configuration
-const CLOUDINARY_CLOUD_NAME = "your-cloudinary-cloud-name";
-const CLOUDINARY_UPLOAD_PRESET = "your-upload-preset";
-
-// Upload image to Cloudinary
-async function uploadImageToCloudinary(file: File, onProgress?: (progress: number) => void): Promise<string> {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-  formData.append('cloud_name', CLOUDINARY_CLOUD_NAME);
-
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    
-    xhr.upload.addEventListener('progress', (e) => {
-      if (e.lengthComputable) {
-        const progress = (e.loaded / e.total) * 100;
-        onProgress?.(progress);
-      }
-    });
-
-    xhr.addEventListener('load', () => {
-      if (xhr.status === 200) {
-        const response = JSON.parse(xhr.responseText);
-        resolve(response.secure_url);
-      } else {
-        reject(new Error('Upload failed'));
-      }
-    });
-
-    xhr.addEventListener('error', () => {
-      reject(new Error('Upload failed'));
-    });
-
-    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`);
-    xhr.send(formData);
-  });
-}
+import { uploadImageToCloudinary } from "@/lib/imageUpload";
 
 export default function AdminGallery() {
   const { toast } = useToast();
@@ -103,7 +65,7 @@ export default function AdminGallery() {
     return matchesSearch && matchesCategory;
   });
 
-  const categories = [...new Set(photos.map(photo => photo.category).filter(Boolean))];
+  const categories = Array.from(new Set(photos.map(photo => photo.category).filter(Boolean)));
 
   const createMutation = useMutation({
     mutationFn: async (data: InsertPhoto) => {

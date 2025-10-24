@@ -154,6 +154,7 @@ export const registryItems = pgTable("registry_items", {
   price: integer("price"),
   imageUrl: text("image_url"),
   purchaseUrl: text("purchase_url"),
+  isPurchased: boolean("is_purchased").notNull().default(false),
   order: integer("order").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

@@ -28,45 +28,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
-
-// Cloudinary configuration
-const CLOUDINARY_CLOUD_NAME = "your-cloudinary-cloud-name";
-const CLOUDINARY_UPLOAD_PRESET = "your-upload-preset";
-
-// Upload image to Cloudinary
-async function uploadImageToCloudinary(file: File, onProgress?: (progress: number) => void): Promise<string> {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-  formData.append('cloud_name', CLOUDINARY_CLOUD_NAME);
-
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    
-    xhr.upload.addEventListener('progress', (e) => {
-      if (e.lengthComputable) {
-        const progress = (e.loaded / e.total) * 100;
-        onProgress?.(progress);
-      }
-    });
-
-    xhr.addEventListener('load', () => {
-      if (xhr.status === 200) {
-        const response = JSON.parse(xhr.responseText);
-        resolve(response.secure_url);
-      } else {
-        reject(new Error('Upload failed'));
-      }
-    });
-
-    xhr.addEventListener('error', () => {
-      reject(new Error('Upload failed'));
-    });
-
-    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`);
-    xhr.send(formData);
-  });
-}
+import { uploadImageToCloudinary } from "@/lib/imageUpload";
 
 export default function AdminRegistry() {
   const { toast } = useToast();
@@ -88,18 +50,19 @@ export default function AdminRegistry() {
   const filteredItems = items.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          item.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const price = item.price ?? 0;
     const matchesPrice = priceFilter === "all" || 
-                        (priceFilter === "under50" && item.price < 50) ||
-                        (priceFilter === "50-100" && item.price >= 50 && item.price <= 100) ||
-                        (priceFilter === "over100" && item.price > 100);
+                        (priceFilter === "under50" && price < 50) ||
+                        (priceFilter === "50-100" && price >= 50 && price <= 100) ||
+                        (priceFilter === "over100" && price > 100);
     return matchesSearch && matchesPrice;
   });
 
   const stats = {
     total: items.length,
-    totalValue: items.reduce((sum, item) => sum + (item.price || 0), 0),
+    totalValue: items.reduce((sum, item) => sum + (item.price ?? 0), 0),
     purchased: items.filter(item => item.isPurchased).length,
-    averagePrice: items.length > 0 ? Math.round(items.reduce((sum, item) => sum + (item.price || 0), 0) / items.length) : 0,
+    averagePrice: items.length > 0 ? Math.round(items.reduce((sum, item) => sum + (item.price ?? 0), 0) / items.length) : 0,
     completionRate: items.length > 0 ? Math.round((items.filter(item => item.isPurchased).length / items.length) * 100) : 0,
   };
 
