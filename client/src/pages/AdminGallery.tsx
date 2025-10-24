@@ -1,10 +1,22 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Image as ImageIcon, Plus, Trash2, Pencil, Eye, Download, Search, Filter } from "lucide-react";
+import { 
+  Image as ImageIcon, 
+  Plus, 
+  Trash2, 
+  Pencil, 
+  Eye, 
+  Download, 
+  Search, 
+  Filter,
+  Upload,
+  X,
+  CloudUpload
+} from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import type { Photo, InsertPhoto } from "@shared/schema";
@@ -26,6 +38,46 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+
+// Cloudinary configuration
+const CLOUDINARY_CLOUD_NAME = "your-cloudinary-cloud-name";
+const CLOUDINARY_UPLOAD_PRESET = "your-upload-preset";
+
+// Upload image to Cloudinary
+async function uploadImageToCloudinary(file: File, onProgress?: (progress: number) => void): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+  formData.append('cloud_name', CLOUDINARY_CLOUD_NAME);
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    
+    xhr.upload.addEventListener('progress', (e) => {
+      if (e.lengthComputable) {
+        const progress = (e.loaded / e.total) * 100;
+        onProgress?.(progress);
+      }
+    });
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status === 200) {
+        const response = JSON.parse(xhr.responseText);
+        resolve(response.secure_url);
+      } else {
+        reject(new Error('Upload failed'));
+      }
+    });
+
+    xhr.addEventListener('error', () => {
+      reject(new Error('Upload failed'));
+    });
+
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`);
+    xhr.send(formData);
+  });
+}
 
 export default function AdminGallery() {
   const { toast } = useToast();
@@ -35,6 +87,9 @@ export default function AdminGallery() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: photos = [], isLoading } = useQuery<Photo[]>({
     queryKey: ["/api/photos"],
@@ -61,6 +116,8 @@ export default function AdminGallery() {
         description: "Ảnh đã được thêm vào thư viện"
       });
       setIsDialogOpen(false);
+      setUploading(false);
+      setUploadProgress(0);
     },
     onError: (error: Error) => {
       if (isUnauthorizedError(error)) {
@@ -72,6 +129,8 @@ export default function AdminGallery() {
         description: "Không thể thêm ảnh",
         variant: "destructive",
       });
+      setUploading(false);
+      setUploadProgress(0);
     },
   });
 
@@ -125,6 +184,63 @@ export default function AdminGallery() {
     },
   });
 
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Vui lòng chọn file hình ảnh (JPEG, PNG, WebP)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Kích thước file không được vượt quá 10MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const imageUrl = await uploadImageToCloudinary(file, (progress) => {
+        setUploadProgress(progress);
+      });
+
+      // Auto-fill the URL field with the uploaded image URL
+      const urlInput = document.getElementById('url') as HTMLInputElement;
+      if (urlInput) {
+        urlInput.value = imageUrl;
+      }
+
+      toast({
+        title: "✅ Tải lên thành công!",
+        description: "Ảnh đã được tải lên Cloudinary",
+      });
+    } catch (error) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể tải lên ảnh",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+      // Reset file input
+      if (event.target) {
+        event.target.value = '';
+      }
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -142,11 +258,8 @@ export default function AdminGallery() {
     }
   };
 
-  const handleImageUpload = () => {
-    toast({
-      title: "📸 Tải ảnh lên",
-      description: "Tính năng tải ảnh trực tiếp sẽ được kích hoạt",
-    });
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
   };
 
   const containerVariants = {
@@ -199,6 +312,15 @@ export default function AdminGallery() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
+      {/* Hidden file input */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileSelect}
+        accept="image/*"
+        className="hidden"
+      />
+
       {/* Header */}
       <motion.div 
         className="mb-8"
@@ -216,8 +338,6 @@ export default function AdminGallery() {
               <Button 
                 onClick={() => setEditingPhoto(null)}
                 className="rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
               >
                 <Plus size={18} className="mr-2" />
                 Thêm Ảnh
@@ -242,10 +362,40 @@ export default function AdminGallery() {
                       defaultValue={editingPhoto?.url}
                       className="flex-1"
                     />
-                    <Button type="button" variant="outline" size="icon" onClick={handleImageUpload}>
-                      <Download size={16} />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="icon" 
+                      onClick={triggerFileInput}
+                      disabled={uploading}
+                    >
+                      {uploading ? (
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        >
+                          ⏳
+                        </motion.div>
+                      ) : (
+                        <CloudUpload size={16} />
+                      )}
                     </Button>
                   </div>
+                  
+                  {/* Upload Progress */}
+                  {uploading && (
+                    <div className="space-y-2">
+                      <Progress value={uploadProgress} className="h-2" />
+                      <p className="text-xs text-muted-foreground text-center">
+                        Đang tải lên... {Math.round(uploadProgress)}%
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Upload Instructions */}
+                  <p className="text-xs text-muted-foreground">
+                    Nhập URL hoặc tải lên từ thiết bị (JPEG, PNG, WebP, tối đa 10MB)
+                  </p>
                 </div>
                 
                 <div className="space-y-2">
@@ -285,7 +435,11 @@ export default function AdminGallery() {
                   <Button 
                     type="button" 
                     variant="outline" 
-                    onClick={() => setIsDialogOpen(false)}
+                    onClick={() => {
+                      setIsDialogOpen(false);
+                      setUploading(false);
+                      setUploadProgress(0);
+                    }}
                     className="rounded-lg"
                   >
                     Hủy
@@ -293,7 +447,7 @@ export default function AdminGallery() {
                   <Button 
                     type="submit" 
                     className="rounded-lg shadow-lg"
-                    disabled={createMutation.isPending || updateMutation.isPending}
+                    disabled={createMutation.isPending || updateMutation.isPending || uploading}
                   >
                     {editingPhoto ? "💾 Cập Nhật" : "📤 Thêm"} Ảnh
                   </Button>
@@ -334,16 +488,32 @@ export default function AdminGallery() {
 
         {/* Stats */}
         <motion.div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" variants={itemVariants}>
-          <Card className="bg-primary/5 border-primary/20">
+          <Card className="bg-primary/5 border-primary/20 rounded-2xl">
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-primary">{photos.length}</p>
               <p className="text-sm text-muted-foreground">Tổng số ảnh</p>
             </CardContent>
           </Card>
-          <Card className="bg-blue-500/5 border-blue-500/20">
+          <Card className="bg-blue-500/5 border-blue-500/20 rounded-2xl">
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-blue-500">{categories.length}</p>
               <p className="text-sm text-muted-foreground">Danh mục</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-green-500/5 border-green-500/20 rounded-2xl">
+            <CardContent className="p-4 text-center">
+              <p className="text-2xl font-bold text-green-500">
+                {photos.filter(p => p.category === 'wedding').length}
+              </p>
+              <p className="text-sm text-muted-foreground">Ảnh cưới</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-purple-500/5 border-purple-500/20 rounded-2xl">
+            <CardContent className="p-4 text-center">
+              <p className="text-2xl font-bold text-purple-500">
+                {photos.filter(p => p.category === 'engagement').length}
+              </p>
+              <p className="text-sm text-muted-foreground">Ảnh đính hôn</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -359,7 +529,7 @@ export default function AdminGallery() {
         >
           {[...Array(8)].map((_, i) => (
             <motion.div key={i} variants={itemVariants}>
-              <Card className="animate-pulse overflow-hidden">
+              <Card className="animate-pulse overflow-hidden rounded-2xl">
                 <div className="aspect-square bg-muted" />
                 <CardContent className="p-4 space-y-2">
                   <div className="h-4 bg-muted rounded w-3/4" />
@@ -384,11 +554,18 @@ export default function AdminGallery() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6 }}
               >
-                <Card className="border-dashed">
+                <Card className="border-dashed rounded-2xl">
                   <CardContent className="py-16 text-center text-muted-foreground">
                     <ImageIcon size={64} className="mx-auto mb-4 opacity-50" />
                     <p className="text-lg mb-2">Không tìm thấy ảnh nào</p>
                     <p>Thử thay đổi bộ lọc hoặc thêm ảnh mới</p>
+                    <Button 
+                      className="mt-4 rounded-xl"
+                      onClick={() => setIsDialogOpen(true)}
+                    >
+                      <Plus size={18} className="mr-2" />
+                      Thêm Ảnh Đầu Tiên
+                    </Button>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -403,7 +580,7 @@ export default function AdminGallery() {
                   exit="hidden"
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="group overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-card/50 backdrop-blur-sm">
+                  <Card className="group overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-card/50 backdrop-blur-sm rounded-2xl">
                     <div className="relative aspect-square overflow-hidden">
                       <motion.img
                         src={photo.url}
@@ -423,7 +600,7 @@ export default function AdminGallery() {
                         <Button
                           variant="secondary"
                           size="sm"
-                          className="rounded-full shadow-lg"
+                          className="rounded-full shadow-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm"
                           onClick={() => setPreviewImage(photo.url)}
                         >
                           <Eye size={16} />
@@ -431,7 +608,7 @@ export default function AdminGallery() {
                         <Button
                           variant="secondary"
                           size="sm"
-                          className="rounded-full shadow-lg"
+                          className="rounded-full shadow-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm"
                           onClick={() => {
                             setEditingPhoto(photo);
                             setIsDialogOpen(true);
@@ -442,7 +619,7 @@ export default function AdminGallery() {
                         <Button
                           variant="secondary"
                           size="sm"
-                          className="rounded-full shadow-lg bg-destructive/20 hover:bg-destructive/30"
+                          className="rounded-full shadow-lg bg-destructive/20 hover:bg-destructive/30 backdrop-blur-sm"
                           onClick={() => {
                             if (confirm("Bạn có chắc muốn xóa ảnh này?")) {
                               deleteMutation.mutate(photo.id);
@@ -457,7 +634,7 @@ export default function AdminGallery() {
                       {photo.category && (
                         <Badge 
                           variant="secondary" 
-                          className="absolute top-2 left-2 bg-black/50 text-white border-0"
+                          className="absolute top-3 left-3 bg-black/70 text-white border-0 backdrop-blur-sm rounded-full px-3 py-1"
                         >
                           {photo.category}
                         </Badge>
@@ -487,14 +664,24 @@ export default function AdminGallery() {
 
       {/* Image Preview Dialog */}
       <Dialog open={!!previewImage} onOpenChange={() => setPreviewImage(null)}>
-        <DialogContent className="max-w-4xl">
-          {previewImage && (
-            <img
-              src={previewImage}
-              alt="Preview"
-              className="w-full h-auto rounded-lg"
-            />
-          )}
+        <DialogContent className="max-w-4xl p-0 bg-transparent border-0 shadow-none">
+          <div className="relative">
+            {previewImage && (
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="w-full h-auto rounded-2xl shadow-2xl"
+              />
+            )}
+            <Button
+              variant="secondary"
+              size="icon"
+              className="absolute top-4 right-4 rounded-full bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm"
+              onClick={() => setPreviewImage(null)}
+            >
+              <X size={20} />
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </motion.div>

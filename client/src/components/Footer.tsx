@@ -268,15 +268,3 @@ export default function Footer() {
   );
 }
 
-// CSS Classes cần thêm
-/*
-.social-icon {
-  @apply w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center 
-         text-primary cursor-pointer transition-all duration-300 
-         shadow-lg hover:shadow-xl border border-primary/20;
-}
-
-.hover-elevate {
-  @apply transition-all duration-300 hover:shadow-lg hover:scale-110;
-}
-*/

@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Gift, Plus, Trash2, Pencil, ExternalLink, Search, Filter, DollarSign, Package, TrendingUp } from "lucide-react";
+import { Gift, Plus, Trash2, Pencil, ExternalLink, Search, Filter, DollarSign, Package, TrendingUp, Upload, CloudUpload, X } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import type { RegistryItem, InsertRegistryItem } from "@shared/schema";
@@ -27,6 +27,46 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
+
+// Cloudinary configuration
+const CLOUDINARY_CLOUD_NAME = "your-cloudinary-cloud-name";
+const CLOUDINARY_UPLOAD_PRESET = "your-upload-preset";
+
+// Upload image to Cloudinary
+async function uploadImageToCloudinary(file: File, onProgress?: (progress: number) => void): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+  formData.append('cloud_name', CLOUDINARY_CLOUD_NAME);
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    
+    xhr.upload.addEventListener('progress', (e) => {
+      if (e.lengthComputable) {
+        const progress = (e.loaded / e.total) * 100;
+        onProgress?.(progress);
+      }
+    });
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status === 200) {
+        const response = JSON.parse(xhr.responseText);
+        resolve(response.secure_url);
+      } else {
+        reject(new Error('Upload failed'));
+      }
+    });
+
+    xhr.addEventListener('error', () => {
+      reject(new Error('Upload failed'));
+    });
+
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`);
+    xhr.send(formData);
+  });
+}
 
 export default function AdminRegistry() {
   const { toast } = useToast();
@@ -35,6 +75,10 @@ export default function AdminRegistry() {
   const [editingItem, setEditingItem] = useState<RegistryItem | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [priceFilter, setPriceFilter] = useState("all");
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: items = [], isLoading } = useQuery<RegistryItem[]>({
     queryKey: ["/api/registry"],
@@ -56,6 +100,7 @@ export default function AdminRegistry() {
     totalValue: items.reduce((sum, item) => sum + (item.price || 0), 0),
     purchased: items.filter(item => item.isPurchased).length,
     averagePrice: items.length > 0 ? Math.round(items.reduce((sum, item) => sum + (item.price || 0), 0) / items.length) : 0,
+    completionRate: items.length > 0 ? Math.round((items.filter(item => item.isPurchased).length / items.length) * 100) : 0,
   };
 
   const createMutation = useMutation({
@@ -69,6 +114,8 @@ export default function AdminRegistry() {
         description: "Món quà đã được thêm vào danh sách"
       });
       setIsDialogOpen(false);
+      setUploading(false);
+      setUploadProgress(0);
     },
     onError: (error: Error) => {
       if (isUnauthorizedError(error)) {
@@ -80,6 +127,8 @@ export default function AdminRegistry() {
         description: "Không thể thêm món quà",
         variant: "destructive",
       });
+      setUploading(false);
+      setUploadProgress(0);
     },
   });
 
@@ -133,6 +182,63 @@ export default function AdminRegistry() {
     },
   });
 
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Vui lòng chọn file hình ảnh (JPEG, PNG, WebP)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Kích thước file không được vượt quá 10MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const imageUrl = await uploadImageToCloudinary(file, (progress) => {
+        setUploadProgress(progress);
+      });
+
+      // Auto-fill the imageUrl field
+      const imageUrlInput = document.getElementById('imageUrl') as HTMLInputElement;
+      if (imageUrlInput) {
+        imageUrlInput.value = imageUrl;
+      }
+
+      toast({
+        title: "✅ Tải lên thành công!",
+        description: "Ảnh đã được tải lên Cloudinary",
+      });
+    } catch (error) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể tải lên ảnh",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+      // Reset file input
+      if (event.target) {
+        event.target.value = '';
+      }
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -151,6 +257,10 @@ export default function AdminRegistry() {
     } else {
       createMutation.mutate(data);
     }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
   };
 
   const containerVariants = {
@@ -203,6 +313,15 @@ export default function AdminRegistry() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
+      {/* Hidden file input */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileSelect}
+        accept="image/*"
+        className="hidden"
+      />
+
       {/* Header */}
       <motion.div 
         className="mb-8"
@@ -220,8 +339,6 @@ export default function AdminRegistry() {
               <Button 
                 onClick={() => setEditingItem(null)}
                 className="rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
               >
                 <Plus size={18} className="mr-2" />
                 Thêm Món Quà
@@ -271,15 +388,63 @@ export default function AdminRegistry() {
                   />
                 </div>
                 
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="imageUrl" className="text-sm font-medium">URL Hình Ảnh</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="imageUrl" className="text-sm font-medium">URL Hình Ảnh</Label>
+                  <div className="flex gap-2">
                     <Input
                       id="imageUrl"
                       name="imageUrl"
                       type="url"
                       placeholder="https://example.com/image.jpg"
                       defaultValue={editingItem?.imageUrl || ""}
+                      className="h-12 flex-1"
+                    />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="icon" 
+                      onClick={triggerFileInput}
+                      disabled={uploading}
+                      className="h-12 w-12"
+                    >
+                      {uploading ? (
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        >
+                          ⏳
+                        </motion.div>
+                      ) : (
+                        <CloudUpload size={18} />
+                      )}
+                    </Button>
+                  </div>
+                  
+                  {/* Upload Progress */}
+                  {uploading && (
+                    <div className="space-y-2">
+                      <Progress value={uploadProgress} className="h-2" />
+                      <p className="text-xs text-muted-foreground text-center">
+                        Đang tải lên... {Math.round(uploadProgress)}%
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Upload Instructions */}
+                  <p className="text-xs text-muted-foreground">
+                    Nhập URL hoặc tải lên từ thiết bị (JPEG, PNG, WebP, tối đa 10MB)
+                  </p>
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="purchaseUrl" className="text-sm font-medium">Liên Kết Mua Hàng</Label>
+                    <Input
+                      id="purchaseUrl"
+                      name="purchaseUrl"
+                      type="url"
+                      placeholder="https://store.com/product"
+                      defaultValue={editingItem?.purchaseUrl || ""}
                       className="h-12"
                     />
                   </div>
@@ -294,18 +459,6 @@ export default function AdminRegistry() {
                       className="h-12"
                     />
                   </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="purchaseUrl" className="text-sm font-medium">Liên Kết Mua Hàng</Label>
-                  <Input
-                    id="purchaseUrl"
-                    name="purchaseUrl"
-                    type="url"
-                    placeholder="https://store.com/product"
-                    defaultValue={editingItem?.purchaseUrl || ""}
-                    className="h-12"
-                  />
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -323,7 +476,11 @@ export default function AdminRegistry() {
                   <Button 
                     type="button" 
                     variant="outline" 
-                    onClick={() => setIsDialogOpen(false)}
+                    onClick={() => {
+                      setIsDialogOpen(false);
+                      setUploading(false);
+                      setUploadProgress(0);
+                    }}
                     className="rounded-lg"
                   >
                     Hủy
@@ -331,7 +488,7 @@ export default function AdminRegistry() {
                   <Button 
                     type="submit" 
                     className="rounded-lg shadow-lg"
-                    disabled={createMutation.isPending || updateMutation.isPending}
+                    disabled={createMutation.isPending || updateMutation.isPending || uploading}
                   >
                     {editingItem ? "💾 Cập Nhật" : "📤 Thêm"} Món Quà
                   </Button>
@@ -342,29 +499,35 @@ export default function AdminRegistry() {
         </motion.div>
 
         {/* Stats */}
-        <motion.div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6" variants={itemVariants}>
-          <Card className="bg-blue-500/5 border-blue-500/20">
+        <motion.div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6" variants={itemVariants}>
+          <Card className="bg-blue-500/5 border-blue-500/20 rounded-2xl">
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-blue-500">{stats.total}</p>
               <p className="text-sm text-muted-foreground">Tổng số quà</p>
             </CardContent>
           </Card>
-          <Card className="bg-green-500/5 border-green-500/20">
+          <Card className="bg-green-500/5 border-green-500/20 rounded-2xl">
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-green-500">${stats.totalValue}</p>
               <p className="text-sm text-muted-foreground">Tổng giá trị</p>
             </CardContent>
           </Card>
-          <Card className="bg-purple-500/5 border-purple-500/20">
+          <Card className="bg-purple-500/5 border-purple-500/20 rounded-2xl">
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-purple-500">{stats.purchased}</p>
               <p className="text-sm text-muted-foreground">Đã mua</p>
             </CardContent>
           </Card>
-          <Card className="bg-orange-500/5 border-orange-500/20">
+          <Card className="bg-orange-500/5 border-orange-500/20 rounded-2xl">
             <CardContent className="p-4 text-center">
               <p className="text-2xl font-bold text-orange-500">${stats.averagePrice}</p>
               <p className="text-sm text-muted-foreground">Giá trung bình</p>
+            </CardContent>
+          </Card>
+          <Card className="bg-cyan-500/5 border-cyan-500/20 rounded-2xl">
+            <CardContent className="p-4 text-center">
+              <p className="text-2xl font-bold text-cyan-500">{stats.completionRate}%</p>
+              <p className="text-sm text-muted-foreground">Tỷ lệ hoàn thành</p>
             </CardContent>
           </Card>
         </motion.div>
@@ -377,12 +540,12 @@ export default function AdminRegistry() {
               placeholder="🔍 Tìm kiếm quà theo tên hoặc mô tả..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 rounded-xl"
+              className="pl-10 rounded-xl h-12"
             />
           </div>
           <div className="flex gap-2">
             <Select value={priceFilter} onValueChange={setPriceFilter}>
-              <SelectTrigger className="w-40 rounded-xl">
+              <SelectTrigger className="w-40 rounded-xl h-12">
                 <Filter size={16} className="mr-2" />
                 <SelectValue placeholder="Tất cả giá" />
               </SelectTrigger>
@@ -407,7 +570,7 @@ export default function AdminRegistry() {
         >
           {[...Array(6)].map((_, i) => (
             <motion.div key={i} variants={itemVariants}>
-              <Card className="animate-pulse overflow-hidden">
+              <Card className="animate-pulse overflow-hidden rounded-2xl">
                 <div className="aspect-square bg-muted" />
                 <CardContent className="p-4 space-y-3">
                   <div className="h-6 bg-muted rounded w-3/4" />
@@ -433,11 +596,18 @@ export default function AdminRegistry() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6 }}
               >
-                <Card className="border-dashed">
+                <Card className="border-dashed rounded-2xl">
                   <CardContent className="py-16 text-center text-muted-foreground">
                     <Gift size={64} className="mx-auto mb-4 opacity-50" />
                     <p className="text-lg mb-2">Không tìm thấy món quà nào</p>
                     <p>Thử thay đổi bộ lọc hoặc thêm món quà mới</p>
+                    <Button 
+                      className="mt-4 rounded-xl"
+                      onClick={() => setIsDialogOpen(true)}
+                    >
+                      <Plus size={18} className="mr-2" />
+                      Thêm Món Quà Đầu Tiên
+                    </Button>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -452,109 +622,115 @@ export default function AdminRegistry() {
                   exit="hidden"
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-card/50 backdrop-blur-sm group">
+                  <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-card/50 backdrop-blur-sm group rounded-2xl">
                     {/* Item Image */}
-                    {item.imageUrl && (
-                      <div className="relative aspect-square overflow-hidden">
-                        <motion.img
-                          src={item.imageUrl}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                          whileHover={{ scale: 1.1 }}
-                          transition={{ duration: 0.3 }}
-                        />
-                        
-                        {/* Overlay Actions */}
-                        <motion.div
-                          className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2"
-                          initial={{ opacity: 0 }}
-                          whileHover={{ opacity: 1 }}
-                        >
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            className="rounded-full shadow-lg"
-                            onClick={() => {
-                              setEditingItem(item);
-                              setIsDialogOpen(true);
-                            }}
+                    <div className="relative aspect-square overflow-hidden bg-muted/20">
+                      {item.imageUrl ? (
+                        <>
+                          <motion.img
+                            src={item.imageUrl}
+                            alt={item.name}
+                            className="w-full h-full object-cover cursor-pointer"
+                            whileHover={{ scale: 1.1 }}
+                            transition={{ duration: 0.3 }}
+                            onClick={() => setPreviewImage(item.imageUrl!)}
+                          />
+                          
+                          {/* Overlay Actions */}
+                          <motion.div
+                            className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2"
+                            initial={{ opacity: 0 }}
+                            whileHover={{ opacity: 1 }}
                           >
-                            <Pencil size={16} />
-                          </Button>
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            className="rounded-full shadow-lg bg-destructive/20 hover:bg-destructive/30"
-                            onClick={() => {
-                              if (confirm(`Bạn có chắc muốn xóa "${item.name}"?`)) {
-                                deleteMutation.mutate(item.id);
-                              }
-                            }}
-                          >
-                            <Trash2 size={16} className="text-destructive" />
-                          </Button>
-                        </motion.div>
-
-                        {/* Purchased Badge */}
-                        {item.isPurchased && (
-                          <Badge 
-                            className="absolute top-2 left-2 bg-green-500 text-white border-0 shadow-lg"
-                          >
-                            <Package size={12} className="mr-1" />
-                            Đã mua
-                          </Badge>
-                        )}
-
-                        {/* Price Badge */}
-                        {item.price && (
-                          <Badge 
-                            variant="secondary" 
-                            className="absolute top-2 right-2 bg-black/50 text-white border-0 backdrop-blur-sm"
-                          >
-                            <DollarSign size={12} className="mr-1" />
-                            {item.price}
-                          </Badge>
-                        )}
-                      </div>
-                    )}
-                    
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <CardTitle className="text-lg leading-tight">{item.name}</CardTitle>
-                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          {/* Action buttons will appear on hover */}
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              className="rounded-full shadow-lg bg-white/20 hover:bg-white/30 backdrop-blur-sm"
+                              onClick={() => {
+                                setEditingItem(item);
+                                setIsDialogOpen(true);
+                              }}
+                            >
+                              <Pencil size={16} />
+                            </Button>
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              className="rounded-full shadow-lg bg-destructive/20 hover:bg-destructive/30 backdrop-blur-sm"
+                              onClick={() => {
+                                if (confirm(`Bạn có chắc muốn xóa "${item.name}"?`)) {
+                                  deleteMutation.mutate(item.id);
+                                }
+                              }}
+                            >
+                              <Trash2 size={16} className="text-destructive" />
+                            </Button>
+                          </motion.div>
+                        </>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                          <Gift size={48} className="opacity-30" />
                         </div>
-                      </div>
-                      
-                      {item.description && (
-                        <motion.p 
-                          className="text-sm text-muted-foreground mb-3 line-clamp-2 leading-relaxed"
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.2 }}
-                        >
-                          {item.description}
-                        </motion.p>
                       )}
-                      
-                      <div className="flex justify-between items-center">
-                        {item.purchaseUrl ? (
-                          <a
-                            href={item.purchaseUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-sm text-primary hover:underline font-medium"
+
+                      {/* Purchased Badge */}
+                      {item.isPurchased && (
+                        <Badge 
+                          className="absolute top-3 left-3 bg-green-500 text-white border-0 shadow-lg backdrop-blur-sm rounded-full px-3 py-1"
+                        >
+                          <Package size={12} className="mr-1" />
+                          Đã mua
+                        </Badge>
+                      )}
+
+                      {/* Price Badge */}
+                      {item.price && (
+                        <Badge 
+                          variant="secondary" 
+                          className="absolute top-3 right-3 bg-black/70 text-white border-0 backdrop-blur-sm rounded-full px-3 py-1"
+                        >
+                          <DollarSign size={12} className="mr-1" />
+                          {item.price}
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    <CardContent className="p-6">
+                      <div className="space-y-3">
+                        <CardTitle className="text-xl leading-tight font-semibold">{item.name}</CardTitle>
+                        
+                        {item.description && (
+                          <motion.p 
+                            className="text-sm text-muted-foreground line-clamp-2 leading-relaxed"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
                           >
-                            <ExternalLink size={14} />
-                            Mua ngay
-                          </a>
-                        ) : (
-                          <span className="text-sm text-muted-foreground">Không có liên kết</span>
+                            {item.description}
+                          </motion.p>
                         )}
                         
-                        <Badge variant="outline" className="text-xs">
-                          Thứ tự: {item.order}
-                        </Badge>
+                        <div className="flex justify-between items-center pt-2">
+                          {item.purchaseUrl ? (
+                            <a
+                              href={item.purchaseUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 text-sm text-primary hover:underline font-semibold bg-primary/10 hover:bg-primary/20 px-3 py-2 rounded-lg transition-colors"
+                            >
+                              <ExternalLink size={14} />
+                              Mua ngay
+                            </a>
+                          ) : (
+                            <span className="text-sm text-muted-foreground bg-muted/50 px-3 py-2 rounded-lg">
+                              Không có liên kết
+                            </span>
+                          )}
+                          
+                          <Badge variant="outline" className="text-xs bg-background/50 backdrop-blur-sm">
+                            Thứ tự: {item.order}
+                          </Badge>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -564,6 +740,29 @@ export default function AdminRegistry() {
           </AnimatePresence>
         </motion.div>
       )}
+
+      {/* Image Preview Dialog */}
+      <Dialog open={!!previewImage} onOpenChange={() => setPreviewImage(null)}>
+        <DialogContent className="max-w-4xl p-0 bg-transparent border-0 shadow-none">
+          <div className="relative">
+            {previewImage && (
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="w-full h-auto rounded-2xl shadow-2xl"
+              />
+            )}
+            <Button
+              variant="secondary"
+              size="icon"
+              className="absolute top-4 right-4 rounded-full bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm"
+              onClick={() => setPreviewImage(null)}
+            >
+              <X size={20} />
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   );
 }

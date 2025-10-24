@@ -1,7 +1,8 @@
-import { Users, MessageSquare, Calendar, Heart, Gift, Image, TrendingUp, Clock, CheckCircle, XCircle } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Users, MessageSquare, Calendar, Heart, Gift, Image, TrendingUp, Clock, CheckCircle, XCircle, Plus, Settings, Eye } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 
@@ -15,7 +16,8 @@ const stats = [
     bgColor: "bg-blue-500/10",
     borderColor: "border-blue-500/20",
     trend: "+12 tuần này",
-    trendUp: true
+    trendUp: true,
+    progress: 75
   },
   {
     title: "Tin Nhắn Khách Mời",
@@ -26,7 +28,8 @@ const stats = [
     bgColor: "bg-green-500/10",
     borderColor: "border-green-500/20",
     trend: "+8 mới",
-    trendUp: true
+    trendUp: true,
+    progress: 90
   },
   {
     title: "Số Ngày Đến Đám Cưới",
@@ -37,7 +40,8 @@ const stats = [
     bgColor: "bg-orange-500/10",
     borderColor: "border-orange-500/20",
     trend: "Đang đếm ngược",
-    trendUp: false
+    trendUp: false,
+    progress: 60
   },
   {
     title: "Thư Viện Ảnh",
@@ -48,7 +52,8 @@ const stats = [
     bgColor: "bg-purple-500/10",
     borderColor: "border-purple-500/20",
     trend: "+5 mới",
-    trendUp: true
+    trendUp: true,
+    progress: 40
   },
   {
     title: "Quà Đã Đăng Ký",
@@ -59,7 +64,8 @@ const stats = [
     bgColor: "bg-pink-500/10",
     borderColor: "border-pink-500/20",
     trend: "65% hoàn thành",
-    trendUp: true
+    trendUp: true,
+    progress: 65
   },
   {
     title: "Tỷ Lệ Phản Hồi",
@@ -70,7 +76,8 @@ const stats = [
     bgColor: "bg-cyan-500/10",
     borderColor: "border-cyan-500/20",
     trend: "+5% so với tuần trước",
-    trendUp: true
+    trendUp: true,
+    progress: 78
   },
 ];
 
@@ -82,6 +89,7 @@ export default function AdminHome() {
       { type: 'message', name: 'David Chen', action: 'sent message', time: '5 phút trước' },
       { type: 'gift', name: 'Maria Garcia', action: 'purchased gift', time: '1 giờ trước' },
       { type: 'photo', name: 'System', action: 'new photo uploaded', time: '2 giờ trước' },
+      { type: 'rsvp', name: 'John Smith', action: 'declined', time: '3 giờ trước' },
     ]
   });
 
@@ -90,7 +98,7 @@ export default function AdminHome() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.08
       }
     }
   };
@@ -119,7 +127,7 @@ export default function AdminHome() {
       }
     },
     hover: {
-      y: -5,
+      y: -8,
       scale: 1.02,
       transition: {
         type: "spring",
@@ -131,21 +139,21 @@ export default function AdminHome() {
 
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case 'rsvp': return <Users size={16} className="text-blue-500" />;
-      case 'message': return <MessageSquare size={16} className="text-green-500" />;
-      case 'gift': return <Gift size={16} className="text-pink-500" />;
-      case 'photo': return <Image size={16} className="text-purple-500" />;
-      default: return <Heart size={16} className="text-primary" />;
+      case 'rsvp': return <Users size={18} className="text-blue-500" />;
+      case 'message': return <MessageSquare size={18} className="text-green-500" />;
+      case 'gift': return <Gift size={18} className="text-pink-500" />;
+      case 'photo': return <Image size={18} className="text-purple-500" />;
+      default: return <Heart size={18} className="text-primary" />;
     }
   };
 
   const getActivityColor = (type: string) => {
     switch (type) {
-      case 'rsvp': return 'bg-blue-500/10 text-blue-600';
-      case 'message': return 'bg-green-500/10 text-green-600';
-      case 'gift': return 'bg-pink-500/10 text-pink-600';
-      case 'photo': return 'bg-purple-500/10 text-purple-600';
-      default: return 'bg-primary/10 text-primary';
+      case 'rsvp': return 'bg-blue-500/10 text-blue-600 border-blue-500/20';
+      case 'message': return 'bg-green-500/10 text-green-600 border-green-500/20';
+      case 'gift': return 'bg-pink-500/10 text-pink-600 border-pink-500/20';
+      case 'photo': return 'bg-purple-500/10 text-purple-600 border-purple-500/20';
+      default: return 'bg-primary/10 text-primary border-primary/20';
     }
   };
 
@@ -154,32 +162,56 @@ export default function AdminHome() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
+      className="space-y-8"
     >
       {/* Header */}
       <motion.div 
-        className="mb-8"
+        className="space-y-4"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        <motion.h2 
-          className="text-3xl font-serif mb-2 text-foreground" 
-          data-testid="heading-dashboard"
-          variants={itemVariants}
-        >
-          🎊 Tổng Quan Bảng Điều Khiển
-        </motion.h2>
-        <motion.p 
-          className="text-muted-foreground text-lg"
-          variants={itemVariants}
-        >
-          Chào mừng trở lại! Đây là tổng quan về đám cưới của bạn.
-        </motion.p>
+        <motion.div variants={itemVariants}>
+          <h2 className="text-4xl font-serif font-bold text-foreground mb-3">
+            🎊 Tổng Quan Bảng Điều Khiển
+          </h2>
+          <p className="text-xl text-muted-foreground">
+            Chào mừng trở lại! Đây là tổng quan về đám cưới của bạn.
+          </p>
+        </motion.div>
+
+        {/* Welcome Card */}
+        <motion.div variants={itemVariants}>
+          <Card className="bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20 shadow-lg">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-semibold text-foreground">
+                    💝 Chúc mừng đám cưới!
+                  </h3>
+                  <p className="text-muted-foreground text-lg">
+                    Mọi thứ đang diễn ra tuyệt vời. Tiếp tục phát huy nhé!
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Button variant="outline" className="rounded-xl">
+                    <Settings size={18} className="mr-2" />
+                    Cài Đặt
+                  </Button>
+                  <Button className="rounded-xl bg-primary hover:bg-primary/90">
+                    <Plus size={18} className="mr-2" />
+                    Thêm Mới
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </motion.div>
 
       {/* Stats Grid */}
       <motion.div 
-        className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 mb-8"
+        className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -189,43 +221,52 @@ export default function AdminHome() {
             key={index}
             variants={cardVariants}
             whileHover="hover"
-            data-testid={`stat-${index}`}
+            className="h-full"
           >
-            <Card className={`border-2 ${stat.borderColor} ${stat.bgColor} backdrop-blur-sm relative overflow-hidden group`}>
+            <Card className={`border-2 ${stat.borderColor} ${stat.bgColor} backdrop-blur-sm relative overflow-hidden group h-full`}>
               {/* Animated Background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3 relative z-10">
-                <CardTitle className="text-sm font-medium text-foreground/80">
-                  {stat.title}
-                </CardTitle>
-                <motion.div
-                  className={`p-2 rounded-lg ${stat.bgColor}`}
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
-                  <stat.icon className={`h-5 w-5 ${stat.color}`} />
-                </motion.div>
-              </CardHeader>
-              <CardContent className="relative z-10">
-                <div className="flex items-end justify-between mb-2">
-                  <div className="text-3xl font-bold text-foreground">
-                    {stat.value}
+              <CardContent className="p-6 relative z-10 h-full flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`p-3 rounded-2xl ${stat.bgColor} border ${stat.borderColor}`}>
+                    <stat.icon className={`h-6 w-6 ${stat.color}`} />
                   </div>
                   <Badge 
                     variant={stat.trendUp ? "default" : "secondary"} 
-                    className={`text-xs ${
+                    className={`text-xs font-medium ${
                       stat.trendUp 
-                        ? 'bg-green-500/20 text-green-600 hover:bg-green-500/30' 
-                        : 'bg-orange-500/20 text-orange-600 hover:bg-orange-500/30'
+                        ? 'bg-green-500/20 text-green-600 hover:bg-green-500/30 border-green-500/30' 
+                        : 'bg-orange-500/20 text-orange-600 hover:bg-orange-500/30 border-orange-500/30'
                     }`}
                   >
                     {stat.trendUp ? "↗" : "↘"} {stat.trend}
                   </Badge>
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  {stat.description}
-                </p>
+
+                <div className="space-y-3 flex-1">
+                  <div>
+                    <h3 className="text-sm font-medium text-foreground/80 mb-1">
+                      {stat.title}
+                    </h3>
+                    <div className="text-3xl font-bold text-foreground mb-2">
+                      {stat.value}
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {stat.description}
+                    </p>
+                  </div>
+
+                  {stat.progress && (
+                    <div className="space-y-2">
+                      <Progress value={stat.progress} className="h-2 bg-muted/50" />
+                      <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>Tiến độ</span>
+                        <span>{stat.progress}%</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </motion.div>
@@ -233,102 +274,84 @@ export default function AdminHome() {
       </motion.div>
 
       {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Left Column - Recent Activity & Quick Actions */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Recent Activity */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <Card className="border-2 border-border/50 shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 border-b">
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="text-primary" size={20} />
-                  Hoạt Động Gần Đây
+      <div className="grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
+        {/* Recent Activity */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="xl:col-span-2"
+        >
+          <Card className="border-2 border-border/50 shadow-lg h-full">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-3 text-xl">
+                  <div className="p-2 bg-blue-500/10 rounded-xl">
+                    <Clock className="text-blue-500" size={24} />
+                  </div>
+                  <div>
+                    Hoạt Động Gần Đây
+                    <CardDescription className="text-base mt-1">
+                      Cập nhật mới nhất từ hệ thống
+                    </CardDescription>
+                  </div>
                 </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="divide-y divide-border/50">
-                  {recentActivity.map((activity, i) => (
-                    <motion.div
-                      key={i}
-                      className="flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors group"
-                      variants={itemVariants}
-                      whileHover={{ x: 4 }}
-                      data-testid={`recent-activity-${i}`}
-                    >
-                      <div className={`p-2 rounded-full ${getActivityColor(activity.type)}`}>
-                        {getActivityIcon(activity.type)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-foreground text-sm">
-                          {activity.name}
-                        </p>
-                        <p className="text-sm text-muted-foreground capitalize">
-                          {activity.action}
-                        </p>
-                      </div>
-                      <div className="text-xs text-muted-foreground whitespace-nowrap">
-                        {activity.time}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                <Button variant="ghost" size="sm" className="rounded-lg">
+                  <Eye size={16} className="mr-2" />
+                  Xem tất cả
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-border/50">
+                {recentActivity.map((activity, i) => (
+                  <motion.div
+                    key={i}
+                    className="flex items-center gap-4 p-6 hover:bg-muted/30 transition-all duration-300 group"
+                    variants={itemVariants}
+                    whileHover={{ x: 8 }}
+                  >
+                    <div className={`p-3 rounded-xl border ${getActivityColor(activity.type)}`}>
+                      {getActivityIcon(activity.type)}
+                    </div>
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <p className="font-semibold text-foreground text-base">
+                        {activity.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground capitalize">
+                        {activity.action}
+                      </p>
+                    </div>
+                    <div className="text-sm text-muted-foreground whitespace-nowrap bg-muted/50 px-3 py-1 rounded-full">
+                      {activity.time}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-          {/* Quick Actions */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  🚀 Hành Động Nhanh
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-3">
-                  <Button variant="outline" className="h-16 flex-col gap-1">
-                    <Users size={20} />
-                    <span className="text-xs">Quản lý RSVP</span>
-                  </Button>
-                  <Button variant="outline" className="h-16 flex-col gap-1">
-                    <MessageSquare size={20} />
-                    <span className="text-xs">Duyệt tin nhắn</span>
-                  </Button>
-                  <Button variant="outline" className="h-16 flex-col gap-1">
-                    <Image size={20} />
-                    <span className="text-xs">Thêm ảnh</span>
-                  </Button>
-                  <Button variant="outline" className="h-16 flex-col gap-1">
-                    <Gift size={20} />
-                    <span className="text-xs">Quản lý quà</span>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
-
-        {/* Right Column - Recent RSVPs & Messages */}
-        <div className="space-y-6">
+        {/* Right Column */}
+        <div className="space-y-8">
           {/* Recent RSVPs */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-            <Card>
-              <CardHeader className="bg-gradient-to-r from-blue-500/5 to-blue-500/10 border-b">
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="text-blue-500" size={20} />
-                  RSVP Gần Đây
+            <Card className="border-2 border-blue-500/20 shadow-lg">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-3 text-xl">
+                  <div className="p-2 bg-blue-500/10 rounded-xl">
+                    <Users className="text-blue-500" size={24} />
+                  </div>
+                  <div>
+                    RSVP Gần Đây
+                    <CardDescription className="text-base mt-1">
+                      Phản hồi mới nhất
+                    </CardDescription>
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
@@ -338,33 +361,38 @@ export default function AdminHome() {
                     { name: "David Chen", status: "Tham dự", guests: 1, time: "15 phút trước" },
                     { name: "Maria Garcia", status: "Từ chối", guests: 0, time: "1 giờ trước" },
                     { name: "John Smith", status: "Tham dự", guests: 3, time: "2 giờ trước" },
+                    { name: "Sarah Wilson", status: "Tham dự", guests: 2, time: "3 giờ trước" },
                   ].map((rsvp, i) => (
                     <motion.div
                       key={i}
-                      className="flex items-center justify-between p-4 hover:bg-muted/30 transition-colors group"
+                      className="flex items-center justify-between p-6 hover:bg-muted/30 transition-all duration-300 group"
                       variants={itemVariants}
-                      data-testid={`recent-rsvp-${i}`}
                     >
-                      <div className="flex items-center gap-3">
-                        <div className={`p-1 rounded-full ${
+                      <div className="flex items-center gap-4">
+                        <div className={`p-2 rounded-xl ${
                           rsvp.status === "Tham dự" 
-                            ? "bg-green-500/20 text-green-600" 
-                            : "bg-red-500/20 text-red-600"
+                            ? "bg-green-500/10 text-green-600 border border-green-500/20" 
+                            : "bg-red-500/10 text-red-600 border border-red-500/20"
                         }`}>
                           {rsvp.status === "Tham dự" ? 
-                            <CheckCircle size={16} /> : 
-                            <XCircle size={16} />
+                            <CheckCircle size={18} /> : 
+                            <XCircle size={18} />
                           }
                         </div>
-                        <div>
-                          <p className="font-medium text-sm">{rsvp.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {rsvp.status}
-                            {rsvp.guests > 0 && ` • ${rsvp.guests} khách`}
-                          </p>
+                        <div className="space-y-1">
+                          <p className="font-semibold text-foreground text-base">{rsvp.name}</p>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <span>{rsvp.status}</span>
+                            {rsvp.guests > 0 && (
+                              <>
+                                <span>•</span>
+                                <span>{rsvp.guests} khách</span>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
-                      <div className="text-xs text-muted-foreground whitespace-nowrap">
+                      <div className="text-sm text-muted-foreground whitespace-nowrap bg-muted/50 px-3 py-1 rounded-full">
                         {rsvp.time}
                       </div>
                     </motion.div>
@@ -380,34 +408,40 @@ export default function AdminHome() {
             initial="hidden"
             animate="visible"
           >
-            <Card>
-              <CardHeader className="bg-gradient-to-r from-green-500/5 to-green-500/10 border-b">
-                <CardTitle className="flex items-center gap-2">
-                  <MessageSquare className="text-green-500" size={20} />
-                  Tin Nhắn Gần Đây
+            <Card className="border-2 border-green-500/20 shadow-lg">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-3 text-xl">
+                  <div className="p-2 bg-green-500/10 rounded-xl">
+                    <MessageSquare className="text-green-500" size={24} />
+                  </div>
+                  <div>
+                    Tin Nhắn Gần Đây
+                    <CardDescription className="text-base mt-1">
+                      Lời chúc mới nhất
+                    </CardDescription>
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
                 <div className="divide-y divide-border/50">
                   {[
-                    { name: "Sarah Miller", preview: "Rất mong chờ ngày trọng đại của hai bạn!", time: "5 phút trước" },
-                    { name: "John Smith", preview: "Chúc mừng cả hai...", time: "30 phút trước" },
-                    { name: "Lisa Wang", preview: "Không thể chờ để ăn mừng cùng các bạn!", time: "1 giờ trước" },
+                    { name: "Sarah Miller", preview: "Rất mong chờ ngày trọng đại của hai bạn! Chúc các bạn hạnh phúc mãi mãi...", time: "5 phút trước" },
+                    { name: "John Smith", preview: "Chúc mừng cả hai! Thật tuyệt vời khi được chứng kiến tình yêu của các bạn...", time: "30 phút trước" },
+                    { name: "Lisa Wang", preview: "Không thể chờ để ăn mừng cùng các bạn! Chúc các bạn một cuộc sống hôn nhân...", time: "1 giờ trước" },
                   ].map((msg, i) => (
                     <motion.div
                       key={i}
-                      className="p-4 hover:bg-muted/30 transition-colors group cursor-pointer"
+                      className="p-6 hover:bg-muted/30 transition-all duration-300 group cursor-pointer"
                       variants={itemVariants}
                       whileHover={{ x: 4 }}
-                      data-testid={`recent-message-${i}`}
                     >
-                      <div className="flex items-start justify-between mb-2">
-                        <p className="font-medium text-sm">{msg.name}</p>
-                        <div className="text-xs text-muted-foreground whitespace-nowrap">
+                      <div className="flex items-start justify-between mb-3">
+                        <p className="font-semibold text-foreground text-base">{msg.name}</p>
+                        <div className="text-sm text-muted-foreground whitespace-nowrap bg-muted/50 px-3 py-1 rounded-full">
                           {msg.time}
                         </div>
                       </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2 group-hover:text-foreground/80 transition-colors">
+                      <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed group-hover:text-foreground/80 transition-colors">
                         {msg.preview}
                       </p>
                     </motion.div>
