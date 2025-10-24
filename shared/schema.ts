@@ -173,9 +173,9 @@ export const settings = pgTable("settings", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   venueName: varchar("venue_name"),
   venueAddress: text("venue_address"),
-  venueLatitude: text("venue_latitude"),
-  venueLongitude: text("venue_longitude"),
-  backgroundMusicUrl: text("background_music_url"),
+  venueMapLink: text("venue_map_link"), // Google Maps link instead of lat/lng
+  backgroundMusicUrl: text("background_music_url"), // YouTube, MP3 link, or uploaded file
+  backgroundMusicType: varchar("background_music_type"), // 'youtube', 'mp3', 'upload'
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 

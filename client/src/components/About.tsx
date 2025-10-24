@@ -67,7 +67,7 @@ export default function About() {
         </motion.div>
 
         {/* Couple Profiles */}
-        <div className="couple-profiles-grid">
+        <div className="flex flex-col md:flex-row justify-center items-center md:items-start gap-12 md:gap-20">
           <ProfileCard 
             person={story.bride}
             heartPosition="top-right"
