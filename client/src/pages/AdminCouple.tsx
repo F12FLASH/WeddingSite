@@ -25,6 +25,8 @@ export default function AdminCouple() {
   const [formData, setFormData] = useState({
     brideName: "",
     groomName: "",
+    brideDescription: "",
+    groomDescription: "",
     weddingDate: "",
     ourStory: "",
     bridePhoto: "",
@@ -44,6 +46,8 @@ export default function AdminCouple() {
       setFormData({
         brideName: coupleInfo.brideName || "",
         groomName: coupleInfo.groomName || "",
+        brideDescription: coupleInfo.brideDescription || "",
+        groomDescription: coupleInfo.groomDescription || "",
         weddingDate: coupleInfo.weddingDate ? new Date(coupleInfo.weddingDate).toISOString().split('T')[0] : "",
         ourStory: coupleInfo.ourStory || "",
         bridePhoto: coupleInfo.bridePhoto || "",
@@ -83,6 +87,8 @@ export default function AdminCouple() {
     const data: InsertCoupleInfo = {
       brideName: formData.brideName,
       groomName: formData.groomName,
+      brideDescription: formData.brideDescription || null,
+      groomDescription: formData.groomDescription || null,
       weddingDate: new Date(formData.weddingDate),
       ourStory: formData.ourStory,
       bridePhoto: formData.bridePhoto || null,
@@ -266,6 +272,43 @@ export default function AdminCouple() {
                     onChange={(e) => setFormData({ ...formData, groomName: e.target.value })}
                     className="h-12 text-lg border-2 focus:border-blue-500 transition-all duration-300"
                     data-testid="input-groom-name"
+                  />
+                </div>
+              </motion.div>
+
+              {/* Bride and Groom Descriptions */}
+              <motion.div 
+                className="grid md:grid-cols-2 gap-6 p-4 bg-card rounded-xl border"
+                variants={itemVariants}
+                whileHover={{ scale: 1.01 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <div className="space-y-3">
+                  <Label htmlFor="brideDescription" className="text-lg font-medium flex items-center gap-2">
+                    💝 Giới Thiệu Cô Dâu
+                  </Label>
+                  <Textarea
+                    id="brideDescription"
+                    value={formData.brideDescription}
+                    onChange={(e) => setFormData({ ...formData, brideDescription: e.target.value })}
+                    rows={4}
+                    className="text-lg border-2 focus:border-pink-500 transition-all duration-300 resize-none"
+                    data-testid="input-bride-description"
+                    placeholder="Vài dòng giới thiệu về cô dâu..."
+                  />
+                </div>
+                <div className="space-y-3">
+                  <Label htmlFor="groomDescription" className="text-lg font-medium flex items-center gap-2">
+                    💙 Giới Thiệu Chú Rể
+                  </Label>
+                  <Textarea
+                    id="groomDescription"
+                    value={formData.groomDescription}
+                    onChange={(e) => setFormData({ ...formData, groomDescription: e.target.value })}
+                    rows={4}
+                    className="text-lg border-2 focus:border-blue-500 transition-all duration-300 resize-none"
+                    data-testid="input-groom-description"
+                    placeholder="Vài dòng giới thiệu về chú rể..."
                   />
                 </div>
               </motion.div>

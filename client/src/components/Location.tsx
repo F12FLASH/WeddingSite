@@ -18,6 +18,28 @@ export default function Location() {
 
   const venueName = settings?.venueName || "Rose Garden Estate";
   const venueAddress = settings?.venueAddress || "123 Garden Lane, Spring Valley, CA 91977";
+  const venuePhone = settings?.venuePhone || "+1 (555) 123-4567";
+  const venueEmail = settings?.venueEmail || "info@rosegardenestate.com";
+  
+  // Format event times if available
+  const formatEventTime = () => {
+    if (settings?.eventStartTime && settings?.eventEndTime) {
+      const startTime = new Date(settings.eventStartTime);
+      const endTime = new Date(settings.eventEndTime);
+      const startTimeStr = startTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+      const endTimeStr = endTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+      return `${startTimeStr} - ${endTimeStr}`;
+    }
+    return "3:00 Chiều - 10:00 Tối";
+  };
+
+  const formatEventDate = () => {
+    if (settings?.eventStartTime) {
+      const eventDate = new Date(settings.eventStartTime);
+      return eventDate.toLocaleDateString('vi-VN', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+    return "15 Tháng 6, 2025";
+  };
   
   const venueDetails = {
     name: venueName,
@@ -26,12 +48,12 @@ export default function Location() {
       line2: venueAddress.split(',').slice(1).join(',').trim() || ""
     },
     contact: {
-      phone: "+1 (555) 123-4567",
-      email: "info@rosegardenestate.com"
+      phone: venuePhone,
+      email: venueEmail
     },
     timing: {
-      date: "15 Tháng 6, 2025",
-      time: "3:00 Chiều - 10:00 Tối"
+      date: formatEventDate(),
+      time: formatEventTime()
     },
     amenities: [
       { icon: Car, label: "Bãi đỗ xe miễn phí", description: "Dịch vụ đỗ xe có sẵn" },

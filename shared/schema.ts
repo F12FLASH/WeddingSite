@@ -45,6 +45,8 @@ export const coupleInfo = pgTable("couple_info", {
   groomName: varchar("groom_name").notNull(),
   bridePhoto: text("bride_photo"),
   groomPhoto: text("groom_photo"),
+  brideDescription: text("bride_description"),
+  groomDescription: text("groom_description"),
   ourStory: text("our_story"),
   weddingDate: timestamp("wedding_date").notNull(),
   heroImage: text("hero_image"),
@@ -175,6 +177,10 @@ export const settings = pgTable("settings", {
   venueName: varchar("venue_name"),
   venueAddress: text("venue_address"),
   venueMapLink: text("venue_map_link"), // Google Maps link instead of lat/lng
+  venuePhone: varchar("venue_phone"),
+  venueEmail: varchar("venue_email"),
+  eventStartTime: timestamp("event_start_time"),
+  eventEndTime: timestamp("event_end_time"),
   backgroundMusicUrl: text("background_music_url"), // YouTube, MP3 link, or uploaded file
   backgroundMusicType: varchar("background_music_type"), // 'youtube', 'mp3', 'upload'
   updatedAt: timestamp("updated_at").defaultNow(),

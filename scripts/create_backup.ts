@@ -33,7 +33,9 @@ SET row_security = off;
       'guest_messages',
       'rsvps',
       'registry_items',
-      'settings'
+      'settings',
+      'wedding_party',
+      'faqs'
     ];
 
     for (const table of tables) {

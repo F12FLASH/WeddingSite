@@ -44,6 +44,10 @@ export default function AdminSettings() {
       venueName: "",
       venueAddress: "",
       venueMapLink: "",
+      venuePhone: "",
+      venueEmail: "",
+      eventStartTime: undefined,
+      eventEndTime: undefined,
       backgroundMusicUrl: "",
       backgroundMusicType: "youtube",
     },
@@ -56,6 +60,10 @@ export default function AdminSettings() {
         venueName: settings.venueName || "",
         venueAddress: settings.venueAddress || "",
         venueMapLink: settings.venueMapLink || "",
+        venuePhone: settings.venuePhone || "",
+        venueEmail: settings.venueEmail || "",
+        eventStartTime: settings.eventStartTime ? new Date(settings.eventStartTime).toISOString().slice(0, 16) as any : undefined,
+        eventEndTime: settings.eventEndTime ? new Date(settings.eventEndTime).toISOString().slice(0, 16) as any : undefined,
         backgroundMusicUrl: settings.backgroundMusicUrl || "",
         backgroundMusicType: settings.backgroundMusicType || "youtube",
       });
@@ -281,6 +289,94 @@ export default function AdminSettings() {
                           </FormItem>
                         )}
                       />
+
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="venuePhone"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-sm font-medium">📞 Số Điện Thoại Liên Hệ</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="tel"
+                                  placeholder="(84) 123-456-789"
+                                  className="h-12"
+                                  data-testid="input-venue-phone"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="venueEmail"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-sm font-medium">📧 Email Liên Hệ</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="email"
+                                  placeholder="contact@venue.com"
+                                  className="h-12"
+                                  data-testid="input-venue-email"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="eventStartTime"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-sm font-medium">⏰ Thời Gian Bắt Đầu</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="datetime-local"
+                                  className="h-12"
+                                  data-testid="input-event-start-time"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <p className="text-xs text-muted-foreground">
+                                Thời gian bắt đầu sự kiện
+                              </p>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="eventEndTime"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-sm font-medium">⏱️ Thời Gian Kết Thúc</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="datetime-local"
+                                  className="h-12"
+                                  data-testid="input-event-end-time"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <p className="text-xs text-muted-foreground">
+                                Thời gian dự kiến kết thúc sự kiện
+                              </p>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </CardContent>
                   </Card>
                 </div>

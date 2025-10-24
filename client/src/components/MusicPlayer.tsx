@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX, SkipBack, SkipForward, Music } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import type { Settings } from "@shared/schema";
 
 export default function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -12,32 +14,52 @@ export default function MusicPlayer() {
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const playlist = [
-    {
-      title: "A Thousand Years",
-      artist: "Christina Perri",
-      src: "/music/a-thousand-years.mp3",
-      duration: "4:45"
-    },
-    {
-      title: "Perfect",
-      artist: "Ed Sheeran",
-      src: "/music/perfect.mp3",
-      duration: "4:23"
-    },
-    {
-      title: "Can't Help Falling In Love",
-      artist: "Kina Grannis",
-      src: "/music/cant-help-falling-in-love.mp3",
-      duration: "3:21"
-    },
-    {
-      title: "Marry Me",
-      artist: "Train",
-      src: "/music/marry-me.mp3",
-      duration: "3:52"
+  const { data: settings } = useQuery<Settings | null>({
+    queryKey: ["/api/settings"],
+  });
+
+  // Build playlist - use custom music from settings if available
+  const playlist = (() => {
+    const defaultPlaylist = [
+      {
+        title: "A Thousand Years",
+        artist: "Christina Perri",
+        src: "/music/a-thousand-years.mp3",
+        duration: "4:45"
+      },
+      {
+        title: "Perfect",
+        artist: "Ed Sheeran",
+        src: "/music/perfect.mp3",
+        duration: "4:23"
+      },
+      {
+        title: "Can't Help Falling In Love",
+        artist: "Kina Grannis",
+        src: "/music/cant-help-falling-in-love.mp3",
+        duration: "3:21"
+      },
+      {
+        title: "Marry Me",
+        artist: "Train",
+        src: "/music/marry-me.mp3",
+        duration: "3:52"
+      }
+    ];
+
+    // If custom background music URL is set in settings, add it as the first song
+    if (settings?.backgroundMusicUrl) {
+      const customSong = {
+        title: "Nhạc Nền Đám Cưới",
+        artist: "Custom",
+        src: settings.backgroundMusicUrl,
+        duration: "--:--"
+      };
+      return [customSong, ...defaultPlaylist];
     }
-  ];
+
+    return defaultPlaylist;
+  })();
 
   const currentSong = playlist[currentSongIndex];
 
