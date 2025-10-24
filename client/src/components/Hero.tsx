@@ -120,7 +120,7 @@ export default function Hero() {
       {/* Background Image with Gradient Overlay */}
       <motion.div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${heroImage})` }}
+        style={{ backgroundImage: `url(${coupleInfo?.heroImage || heroImage})` }}
         initial={{ scale: 1.1 }}
         animate={{ scale: 1 }}
         transition={{ duration: 1.5, ease: "easeOut" }}

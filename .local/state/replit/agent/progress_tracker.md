@@ -119,6 +119,22 @@
 [x] 83. Verified all data is displaying correctly from database
 [x] 84. Wedding website fully functional with new database! 🎉
 
+## Latest Bug Fixes Session (Oct 24, 2025 - Night) ✅ IN PROGRESS
+[x] 85. Fixed eventStartTime and eventEndTime datetime fields - proper Date type conversion in AdminSettings
+[x] 86. Fixed homepage hero background image - now displays heroImage from database (coupleInfo table)
+[x] 87. Fixed RSVP deadline - now automatically calculates 7 days before wedding date
+[x] 88. Improved RSVP form animation - better transitions when switching from "No" to "Yes"
+[x] 89. Enhanced notification bell with mark-as-read functionality
+    - ✓ Added localStorage tracking for viewed notifications
+    - ✓ Shows only unviewed RSVPs and messages
+    - ✓ "Đọc hết" button to mark all as read
+    - ✓ Visual indicators for unread items
+[x] 90. Added audio file upload for background music in AdminSettings
+    - ✓ Upload button with file picker
+    - ✓ Supports audio files (MP3, WAV, etc.) up to 10MB
+    - ✓ Loading animation during upload
+    - ✓ Automatic music type setting on successful upload
+
 ## Notes
 - Server is running successfully on port 5000 ✅
 - FE/BE connection is working (API calls successful) ✅
@@ -135,4 +151,8 @@
 - All hardcoded "Sarah & Michael" replaced with dynamic database content ✅
 - Loading screen uses generic text instead of hardcoded names ✅
 - Navigation logo displays couple names from database ✅
+- Notification bell now supports mark-as-read functionality ✅
+- Background music supports file upload ✅
+- Homepage hero image displays from database ✅
+- RSVP deadline automatically calculates from wedding date ✅
 - All migration tasks completed successfully! ✅

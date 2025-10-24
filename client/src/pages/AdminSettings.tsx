@@ -9,7 +9,7 @@ import { insertSettingsSchema } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,11 +28,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { uploadImageToCloudinary } from "@/lib/imageUpload";
 
 export default function AdminSettings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("general");
+  const [uploadingAudio, setUploadingAudio] = useState(false);
+  const audioFileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: settings, isLoading } = useQuery<Settings | null>({
     queryKey: ["/api/settings"],
@@ -46,12 +49,24 @@ export default function AdminSettings() {
       venueMapLink: "",
       venuePhone: "",
       venueEmail: "",
-      eventStartTime: undefined,
-      eventEndTime: undefined,
+      eventStartTime: undefined as Date | undefined,
+      eventEndTime: undefined as Date | undefined,
       backgroundMusicUrl: "",
       backgroundMusicType: "youtube",
     },
   });
+
+  // Helper function to convert Date to local datetime string for datetime-local input
+  const toLocalDatetimeString = (date: Date | string | null | undefined): string | undefined => {
+    if (!date) return undefined;
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
 
   // Reset form when settings are loaded
   useEffect(() => {
@@ -62,8 +77,8 @@ export default function AdminSettings() {
         venueMapLink: settings.venueMapLink || "",
         venuePhone: settings.venuePhone || "",
         venueEmail: settings.venueEmail || "",
-        eventStartTime: settings.eventStartTime ? new Date(settings.eventStartTime).toISOString().slice(0, 16) as any : undefined,
-        eventEndTime: settings.eventEndTime ? new Date(settings.eventEndTime).toISOString().slice(0, 16) as any : undefined,
+        eventStartTime: toLocalDatetimeString(settings.eventStartTime) as any,
+        eventEndTime: toLocalDatetimeString(settings.eventEndTime) as any,
         backgroundMusicUrl: settings.backgroundMusicUrl || "",
         backgroundMusicType: settings.backgroundMusicType || "youtube",
       });
@@ -72,7 +87,13 @@ export default function AdminSettings() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: typeof insertSettingsSchema._type) => {
-      return await apiRequest("POST", "/api/settings", data);
+      // Convert datetime-local string values to Date objects before sending
+      const processedData = {
+        ...data,
+        eventStartTime: data.eventStartTime ? new Date(data.eventStartTime) : undefined,
+        eventEndTime: data.eventEndTime ? new Date(data.eventEndTime) : undefined,
+      };
+      return await apiRequest("POST", "/api/settings", processedData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/settings"] });
@@ -97,6 +118,56 @@ export default function AdminSettings() {
   const onSubmit = form.handleSubmit((data) => {
     updateMutation.mutate(data);
   });
+
+  const handleAudioFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type (audio files)
+    if (!file.type.startsWith('audio/')) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Vui lòng chọn file âm thanh (MP3, WAV, etc.)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (10MB for audio)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Kích thước file không được vượt quá 10MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploadingAudio(true);
+
+    try {
+      // Upload audio file using the same image upload function (it works for all file types)
+      const audioUrl = await uploadImageToCloudinary(file);
+      form.setValue('backgroundMusicUrl', audioUrl);
+      form.setValue('backgroundMusicType', 'upload');
+      
+      toast({
+        title: "✅ Thành công!",
+        description: "Đã tải lên nhạc nền thành công",
+      });
+    } catch (error) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể tải lên file nhạc nền",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingAudio(false);
+      if (event.target) {
+        event.target.value = '';
+      }
+    }
+  };
 
   const tabs = [
     { id: "general", label: "🌐 Tổng Quan", icon: SettingsIcon },
@@ -344,7 +415,8 @@ export default function AdminSettings() {
                                   type="datetime-local"
                                   className="h-12"
                                   data-testid="input-event-start-time"
-                                  {...field}
+                                  value={field.value || ""}
+                                  onChange={(e) => field.onChange(e.target.value || undefined)}
                                 />
                               </FormControl>
                               <p className="text-xs text-muted-foreground">
@@ -366,7 +438,8 @@ export default function AdminSettings() {
                                   type="datetime-local"
                                   className="h-12"
                                   data-testid="input-event-end-time"
-                                  {...field}
+                                  value={field.value || ""}
+                                  onChange={(e) => field.onChange(e.target.value || undefined)}
                                 />
                               </FormControl>
                               <p className="text-xs text-muted-foreground">
@@ -456,8 +529,32 @@ export default function AdminSettings() {
                                   {...field}
                                 />
                               </FormControl>
-                              <Button type="button" variant="outline" size="icon" className="h-12 w-12">
-                                <Upload size={18} />
+                              <input
+                                type="file"
+                                ref={audioFileInputRef}
+                                onChange={handleAudioFileSelect}
+                                accept="audio/*"
+                                className="hidden"
+                              />
+                              <Button 
+                                type="button" 
+                                variant="outline" 
+                                size="icon" 
+                                className="h-12 w-12"
+                                onClick={() => audioFileInputRef.current?.click()}
+                                disabled={uploadingAudio}
+                                data-testid="button-upload-audio"
+                              >
+                                {uploadingAudio ? (
+                                  <motion.div
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                  >
+                                    <Upload size={18} />
+                                  </motion.div>
+                                ) : (
+                                  <Upload size={18} />
+                                )}
                               </Button>
                             </div>
                             <p className="text-xs text-muted-foreground">

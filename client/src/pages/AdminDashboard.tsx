@@ -126,6 +126,10 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [previousNotificationCount, setPreviousNotificationCount] = useState(0);
   const [audioContext, setAudioContext] = useState<AudioContext | null>(null);
+  const [viewedNotifications, setViewedNotifications] = useState<Set<string>>(() => {
+    const saved = localStorage.getItem('viewedNotifications');
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+  });
 
   const { data: rsvps = [] } = useQuery<Rsvp[]>({
     queryKey: ["/api/rsvps"],
@@ -137,7 +141,11 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
 
   const recentRsvps = rsvps.slice(-5).reverse();
   const recentMessages = messages.filter(m => !m.approved).slice(-5);
-  const notifications = recentRsvps.length + recentMessages.length;
+  
+  // Filter out viewed notifications
+  const unviewedRsvps = recentRsvps.filter(r => !viewedNotifications.has(`rsvp-${r.id}`));
+  const unviewedMessages = recentMessages.filter(m => !viewedNotifications.has(`message-${m.id}`));
+  const notifications = unviewedRsvps.length + unviewedMessages.length;
 
   // Initialize AudioContext once on first user interaction
   useEffect(() => {
@@ -178,6 +186,11 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
     };
   }, [audioContext]);
 
+  // Save viewed notifications to localStorage
+  useEffect(() => {
+    localStorage.setItem('viewedNotifications', JSON.stringify(Array.from(viewedNotifications)));
+  }, [viewedNotifications]);
+
   // Play notification sound when count increases
   useEffect(() => {
     if (previousNotificationCount > 0 && notifications > previousNotificationCount) {
@@ -191,6 +204,13 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
     }
     setPreviousNotificationCount(notifications);
   }, [notifications]);
+
+  const markAllAsRead = () => {
+    const newViewed = new Set(viewedNotifications);
+    recentRsvps.forEach(r => newViewed.add(`rsvp-${r.id}`));
+    recentMessages.forEach(m => newViewed.add(`message-${m.id}`));
+    setViewedNotifications(newViewed);
+  };
 
   // Function to play notification sound using shared AudioContext
   const playNotificationSound = () => {
@@ -557,14 +577,28 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
                   </motion.div>
                 </PopoverTrigger>
                 <PopoverContent className="w-80 p-0" align="end">
-                  <div className="p-4 border-b bg-muted/50">
-                    <h3 className="font-semibold text-lg flex items-center gap-2">
-                      <Bell size={18} />
-                      Thông Báo
-                    </h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {notifications > 0 ? `Bạn có ${notifications} thông báo mới` : "Không có thông báo mới"}
-                    </p>
+                  <div className="p-4 border-b bg-muted/50 flex items-center justify-between">
+                    <div>
+                      <h3 className="font-semibold text-lg flex items-center gap-2">
+                        <Bell size={18} />
+                        Thông Báo
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {notifications > 0 ? `Bạn có ${notifications} thông báo mới` : "Không có thông báo mới"}
+                      </p>
+                    </div>
+                    {notifications > 0 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={markAllAsRead}
+                        className="text-xs"
+                        data-testid="button-mark-all-read"
+                      >
+                        <CheckCircle size={14} className="mr-1" />
+                        Đọc hết
+                      </Button>
+                    )}
                   </div>
                   <div className="max-h-96 overflow-y-auto">
                     {notifications === 0 ? (
@@ -574,14 +608,15 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
                       </div>
                     ) : (
                       <div className="divide-y">
-                        {recentRsvps.length > 0 && (
+                        {unviewedRsvps.length > 0 && (
                           <div className="p-3">
                             <p className="text-xs font-semibold text-muted-foreground mb-2">RSVP MỚI</p>
-                            {recentRsvps.map((rsvp) => (
+                            {unviewedRsvps.map((rsvp) => (
                               <Link key={rsvp.id} href="/admin/rsvps">
-                                <div className="p-2 hover:bg-muted rounded-lg cursor-pointer mb-1">
-                                  <p className="text-sm font-medium">{rsvp.guestName}</p>
-                                  <p className="text-xs text-muted-foreground">
+                                <div className="p-2 hover:bg-muted rounded-lg cursor-pointer mb-1 relative">
+                                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary rounded-full" />
+                                  <p className="text-sm font-medium pl-3">{rsvp.guestName}</p>
+                                  <p className="text-xs text-muted-foreground pl-3">
                                     {rsvp.attending ? "✅ Tham dự" : "❌ Từ chối"} • {rsvp.guestCount} khách
                                   </p>
                                 </div>
@@ -589,14 +624,15 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
                             ))}
                           </div>
                         )}
-                        {recentMessages.length > 0 && (
+                        {unviewedMessages.length > 0 && (
                           <div className="p-3">
                             <p className="text-xs font-semibold text-muted-foreground mb-2">LỜI CHÚC CHỜ DUYỆT</p>
-                            {recentMessages.map((msg) => (
+                            {unviewedMessages.map((msg) => (
                               <Link key={msg.id} href="/admin/messages">
-                                <div className="p-2 hover:bg-muted rounded-lg cursor-pointer mb-1">
-                                  <p className="text-sm font-medium">{msg.guestName}</p>
-                                  <p className="text-xs text-muted-foreground line-clamp-1">{msg.message}</p>
+                                <div className="p-2 hover:bg-muted rounded-lg cursor-pointer mb-1 relative">
+                                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary rounded-full" />
+                                  <p className="text-sm font-medium pl-3">{msg.guestName}</p>
+                                  <p className="text-xs text-muted-foreground line-clamp-1 pl-3">{msg.message}</p>
                                 </div>
                               </Link>
                             ))}

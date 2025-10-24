@@ -14,11 +14,15 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { motion, AnimatePresence } from "framer-motion";
+import type { CoupleInfo } from "@shared/schema";
 
 export default function RSVP() {
+  const { data: coupleInfo } = useQuery<CoupleInfo | null>({
+    queryKey: ["/api/couple"],
+  });
   const [formData, setFormData] = useState({
     guestName: "",
     email: "",
@@ -179,7 +183,19 @@ export default function RSVP() {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
-            Vui lòng phản hồi trước ngày <span className="text-primary font-semibold">01 Tháng 5, 2025</span>
+            Vui lòng phản hồi trước ngày <span className="text-primary font-semibold">
+              {coupleInfo?.weddingDate 
+                ? (() => {
+                    const deadline = new Date(coupleInfo.weddingDate);
+                    deadline.setDate(deadline.getDate() - 7);
+                    return deadline.toLocaleDateString('vi-VN', { 
+                      day: 'numeric', 
+                      month: 'long', 
+                      year: 'numeric' 
+                    });
+                  })()
+                : "01 Tháng 5, 2025"}
+            </span>
           </motion.p>
         </motion.div>
 
@@ -312,14 +328,14 @@ export default function RSVP() {
                   </RadioGroup>
                 </motion.div>
 
-                <AnimatePresence>
+                <AnimatePresence mode="wait">
                   {formData.attending && (
                     <motion.div
                       key="attending-fields"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3 }}
+                      initial={{ opacity: 0, height: 0, overflow: "hidden" }}
+                      animate={{ opacity: 1, height: "auto", overflow: "visible" }}
+                      exit={{ opacity: 0, height: 0, overflow: "hidden" }}
+                      transition={{ duration: 0.4, ease: "easeInOut" }}
                       className="space-y-6"
                     >
                       {/* Guest Count */}
