@@ -1,18 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Save, Settings as SettingsIcon, Music, MapPin, Palette, Bell, Shield, Upload, Eye } from "lucide-react";
+import { Save, Settings as SettingsIcon, Music, MapPin, Palette, Bell, Shield } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import type { Settings, InsertSettings } from "@shared/schema";
+import type { Settings } from "@shared/schema";
+import { insertSettingsSchema } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { Switch } from "@/components/ui/switch";
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -30,8 +38,32 @@ export default function AdminSettings() {
     queryKey: ["/api/settings"],
   });
 
+  const form = useForm({
+    resolver: zodResolver(insertSettingsSchema),
+    defaultValues: {
+      venueName: "",
+      venueAddress: "",
+      venueMapLink: "",
+      backgroundMusicUrl: "",
+      backgroundMusicType: "youtube",
+    },
+  });
+
+  // Reset form when settings are loaded
+  useEffect(() => {
+    if (settings) {
+      form.reset({
+        venueName: settings.venueName || "",
+        venueAddress: settings.venueAddress || "",
+        venueMapLink: settings.venueMapLink || "",
+        backgroundMusicUrl: settings.backgroundMusicUrl || "",
+        backgroundMusicType: settings.backgroundMusicType || "youtube",
+      });
+    }
+  }, [settings, form]);
+
   const updateMutation = useMutation({
-    mutationFn: async (data: InsertSettings) => {
+    mutationFn: async (data: typeof insertSettingsSchema._type) => {
       return await apiRequest("POST", "/api/settings", data);
     },
     onSuccess: () => {
@@ -54,19 +86,9 @@ export default function AdminSettings() {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const data: InsertSettings = {
-      venueName: formData.get("venueName") as string,
-      venueAddress: formData.get("venueAddress") as string,
-      venueMapLink: formData.get("venueMapLink") as string,
-      backgroundMusicUrl: formData.get("backgroundMusicUrl") as string,
-      backgroundMusicType: formData.get("backgroundMusicType") as string,
-    };
-
+  const onSubmit = form.handleSubmit((data) => {
     updateMutation.mutate(data);
-  };
+  });
 
   const tabs = [
     { id: "general", label: "🌐 Tổng Quan", icon: SettingsIcon },
@@ -176,7 +198,8 @@ export default function AdminSettings() {
           initial="hidden"
           animate="visible"
         >
-          <form onSubmit={handleSubmit}>
+          <Form {...form}>
+            <form onSubmit={onSubmit}>
             <AnimatedTabContent activeTab={activeTab}>
               {/* General Settings */}
               {activeTab === "general" && (
@@ -198,43 +221,66 @@ export default function AdminSettings() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 pt-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="venueName" className="text-sm font-medium">Tên Địa Điểm *</Label>
-                        <Input
-                          id="venueName"
-                          name="venueName"
-                          required
-                          placeholder="Khách sạn Grand Ballroom"
-                          defaultValue={settings?.venueName || ""}
-                          className="h-12 text-lg"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="venueAddress" className="text-sm font-medium">Địa Chỉ Địa Điểm *</Label>
-                        <Textarea
-                          id="venueAddress"
-                          name="venueAddress"
-                          rows={3}
-                          required
-                          placeholder="123 Đường Cưới, Quận 1, Thành phố Hồ Chí Minh"
-                          defaultValue={settings?.venueAddress || ""}
-                          className="text-lg resize-none"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="venueMapLink" className="text-sm font-medium">Link Google Maps</Label>
-                        <Input
-                          id="venueMapLink"
-                          name="venueMapLink"
-                          type="url"
-                          placeholder="https://www.google.com/maps/search/?api=1&query=..."
-                          defaultValue={settings?.venueMapLink || ""}
-                          className="h-12"
-                        />
-                        <p className="text-xs text-muted-foreground">
-                          Link Google Maps để khách mời có thể chỉ đường dễ dàng
-                        </p>
-                      </div>
+                      <FormField
+                        control={form.control}
+                        name="venueName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">Tên Địa Điểm *</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Khách sạn Grand Ballroom"
+                                className="h-12 text-lg"
+                                data-testid="input-venue-name"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="venueAddress"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">Địa Chỉ Địa Điểm *</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="123 Đường Cưới, Quận 1, Thành phố Hồ Chí Minh"
+                                className="h-12 text-lg"
+                                data-testid="input-venue-address"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="venueMapLink"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">Link Google Maps</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="url"
+                                placeholder="https://www.google.com/maps/search/?api=1&query=..."
+                                className="h-12"
+                                data-testid="input-venue-map-link"
+                                {...field}
+                              />
+                            </FormControl>
+                            <p className="text-xs text-muted-foreground">
+                              Link Google Maps để khách mời có thể chỉ đường dễ dàng
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </CardContent>
                   </Card>
                 </div>
@@ -272,41 +318,59 @@ export default function AdminSettings() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 pt-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="backgroundMusicType" className="text-sm font-medium">Loại Nhạc Nền</Label>
-                        <Select name="backgroundMusicType" defaultValue={settings?.backgroundMusicType || "mp3"}>
-                          <SelectTrigger className="h-12">
-                            <SelectValue placeholder="Chọn loại nhạc" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="youtube">🎬 YouTube Link</SelectItem>
-                            <SelectItem value="mp3">🎵 MP3 URL</SelectItem>
-                            <SelectItem value="upload">📤 Upload File</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <p className="text-xs text-muted-foreground">
-                          Chọn nguồn nhạc nền cho website
-                        </p>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="backgroundMusicUrl" className="text-sm font-medium">Link/URL Nhạc Nền</Label>
-                        <div className="flex gap-2">
-                          <Input
-                            id="backgroundMusicUrl"
-                            name="backgroundMusicUrl"
-                            type="url"
-                            placeholder="https://www.youtube.com/watch?v=... hoặc .mp3 link"
-                            defaultValue={settings?.backgroundMusicUrl || ""}
-                            className="h-12 flex-1"
-                          />
-                          <Button type="button" variant="outline" size="icon" className="h-12 w-12">
-                            <Upload size={18} />
-                          </Button>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          YouTube link, MP3 URL, hoặc bấm Upload để tải file lên
-                        </p>
-                      </div>
+                      <FormField
+                        control={form.control}
+                        name="backgroundMusicType"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">Loại Nhạc Nền</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger className="h-12" data-testid="select-music-type">
+                                  <SelectValue placeholder="Chọn loại nhạc" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="youtube">🎬 YouTube Link</SelectItem>
+                                <SelectItem value="mp3">🎵 MP3 URL</SelectItem>
+                                <SelectItem value="upload">📤 Upload File</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <p className="text-xs text-muted-foreground">
+                              Chọn nguồn nhạc nền cho website
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="backgroundMusicUrl"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">Link/URL Nhạc Nền</FormLabel>
+                            <div className="flex gap-2">
+                              <FormControl>
+                                <Input
+                                  type="url"
+                                  placeholder="https://www.youtube.com/watch?v=... hoặc .mp3 link"
+                                  className="h-12 flex-1"
+                                  data-testid="input-music-url"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <Button type="button" variant="outline" size="icon" className="h-12 w-12">
+                                <Upload size={18} />
+                              </Button>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              YouTube link, MP3 URL, hoặc bấm Upload để tải file lên
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </CardContent>
                   </Card>
                 </div>
@@ -381,6 +445,7 @@ export default function AdminSettings() {
               </Button>
             </motion.div>
           </form>
+          </Form>
         </motion.div>
       </div>
     </motion.div>
