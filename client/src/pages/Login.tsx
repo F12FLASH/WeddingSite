@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Heart, Lock, User as UserIcon, Sparkles, Eye, EyeOff, WeddingRing } from "lucide-react";
+import { Heart, Lock, User as UserIcon, Sparkles, Eye, EyeOff, Gem } from "lucide-react";
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -86,7 +86,7 @@ export default function Login() {
           animate={{ y: [0, -20, 0], rotate: [0, 10, -10, 0] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         >
-          <WeddingRing size={45} />
+          <Gem size={45} />
         </motion.div>
         <motion.div
           className="absolute bottom-10 right-10 text-orange-200"
