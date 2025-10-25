@@ -100,20 +100,25 @@ export default function Gallery() {
   const itemVariants = {
     hidden: { 
       opacity: 0, 
-      scale: 0.5,
-      y: 60,
-      rotate: -10
+      scale: 0.3,
+      y: 100,
+      rotateX: -90,
+      rotateY: 20,
+      rotateZ: -15
     },
     visible: {
       opacity: 1,
       scale: 1,
       y: 0,
-      rotate: 0,
+      rotateX: 0,
+      rotateY: 0,
+      rotateZ: 0,
       transition: {
         type: "spring",
-        stiffness: 100,
-        damping: 15,
-        duration: 0.8
+        stiffness: 80,
+        damping: 12,
+        duration: 1.2,
+        ease: [0.6, 0.05, 0.01, 0.9]
       }
     }
   };
@@ -248,38 +253,75 @@ export default function Gallery() {
                 key={photo.id}
                 variants={itemVariants}
                 className="group relative overflow-hidden rounded-2xl cursor-pointer shadow-lg bg-background break-inside-avoid mb-4"
-                whileHover={{ 
-                  scale: 1.05,
-                  y: -8,
-                  rotate: index % 2 === 0 ? 2 : -2,
-                  zIndex: 10,
-                  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
+                style={{
+                  transformStyle: "preserve-3d",
+                  perspective: "1000px"
                 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                whileHover={{ 
+                  scale: 1.08,
+                  y: -12,
+                  rotateY: index % 2 === 0 ? 5 : -5,
+                  rotateX: -3,
+                  zIndex: 10,
+                  boxShadow: "0 30px 60px -12px rgba(0, 0, 0, 0.35)",
+                  filter: "brightness(1.05)"
+                }}
+                whileTap={{ 
+                  scale: 0.92,
+                  rotateY: 0,
+                  rotateX: 0
+                }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 260, 
+                  damping: 20,
+                  mass: 0.8
+                }}
                 onClick={() => openLightbox(index)}
                 data-testid={`photo-${index}`}
               >
                 <motion.div
                   className="relative overflow-hidden"
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  style={{ transformStyle: "preserve-3d" }}
+                  whileHover={{ 
+                    scale: 1.15,
+                    rotateZ: index % 3 === 0 ? 2 : index % 3 === 1 ? -2 : 0
+                  }}
+                  transition={{ duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
                 >
                   <motion.img
                     src={photo.url}
                     alt={photo.caption || "Ảnh cưới"}
                     className="w-full h-auto object-cover"
-                    initial={{ filter: "brightness(1)" }}
-                    whileHover={{ filter: "brightness(1.1)" }}
-                    transition={{ duration: 0.3 }}
+                    style={{ transformStyle: "preserve-3d" }}
+                    initial={{ 
+                      filter: "brightness(1) saturate(1) contrast(1)",
+                      scale: 1
+                    }}
+                    whileHover={{ 
+                      filter: "brightness(1.15) saturate(1.2) contrast(1.05)",
+                      scale: 1.02
+                    }}
+                    transition={{ duration: 0.4 }}
                   />
                   
-                  {/* Shimmer Effect */}
+                  {/* Enhanced Shimmer Effect with Rainbow Colors */}
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                    initial={{ x: "-100%" }}
-                    whileHover={{ x: "200%" }}
-                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0"
+                    initial={{ x: "-100%", opacity: 0 }}
+                    whileHover={{ x: "200%", opacity: 1 }}
+                    transition={{ duration: 1, ease: "easeInOut" }}
+                  />
+                  
+                  {/* Magical Sparkle Effect */}
+                  <motion.div
+                    className="absolute inset-0 opacity-0"
+                    style={{
+                      background: "radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.8) 0%, transparent 70%)",
+                      mixBlendMode: "overlay"
+                    }}
+                    whileHover={{ opacity: 0.4 }}
+                    transition={{ duration: 0.5 }}
                   />
                 </motion.div>
                 
