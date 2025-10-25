@@ -1,3 +1,6 @@
+/* Vietnamese Wedding Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&family=Tangerine:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -76,9 +79,9 @@
   --chart-4: 280 65% 60%;
   --chart-5: 25 85% 55%;
 
-  --font-sans: Poppins, sans-serif;
-  --font-serif: Cormorant Garamond, serif;
-  --font-cursive: Parisienne, cursive;
+  --font-sans: 'Dancing Script', Poppins, sans-serif;
+  --font-serif: 'Great Vibes', Cormorant Garamond, serif;
+  --font-cursive: 'Tangerine', Parisienne, cursive;
   --font-mono: Menlo, monospace;
   --radius: .5rem;
   --shadow-2xs: 0px 1px 2px 0px hsl(340 40% 30% / 0.05);

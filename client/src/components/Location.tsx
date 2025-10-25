@@ -203,51 +203,21 @@ export default function Location() {
                 </motion.div>
               )}
               
-              {/* Map Placeholder with Animated Elements */}
-              <div className="w-full h-full bg-gradient-to-br from-blue-50 to-green-50 relative overflow-hidden">
-                {/* Animated Map Elements */}
-                <motion.div
-                  className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-                  initial={{ scale: 0 }}
-                  animate={isInView ? { scale: 1 } : {}}
-                  transition={{ duration: 0.8, delay: 0.5 }}
-                >
-                  <motion.div
-                    className="w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg"
-                    whileHover={{ scale: 1.2 }}
-                    animate={{
-                      boxShadow: [
-                        "0 0 0 0 rgba(59, 130, 246, 0.4)",
-                        "0 0 0 20px rgba(59, 130, 246, 0)",
-                        "0 0 0 0 rgba(59, 130, 246, 0)"
-                      ]
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeOut"
-                    }}
-                  >
-                    <MapPin className="text-white" size={24} />
-                  </motion.div>
-                </motion.div>
-
-                {/* Road Lines */}
-                {[...Array(3)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute h-1 bg-gray-300 rounded-full"
-                    style={{
-                      top: `${30 + i * 20}%`,
-                      left: "10%",
-                      width: "80%"
-                    }}
-                    initial={{ scaleX: 0 }}
-                    animate={isInView ? { scaleX: 1 } : {}}
-                    transition={{ duration: 0.8, delay: 0.7 + i * 0.1 }}
-                  />
-                ))}
-              </div>
+              {/* Google Maps Iframe */}
+              {settings?.venueMapLink && (
+                <iframe
+                  src={settings.venueMapLink}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  onLoad={() => setIsMapLoaded(true)}
+                  data-testid="iframe-map"
+                  title="Bản đồ địa điểm tổ chức"
+                />
+              )}
             </motion.div>
           </motion.div>
 

@@ -110,7 +110,7 @@ async function seed() {
   await storage.upsertSettings({
     venueName: "Rose Garden Estate",
     venueAddress: "123 Garden Lane, Spring Valley, CA 91977",
-    venueMapLink: "https://www.google.com/maps/search/?api=1&query=Rose+Garden+Estate+Spring+Valley+CA",
+    venueMapLink: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.4803982916854!2d105.84117207503217!3d21.01332968063466!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab953357c995%3A0x847d6c860524e5b7!2zSMOgIE7hu5lp!5e0!3m2!1svi!2s!4v1234567890",
     venuePhone: "0123 456 789",
     venueEmail: "contact@rosegarden.com",
     eventStartTime: new Date("2025-06-15T18:00:00"),

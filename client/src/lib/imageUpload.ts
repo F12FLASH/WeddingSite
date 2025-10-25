@@ -9,15 +9,21 @@ export async function uploadImageToCloudinary(
   onProgress?: (progress: number) => void
 ): Promise<string> {
   return new Promise((resolve, reject) => {
-    // Validate file
-    if (!file.type.startsWith('image/')) {
-      reject(new Error('File must be an image'));
+    // Validate file - accept both images and audio files
+    const isImage = file.type.startsWith('image/');
+    const isAudio = file.type.startsWith('audio/');
+    
+    if (!isImage && !isAudio) {
+      reject(new Error('File must be an image or audio file'));
       return;
     }
 
-    // Validate size (5MB limit)
-    if (file.size > 5 * 1024 * 1024) {
-      reject(new Error('Image size must be less than 5MB'));
+    // Validate size - 5MB for images, 10MB for audio
+    const maxSize = isAudio ? 10 * 1024 * 1024 : 5 * 1024 * 1024;
+    const maxSizeLabel = isAudio ? '10MB' : '5MB';
+    
+    if (file.size > maxSize) {
+      reject(new Error(`File size must be less than ${maxSizeLabel}`));
       return;
     }
 
