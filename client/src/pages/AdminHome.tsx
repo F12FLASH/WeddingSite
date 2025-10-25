@@ -138,20 +138,24 @@ export default function AdminHome() {
 
   // Get recent activity - combine RSVPs and Messages
   const recentActivity = [
-    ...recentRsvps.map(r => ({
-      type: 'rsvp' as const,
-      name: r.guestName,
-      action: r.attending ? 'đã xác nhận tham dự' : 'đã từ chối tham dự',
-      time: r.createdAt ? formatTimeAgo(new Date(r.createdAt)) : 'Vừa xong',
-      timestamp: r.createdAt ? new Date(r.createdAt).getTime() : Date.now()
-    })),
-    ...recentMessages.map(m => ({
-      type: 'message' as const,
-      name: m.guestName,
-      action: 'đã gửi lời chúc',
-      time: m.createdAt ? formatTimeAgo(new Date(m.createdAt)) : 'Vừa xong',
-      timestamp: m.createdAt ? new Date(m.createdAt).getTime() : Date.now()
-    })),
+    ...recentRsvps
+      .filter(r => r.createdAt)
+      .map(r => ({
+        type: 'rsvp' as const,
+        name: r.guestName,
+        action: r.attending ? 'đã xác nhận tham dự' : 'đã từ chối tham dự',
+        time: formatTimeAgo(new Date(r.createdAt!)),
+        timestamp: new Date(r.createdAt!).getTime()
+      })),
+    ...recentMessages
+      .filter(m => m.createdAt)
+      .map(m => ({
+        type: 'message' as const,
+        name: m.guestName,
+        action: 'đã gửi lời chúc',
+        time: formatTimeAgo(new Date(m.createdAt!)),
+        timestamp: new Date(m.createdAt!).getTime()
+      })),
   ].sort((a, b) => b.timestamp - a.timestamp).slice(0, 8);
 
   const containerVariants = {
