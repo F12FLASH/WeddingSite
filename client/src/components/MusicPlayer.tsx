@@ -59,8 +59,14 @@ export default function MusicPlayer() {
     // If custom background music URLs array is set in settings, use those
     if (settings?.backgroundMusicUrls && settings.backgroundMusicUrls.length > 0) {
       const customSongs = settings.backgroundMusicUrls.map((url, index) => {
-        // Extract filename from URL for title
-        const getSongTitle = (url: string) => {
+        // Use custom name from settings or extract filename from URL
+        const getSongTitle = (url: string, index: number) => {
+          // First, check if there's a custom name
+          if (settings?.backgroundMusicNames && settings.backgroundMusicNames[index]) {
+            return settings.backgroundMusicNames[index];
+          }
+          
+          // Otherwise, extract filename from URL
           try {
             const urlParts = url.split('/');
             const filename = urlParts[urlParts.length - 1];
@@ -73,7 +79,7 @@ export default function MusicPlayer() {
         };
         
         return {
-          title: getSongTitle(url),
+          title: getSongTitle(url, index),
           artist: "Đám Cưới",
           src: url,
           duration: "--:--"

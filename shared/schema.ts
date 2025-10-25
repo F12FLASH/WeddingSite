@@ -185,6 +185,7 @@ export const settings = pgTable("settings", {
   backgroundMusicUrl: text("background_music_url"), // Deprecated - kept for backward compatibility
   backgroundMusicType: varchar("background_music_type"), // 'youtube', 'mp3', 'upload'
   backgroundMusicUrls: text("background_music_urls").array(), // Array of music URLs for playlist
+  backgroundMusicNames: text("background_music_names").array(), // Array of custom song names (parallel to URLs)
   // Bank transfer information
   brideQrCodeUrl: text("bride_qr_code_url"), // QR code for bride's bank transfer
   groomQrCodeUrl: text("groom_qr_code_url"), // QR code for groom's bank transfer

@@ -210,16 +210,74 @@ export default function Hero() {
             data-testid="text-couple-names"
             variants={itemVariants}
           >
-            <span className="bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+            <motion.span 
+              className="bg-gradient-to-r from-primary via-pink-400 to-rose-500 bg-clip-text text-transparent inline-block"
+              animate={{
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "linear"
+              }}
+              style={{
+                backgroundSize: "200% 200%"
+              }}
+            >
               {coupleInfo ? `${coupleInfo.brideName} & ${coupleInfo.groomName}` : "Sarah & Michael"}
-            </span>
-            {/* Decorative underline */}
+            </motion.span>
+            {/* Character count display */}
             <motion.div
-              className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-primary rounded-full"
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
+              className="absolute -top-8 right-0 text-xs text-muted-foreground/60 font-sans"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.5 }}
+            >
+              {coupleInfo ? (coupleInfo.brideName + " & " + coupleInfo.groomName).length : 17} ký tự
+            </motion.div>
+            {/* Decorative underline with shimmer */}
+            <motion.div
+              className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-primary/50 via-primary to-primary/50 rounded-full"
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: 1, opacity: 1 }}
               transition={{ delay: 1, duration: 0.8 }}
-            />
+            >
+              {/* Shimmer effect */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent"
+                animate={{
+                  x: ["-100%", "100%"]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+              />
+            </motion.div>
+            {/* Sparkle effects */}
+            {[...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute text-primary/40"
+                style={{
+                  left: `${20 + i * 15}%`,
+                  top: `${-10 + Math.sin(i) * 10}%`,
+                }}
+                animate={{
+                  scale: [0, 1, 0],
+                  rotate: [0, 180, 360],
+                  opacity: [0, 1, 0]
+                }}
+                transition={{
+                  duration: 3,
+                  delay: i * 0.4,
+                  repeat: Infinity,
+                }}
+              >
+                ✨
+              </motion.div>
+            ))}
           </motion.h1>
 
           <motion.div

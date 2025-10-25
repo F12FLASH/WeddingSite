@@ -55,6 +55,7 @@ export default function AdminSettings() {
       backgroundMusicUrl: "",
       backgroundMusicType: "upload",
       backgroundMusicUrls: [] as string[],
+      backgroundMusicNames: [] as string[],
       footerText: "",
       facebookUrl: "",
       instagramUrl: "",
@@ -88,6 +89,7 @@ export default function AdminSettings() {
         backgroundMusicUrl: settings.backgroundMusicUrl || "",
         backgroundMusicType: settings.backgroundMusicType || "upload",
         backgroundMusicUrls: settings.backgroundMusicUrls || [],
+        backgroundMusicNames: settings.backgroundMusicNames || [],
         footerText: settings.footerText || "",
         facebookUrl: settings.facebookUrl || "",
         instagramUrl: settings.instagramUrl || "",
@@ -157,8 +159,25 @@ export default function AdminSettings() {
     try {
       const audioUrl = await uploadImageToCloudinary(file);
       const currentUrls = form.getValues('backgroundMusicUrls') || [];
+      const currentNames = form.getValues('backgroundMusicNames') || [];
       const newUrls = [...currentUrls, audioUrl];
+      
+      // Extract filename as default name
+      const getSongName = (url: string) => {
+        try {
+          const urlParts = url.split('/');
+          const filename = urlParts[urlParts.length - 1];
+          const decodedName = decodeURIComponent(filename);
+          const nameWithoutExt = decodedName.replace(/\.[^/.]+$/, '');
+          return nameWithoutExt || `Bài hát ${newUrls.length}`;
+        } catch {
+          return `Bài hát ${newUrls.length}`;
+        }
+      };
+      
+      const newNames = [...currentNames, getSongName(audioUrl)];
       form.setValue('backgroundMusicUrls', newUrls);
+      form.setValue('backgroundMusicNames', newNames);
       form.setValue('backgroundMusicType', 'upload');
       
       // Auto-save playlist to database
@@ -188,8 +207,11 @@ export default function AdminSettings() {
 
   const handleRemoveSong = async (index: number) => {
     const currentUrls = form.getValues('backgroundMusicUrls') || [];
+    const currentNames = form.getValues('backgroundMusicNames') || [];
     const newUrls = currentUrls.filter((_, i) => i !== index);
+    const newNames = currentNames.filter((_, i) => i !== index);
     form.setValue('backgroundMusicUrls', newUrls);
+    form.setValue('backgroundMusicNames', newNames);
     
     // Auto-save playlist to database
     const formData = form.getValues();
@@ -197,6 +219,7 @@ export default function AdminSettings() {
       await updateMutation.mutateAsync({
         ...formData,
         backgroundMusicUrls: newUrls,
+        backgroundMusicNames: newNames,
       });
       
       toast({
@@ -209,6 +232,24 @@ export default function AdminSettings() {
         description: "Không thể xóa bài hát",
         variant: "destructive",
       });
+    }
+  };
+  
+  const handleSongNameChange = async (index: number, newName: string) => {
+    const currentNames = form.getValues('backgroundMusicNames') || [];
+    const newNames = [...currentNames];
+    newNames[index] = newName;
+    form.setValue('backgroundMusicNames', newNames);
+    
+    // Auto-save to database
+    const formData = form.getValues();
+    try {
+      await updateMutation.mutateAsync({
+        ...formData,
+        backgroundMusicNames: newNames,
+      });
+    } catch (error) {
+      console.error("Failed to save song name:", error);
     }
   };
 
@@ -810,12 +851,15 @@ export default function AdminSettings() {
                             </div>
                           ) : (
                             (form.watch('backgroundMusicUrls') || []).map((url, index) => {
-                              // Extract filename from URL
-                              const getSongName = (url: string) => {
+                              // Get song name from array or extract from URL
+                              const songNames = form.watch('backgroundMusicNames') || [];
+                              const getSongName = (url: string, index: number) => {
+                                if (songNames[index]) {
+                                  return songNames[index];
+                                }
                                 try {
                                   const urlParts = url.split('/');
                                   const filename = urlParts[urlParts.length - 1];
-                                  // Decode URI component and remove file extension
                                   const decodedName = decodeURIComponent(filename);
                                   const nameWithoutExt = decodedName.replace(/\.[^/.]+$/, '');
                                   return nameWithoutExt || `Bài hát ${index + 1}`;
@@ -831,8 +875,15 @@ export default function AdminSettings() {
                               >
                                 <Music size={18} className="text-primary flex-shrink-0" />
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-medium truncate">{getSongName(url)}</p>
-                                  <p className="text-xs text-muted-foreground">
+                                  <input
+                                    type="text"
+                                    value={getSongName(url, index)}
+                                    onChange={(e) => handleSongNameChange(index, e.target.value)}
+                                    className="text-sm font-medium bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 py-1 w-full"
+                                    placeholder="Tên bài hát"
+                                    data-testid={`input-song-name-${index}`}
+                                  />
+                                  <p className="text-xs text-muted-foreground px-2">
                                     Track #{index + 1}
                                   </p>
                                 </div>

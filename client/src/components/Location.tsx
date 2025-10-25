@@ -204,7 +204,7 @@ export default function Location() {
               )}
               
               {/* Google Maps Iframe */}
-              {settings?.venueMapLink && (
+              {settings?.venueMapLink ? (
                 <iframe
                   src={settings.venueMapLink}
                   width="100%"
@@ -214,9 +214,21 @@ export default function Location() {
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   onLoad={() => setIsMapLoaded(true)}
+                  onError={() => {
+                    console.error("Failed to load Google Maps iframe");
+                    setIsMapLoaded(true);
+                  }}
                   data-testid="iframe-map"
                   title="Bản đồ địa điểm tổ chức"
                 />
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center text-muted-foreground">
+                    <MapPin size={48} className="mx-auto mb-4 opacity-50" />
+                    <p className="text-sm">Chưa có bản đồ</p>
+                    <p className="text-xs mt-2">Vui lòng thêm link Google Maps trong Admin</p>
+                  </div>
+                </div>
               )}
             </motion.div>
           </motion.div>
