@@ -202,11 +202,11 @@ export default function Hero() {
       >
         {/* Wedding Announcement */}
         <motion.div
-          className="mb-8"
+          className="mb-2"
           variants={containerVariants}
         >
           <motion.h1
-            className="font-cursive text-6xl md:text-8xl lg:text-9xl mb-4 text-foreground relative"
+            className="font-cursive text-6xl md:text-8xl lg:text-9xl mb-2 text-foreground relative"
             data-testid="text-couple-names"
             variants={itemVariants}
           >
@@ -223,7 +223,7 @@ export default function Hero() {
           </motion.h1>
 
           <motion.div
-            className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-foreground mb-6"
+            className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-foreground mb-3"
             variants={itemVariants}
           >
             <motion.div
@@ -256,14 +256,14 @@ export default function Hero() {
 
         {/* Countdown Timer */}
         <motion.div
-          className="flex justify-center gap-3 md:gap-6 mb-8"
+          className="flex justify-center gap-2 md:gap-4 mb-4"
           data-testid="countdown-timer"
           variants={containerVariants}
         >
           {countdownItems.map((item, index) => (
             <motion.div
               key={item.label}
-              className="text-center backdrop-blur-xl bg-card/60 rounded-2xl md:rounded-3xl p-3 md:p-6 border border-card-border/50 shadow-2xl relative overflow-hidden"
+              className="text-center backdrop-blur-xl bg-card/60 rounded-xl md:rounded-2xl lg:rounded-3xl p-2 sm:p-3 md:p-4 lg:p-6 border border-card-border/50 shadow-2xl relative overflow-hidden min-w-[60px] sm:min-w-[70px] md:min-w-[90px] lg:min-w-[120px]"
               variants={countdownVariants}
               whileHover={{ 
                 scale: 1.05,
@@ -275,7 +275,7 @@ export default function Hero() {
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent rounded-3xl" />
               
               <motion.div
-                className="text-2xl md:text-4xl lg:text-5xl font-serif font-bold text-primary relative z-10"
+                className="text-lg sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl font-serif font-bold text-primary relative z-10"
                 key={item.value}
                 initial={{ scale: 1.2, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -283,8 +283,8 @@ export default function Hero() {
               >
                 {item.value.toString().padStart(2, '0')}
               </motion.div>
-              <div className="text-xs md:text-sm lg:text-base text-muted-foreground mt-1 md:mt-2 font-medium relative z-10 flex items-center justify-center gap-1">
-                <item.icon size={14} className="hidden md:inline" />
+              <div className="text-[10px] sm:text-xs md:text-sm lg:text-base text-muted-foreground mt-0.5 sm:mt-1 md:mt-2 font-medium relative z-10 flex items-center justify-center gap-1">
+                <item.icon size={12} className="hidden lg:inline" />
                 {item.label}
               </div>
             </motion.div>
