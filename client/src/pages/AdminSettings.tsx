@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Save, Settings as SettingsIcon, Music, MapPin, Palette, Bell, Shield, Eye, Upload } from "lucide-react";
+import { Save, Settings as SettingsIcon, Music, MapPin, Palette, Bell, Shield, Eye, Upload, Image, Trash2, Power } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import type { Settings } from "@shared/schema";
+import type { Settings, Popup } from "@shared/schema";
 import { insertSettingsSchema } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -21,14 +21,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { uploadImageToCloudinary } from "@/lib/imageUpload";
+import { Switch } from "@/components/ui/switch";
 
 export default function AdminSettings() {
   const { toast } = useToast();
@@ -43,6 +37,10 @@ export default function AdminSettings() {
     queryKey: ["/api/settings"],
   });
 
+  const { data: popups = [] } = useQuery<Popup[]>({
+    queryKey: ["/api/popups"],
+  });
+
   const form = useForm({
     resolver: zodResolver(insertSettingsSchema),
     defaultValues: {
@@ -55,11 +53,10 @@ export default function AdminSettings() {
       eventStartTime: undefined as Date | undefined,
       eventEndTime: undefined as Date | undefined,
       backgroundMusicUrl: "",
-      backgroundMusicType: "youtube",
+      backgroundMusicType: "upload",
     },
   });
 
-  // Helper function to convert Date to local datetime string for datetime-local input
   const toLocalDatetimeString = (date: Date | string | null | undefined): string | undefined => {
     if (!date) return undefined;
     const d = new Date(date);
@@ -71,7 +68,6 @@ export default function AdminSettings() {
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
-  // Reset form when settings are loaded
   useEffect(() => {
     if (settings) {
       form.reset({
@@ -84,14 +80,13 @@ export default function AdminSettings() {
         eventStartTime: toLocalDatetimeString(settings.eventStartTime) as any,
         eventEndTime: toLocalDatetimeString(settings.eventEndTime) as any,
         backgroundMusicUrl: settings.backgroundMusicUrl || "",
-        backgroundMusicType: settings.backgroundMusicType || "youtube",
+        backgroundMusicType: settings.backgroundMusicType || "upload",
       });
     }
   }, [settings, form]);
 
   const updateMutation = useMutation({
     mutationFn: async (data: typeof insertSettingsSchema._type) => {
-      // Convert datetime-local string values to Date objects before sending
       const processedData = {
         ...data,
         eventStartTime: data.eventStartTime ? new Date(data.eventStartTime) : undefined,
@@ -127,7 +122,6 @@ export default function AdminSettings() {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type (audio files)
     if (!file.type.startsWith('audio/')) {
       toast({
         title: "❌ Lỗi",
@@ -137,7 +131,6 @@ export default function AdminSettings() {
       return;
     }
 
-    // Validate file size (10MB for audio)
     if (file.size > 10 * 1024 * 1024) {
       toast({
         title: "❌ Lỗi",
@@ -150,7 +143,6 @@ export default function AdminSettings() {
     setUploadingAudio(true);
 
     try {
-      // Upload audio file using the same image upload function (it works for all file types)
       const audioUrl = await uploadImageToCloudinary(file);
       form.setValue('backgroundMusicUrl', audioUrl);
       form.setValue('backgroundMusicType', 'upload');
@@ -177,7 +169,6 @@ export default function AdminSettings() {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type (images)
     if (!file.type.startsWith('image/')) {
       toast({
         title: "❌ Lỗi",
@@ -187,7 +178,6 @@ export default function AdminSettings() {
       return;
     }
 
-    // Validate file size (5MB for images)
     if (file.size > 5 * 1024 * 1024) {
       toast({
         title: "❌ Lỗi",
@@ -223,7 +213,7 @@ export default function AdminSettings() {
 
   const tabs = [
     { id: "general", label: "🌐 Tổng Quan", icon: SettingsIcon },
-    { id: "appearance", label: "🎨 Giao Diện", icon: Palette },
+    { id: "popups", label: "🖼️ Popup Quảng Cáo", icon: Image },
     { id: "features", label: "⚙️ Tính Năng", icon: Bell },
     { id: "security", label: "🔒 Bảo Mật", icon: Shield },
   ];
@@ -256,9 +246,10 @@ export default function AdminSettings() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
+        className="admin-page"
       >
         <div className="mb-8">
-          <h2 className="text-3xl font-serif mb-2 text-foreground">⚙️ Cài Đặt Website</h2>
+          <h2 className="admin-heading mb-2 text-foreground">⚙️ Cài Đặt Website</h2>
           <p className="text-muted-foreground">Cấu hình trang web đám cưới của bạn</p>
         </div>
         <Card className="animate-pulse">
@@ -280,8 +271,8 @@ export default function AdminSettings() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
+      className="admin-page"
     >
-      {/* Header */}
       <motion.div 
         className="mb-8"
         variants={containerVariants}
@@ -289,13 +280,12 @@ export default function AdminSettings() {
         animate="visible"
       >
         <motion.div variants={itemVariants}>
-          <h2 className="text-3xl font-serif mb-2 text-foreground">⚙️ Cài Đặt Website</h2>
+          <h2 className="admin-heading mb-2 text-foreground">⚙️ Cài Đặt Website</h2>
           <p className="text-muted-foreground text-lg">Tùy chỉnh và cấu hình trang web đám cưới của bạn</p>
         </motion.div>
       </motion.div>
 
       <div className="grid lg:grid-cols-4 gap-6">
-        {/* Sidebar Navigation */}
         <motion.div variants={itemVariants}>
           <Card className="sticky top-6">
             <CardContent className="p-4">
@@ -322,7 +312,6 @@ export default function AdminSettings() {
           </Card>
         </motion.div>
 
-        {/* Main Content */}
         <motion.div 
           className="lg:col-span-3"
           variants={containerVariants}
@@ -332,18 +321,8 @@ export default function AdminSettings() {
           <Form {...form}>
             <form onSubmit={onSubmit}>
             <AnimatedTabContent activeTab={activeTab}>
-              {/* General Settings */}
               {activeTab === "general" && (
                 <div className="space-y-6">
-                  <Card>
-                    <CardHeader className="bg-gradient-to-r from-primary/5 to-primary/10 border-b">
-                      <CardTitle className="flex items-center gap-2">
-                        <SettingsIcon className="text-primary" size={20} />
-                        Thông Tin Cơ Bản
-                      </CardTitle>
-                    </CardHeader>
-                  </Card>
-
                   <Card>
                     <CardHeader className="bg-gradient-to-r from-blue-500/5 to-blue-500/10 border-b">
                       <CardTitle className="flex items-center gap-2">
@@ -395,18 +374,18 @@ export default function AdminSettings() {
                         name="venueMapLink"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-sm font-medium">Link Google Maps</FormLabel>
+                            <FormLabel className="text-sm font-medium">Link Google Maps (Nhúng iframe)</FormLabel>
                             <FormControl>
                               <Input
                                 type="url"
-                                placeholder="https://www.google.com/maps/search/?api=1&query=..."
+                                placeholder="https://www.google.com/maps/embed?pb=..."
                                 className="h-12"
                                 data-testid="input-venue-map-link"
                                 {...field}
                               />
                             </FormControl>
                             <p className="text-xs text-muted-foreground">
-                              Link Google Maps để khách mời có thể chỉ đường dễ dàng
+                              Vào Google Maps → Chia sẻ → Nhúng bản đồ → Sao chép URL trong thuộc tính src
                             </p>
                             <FormMessage />
                           </FormItem>
@@ -430,15 +409,6 @@ export default function AdminSettings() {
                                 </div>
                               )}
                               <div className="flex gap-2">
-                                <FormControl>
-                                  <Input
-                                    type="url"
-                                    placeholder="Hoặc nhập URL ảnh địa điểm..."
-                                    className="h-12 flex-1"
-                                    data-testid="input-venue-image"
-                                    {...field}
-                                  />
-                                </FormControl>
                                 <input
                                   type="file"
                                   ref={venueImageInputRef}
@@ -449,8 +419,7 @@ export default function AdminSettings() {
                                 <Button 
                                   type="button" 
                                   variant="outline" 
-                                  size="icon" 
-                                  className="h-12 w-12"
+                                  className="h-12 flex-1"
                                   onClick={() => venueImageInputRef.current?.click()}
                                   disabled={uploadingVenueImage}
                                   data-testid="button-upload-venue-image"
@@ -459,17 +428,19 @@ export default function AdminSettings() {
                                     <motion.div
                                       animate={{ rotate: 360 }}
                                       transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                      className="mr-2"
                                     >
                                       <Upload size={18} />
                                     </motion.div>
                                   ) : (
-                                    <Upload size={18} />
+                                    <Upload size={18} className="mr-2" />
                                   )}
+                                  {uploadingVenueImage ? "Đang tải lên..." : "Tải Ảnh Lên"}
                                 </Button>
                               </div>
                             </div>
                             <p className="text-xs text-muted-foreground">
-                              Tải lên ảnh địa điểm để hiển thị tại trang chủ
+                              Tải lên ảnh địa điểm để hiển thị tại trang chủ (tối đa 5MB)
                             </p>
                             <FormMessage />
                           </FormItem>
@@ -570,28 +541,12 @@ export default function AdminSettings() {
                 </div>
               )}
 
-              {/* Appearance Settings */}
-              {activeTab === "appearance" && (
+              {activeTab === "popups" && (
                 <div className="space-y-6">
-                  <Card>
-                    <CardHeader className="bg-gradient-to-r from-purple-500/5 to-purple-500/10 border-b">
-                      <CardTitle className="flex items-center gap-2">
-                        <Palette className="text-purple-500" size={20} />
-                        Màu Sắc & Giao Diện
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4 pt-6">
-                      <div className="p-4 bg-muted/50 rounded-lg">
-                        <p className="text-sm text-muted-foreground">
-                          Các tùy chỉnh giao diện sẽ được bổ sung trong phiên bản tiếp theo
-                        </p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <PopupManagement popups={popups} />
                 </div>
               )}
 
-              {/* Features Settings */}
               {activeTab === "features" && (
                 <div className="space-y-6">
                   <Card>
@@ -604,76 +559,51 @@ export default function AdminSettings() {
                     <CardContent className="space-y-4 pt-6">
                       <FormField
                         control={form.control}
-                        name="backgroundMusicType"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium">Loại Nhạc Nền</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger className="h-12" data-testid="select-music-type">
-                                  <SelectValue placeholder="Chọn loại nhạc" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="youtube">🎬 YouTube Link</SelectItem>
-                                <SelectItem value="mp3">🎵 MP3 URL</SelectItem>
-                                <SelectItem value="upload">📤 Upload File</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <p className="text-xs text-muted-foreground">
-                              Chọn nguồn nhạc nền cho website
-                            </p>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      
-                      <FormField
-                        control={form.control}
                         name="backgroundMusicUrl"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-sm font-medium">Link/URL Nhạc Nền</FormLabel>
-                            <div className="flex gap-2">
-                              <FormControl>
-                                <Input
-                                  type="url"
-                                  placeholder="https://www.youtube.com/watch?v=... hoặc .mp3 link"
-                                  className="h-12 flex-1"
-                                  data-testid="input-music-url"
-                                  {...field}
+                            <FormLabel className="text-sm font-medium">🎵 Upload File Nhạc Nền</FormLabel>
+                            <div className="space-y-3">
+                              {field.value && (
+                                <div className="p-3 bg-muted rounded-lg">
+                                  <p className="text-sm text-muted-foreground">
+                                    ✅ Đã có nhạc nền: {field.value.substring(0, 50)}...
+                                  </p>
+                                </div>
+                              )}
+                              <div className="flex gap-2">
+                                <input
+                                  type="file"
+                                  ref={audioFileInputRef}
+                                  onChange={handleAudioFileSelect}
+                                  accept="audio/*"
+                                  className="hidden"
                                 />
-                              </FormControl>
-                              <input
-                                type="file"
-                                ref={audioFileInputRef}
-                                onChange={handleAudioFileSelect}
-                                accept="audio/*"
-                                className="hidden"
-                              />
-                              <Button 
-                                type="button" 
-                                variant="outline" 
-                                size="icon" 
-                                className="h-12 w-12"
-                                onClick={() => audioFileInputRef.current?.click()}
-                                disabled={uploadingAudio}
-                                data-testid="button-upload-audio"
-                              >
-                                {uploadingAudio ? (
-                                  <motion.div
-                                    animate={{ rotate: 360 }}
-                                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                                  >
-                                    <Upload size={18} />
-                                  </motion.div>
-                                ) : (
-                                  <Upload size={18} />
-                                )}
-                              </Button>
+                                <Button 
+                                  type="button" 
+                                  variant="outline" 
+                                  className="h-12 flex-1"
+                                  onClick={() => audioFileInputRef.current?.click()}
+                                  disabled={uploadingAudio}
+                                  data-testid="button-upload-audio"
+                                >
+                                  {uploadingAudio ? (
+                                    <motion.div
+                                      animate={{ rotate: 360 }}
+                                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                      className="mr-2"
+                                    >
+                                      <Upload size={18} />
+                                    </motion.div>
+                                  ) : (
+                                    <Upload size={18} className="mr-2" />
+                                  )}
+                                  {uploadingAudio ? "Đang tải lên..." : "Chọn File Âm Thanh"}
+                                </Button>
+                              </div>
                             </div>
                             <p className="text-xs text-muted-foreground">
-                              YouTube link, MP3 URL, hoặc bấm Upload để tải file lên
+                              Chọn file MP3, WAV hoặc các định dạng âm thanh khác (tối đa 10MB)
                             </p>
                             <FormMessage />
                           </FormItem>
@@ -684,7 +614,6 @@ export default function AdminSettings() {
                 </div>
               )}
 
-              {/* Security Settings */}
               {activeTab === "security" && (
                 <div className="space-y-6">
                   <Card>
@@ -730,7 +659,6 @@ export default function AdminSettings() {
               )}
             </AnimatedTabContent>
 
-            {/* Save Button */}
             <motion.div 
               className="flex justify-end gap-4 mt-6 p-6 bg-card border rounded-lg sticky bottom-6 shadow-lg"
               variants={itemVariants}
@@ -739,6 +667,7 @@ export default function AdminSettings() {
                 type="button" 
                 variant="outline"
                 className="rounded-lg"
+                onClick={() => window.open('/', '_blank')}
               >
                 <Eye size={16} className="mr-2" />
                 Xem trước
@@ -760,7 +689,6 @@ export default function AdminSettings() {
   );
 }
 
-// Animated Tab Content Component
 function AnimatedTabContent({ children, activeTab }: { children: React.ReactNode; activeTab: string }) {
   return (
     <motion.div
@@ -772,5 +700,248 @@ function AnimatedTabContent({ children, activeTab }: { children: React.ReactNode
     >
       {children}
     </motion.div>
+  );
+}
+
+function PopupManagement({ popups }: { popups: Popup[] }) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [uploadingPopup, setUploadingPopup] = useState<string | null>(null);
+  const welcomePopupRef = useRef<HTMLInputElement>(null);
+  const scrollEndPopupRef = useRef<HTMLInputElement>(null);
+
+  const welcomePopup = popups.find(p => p.type === 'welcome');
+  const scrollEndPopup = popups.find(p => p.type === 'scroll_end');
+
+  const createOrUpdatePopupMutation = useMutation({
+    mutationFn: async ({ type, imageUrl, isActive }: { type: string; imageUrl: string; isActive: boolean }) => {
+      const existingPopup = popups.find(p => p.type === type);
+      if (existingPopup) {
+        return await apiRequest("PATCH", `/api/popups/${existingPopup.id}`, { imageUrl, isActive });
+      } else {
+        return await apiRequest("POST", "/api/popups", { type, imageUrl, isActive });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/popups"] });
+      toast({
+        title: "✅ Thành công!",
+        description: "Popup đã được cập nhật",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể cập nhật popup",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const togglePopupMutation = useMutation({
+    mutationFn: async ({ id, isActive }: { id: string; isActive: boolean }) => {
+      return await apiRequest("PATCH", `/api/popups/${id}`, { isActive });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/popups"] });
+    },
+    onError: () => {
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể cập nhật trạng thái popup",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handlePopupImageUpload = async (type: 'welcome' | 'scroll_end', file: File) => {
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Vui lòng chọn file ảnh",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Kích thước file không được vượt quá 5MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploadingPopup(type);
+
+    try {
+      const imageUrl = await uploadImageToCloudinary(file);
+      await createOrUpdatePopupMutation.mutateAsync({ type, imageUrl, isActive: true });
+      toast({
+        title: "✅ Thành công!",
+        description: `Đã tải lên ảnh popup ${type === 'welcome' ? 'chào mừng' : 'cuối trang'}`,
+      });
+    } catch (error) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể tải lên ảnh popup",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingPopup(null);
+    }
+  };
+
+  return (
+    <>
+      <Card>
+        <CardHeader className="bg-gradient-to-r from-pink-500/5 to-pink-500/10 border-b">
+          <CardTitle className="flex items-center gap-2">
+            <Image className="text-pink-500" size={20} />
+            Popup Chào Mừng (Khi Vào Trang)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 pt-6">
+          <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+            <div className="flex items-center gap-3">
+              <Power className={welcomePopup?.isActive ? "text-green-500" : "text-muted-foreground"} size={20} />
+              <div>
+                <p className="font-medium">Hiển thị popup khi lần đầu truy cập</p>
+                <p className="text-sm text-muted-foreground">
+                  Popup sẽ hiện sau 1 giây khi khách truy cập trang lần đầu
+                </p>
+              </div>
+            </div>
+            <Switch
+              checked={welcomePopup?.isActive || false}
+              onCheckedChange={(checked) => {
+                if (welcomePopup) {
+                  togglePopupMutation.mutate({ id: welcomePopup.id, isActive: checked });
+                }
+              }}
+              disabled={!welcomePopup}
+            />
+          </div>
+
+          {welcomePopup?.imageUrl && (
+            <div className="relative w-full max-w-md">
+              <img
+                src={welcomePopup.imageUrl}
+                alt="Welcome Popup"
+                className="w-full h-64 object-contain rounded-lg border-2 border-border bg-muted"
+              />
+            </div>
+          )}
+
+          <div>
+            <input
+              type="file"
+              ref={welcomePopupRef}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handlePopupImageUpload('welcome', file);
+              }}
+              accept="image/*"
+              className="hidden"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full h-12"
+              onClick={() => welcomePopupRef.current?.click()}
+              disabled={uploadingPopup === 'welcome'}
+            >
+              {uploadingPopup === 'welcome' ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  className="mr-2"
+                >
+                  <Upload size={18} />
+                </motion.div>
+              ) : (
+                <Upload size={18} className="mr-2" />
+              )}
+              {welcomePopup ? 'Thay Đổi Ảnh Popup' : 'Tải Ảnh Popup Lên'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="bg-gradient-to-r from-purple-500/5 to-purple-500/10 border-b">
+          <CardTitle className="flex items-center gap-2">
+            <Image className="text-purple-500" size={20} />
+            Popup Cuối Trang (Khi Lướt Xuống Cuối)
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 pt-6">
+          <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+            <div className="flex items-center gap-3">
+              <Power className={scrollEndPopup?.isActive ? "text-green-500" : "text-muted-foreground"} size={20} />
+              <div>
+                <p className="font-medium">Hiển thị popup khi lướt đến cuối trang</p>
+                <p className="text-sm text-muted-foreground">
+                  Popup sẽ hiện khi khách lướt đến gần cuối trang (95%)
+                </p>
+              </div>
+            </div>
+            <Switch
+              checked={scrollEndPopup?.isActive || false}
+              onCheckedChange={(checked) => {
+                if (scrollEndPopup) {
+                  togglePopupMutation.mutate({ id: scrollEndPopup.id, isActive: checked });
+                }
+              }}
+              disabled={!scrollEndPopup}
+            />
+          </div>
+
+          {scrollEndPopup?.imageUrl && (
+            <div className="relative w-full max-w-md">
+              <img
+                src={scrollEndPopup.imageUrl}
+                alt="Scroll End Popup"
+                className="w-full h-64 object-contain rounded-lg border-2 border-border bg-muted"
+              />
+            </div>
+          )}
+
+          <div>
+            <input
+              type="file"
+              ref={scrollEndPopupRef}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handlePopupImageUpload('scroll_end', file);
+              }}
+              accept="image/*"
+              className="hidden"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full h-12"
+              onClick={() => scrollEndPopupRef.current?.click()}
+              disabled={uploadingPopup === 'scroll_end'}
+            >
+              {uploadingPopup === 'scroll_end' ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  className="mr-2"
+                >
+                  <Upload size={18} />
+                </motion.div>
+              ) : (
+                <Upload size={18} className="mr-2" />
+              )}
+              {scrollEndPopup ? 'Thay Đổi Ảnh Popup' : 'Tải Ảnh Popup Lên'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </>
   );
 }
