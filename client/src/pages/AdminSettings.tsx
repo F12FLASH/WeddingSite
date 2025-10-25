@@ -24,6 +24,20 @@ import {
 import { uploadImageToCloudinary } from "@/lib/imageUpload";
 import { Switch } from "@/components/ui/switch";
 
+// Helper function to validate and provide guidance on Google Maps URLs
+const convertToGoogleMapsEmbed = (url: string): string => {
+  if (!url) return url;
+  
+  // If already an embed URL, return as is
+  if (url.includes('/maps/embed')) {
+    return url;
+  }
+  
+  // For other Google Maps URLs, return as is - they need to use the embed format
+  // The user must get the embed URL from Google Maps Share -> Embed map -> Copy HTML
+  return url;
+};
+
 export default function AdminSettings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -32,6 +46,7 @@ export default function AdminSettings() {
   const [uploadingVenueImage, setUploadingVenueImage] = useState(false);
   const audioFileInputRef = useRef<HTMLInputElement>(null);
   const venueImageInputRef = useRef<HTMLInputElement>(null);
+  const songNameDebounceRef = useRef<Record<number, NodeJS.Timeout>>({});
 
   const { data: settings, isLoading } = useQuery<Settings | null>({
     queryKey: ["/api/settings"],
@@ -235,22 +250,38 @@ export default function AdminSettings() {
     }
   };
   
-  const handleSongNameChange = async (index: number, newName: string) => {
+  const handleSongNameChange = (index: number, newName: string) => {
     const currentNames = form.getValues('backgroundMusicNames') || [];
     const newNames = [...currentNames];
     newNames[index] = newName;
     form.setValue('backgroundMusicNames', newNames);
     
-    // Auto-save to database
-    const formData = form.getValues();
-    try {
-      await updateMutation.mutateAsync({
-        ...formData,
-        backgroundMusicNames: newNames,
-      });
-    } catch (error) {
-      console.error("Failed to save song name:", error);
+    // Clear existing timeout for this song index
+    if (songNameDebounceRef.current[index]) {
+      clearTimeout(songNameDebounceRef.current[index]);
     }
+    
+    // Auto-save to database after user stops typing for 1 second
+    songNameDebounceRef.current[index] = setTimeout(async () => {
+      const formData = form.getValues();
+      try {
+        await updateMutation.mutateAsync({
+          ...formData,
+          backgroundMusicNames: newNames,
+        });
+        toast({
+          title: "✅ Đã lưu",
+          description: "Tên bài hát đã được cập nhật",
+        });
+      } catch (error) {
+        console.error("Failed to save song name:", error);
+        toast({
+          title: "❌ Lỗi",
+          description: "Không thể lưu tên bài hát",
+          variant: "destructive",
+        });
+      }
+    }, 1000);
   };
 
   const handleVenueImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -473,12 +504,19 @@ export default function AdminSettings() {
                                 {...field}
                               />
                             </FormControl>
-                            <p className="text-xs text-muted-foreground">
-                              Vào Google Maps → Chia sẻ → Nhúng bản đồ → Sao chép URL trong thuộc tính src
-                            </p>
+                            <div className="text-xs text-muted-foreground space-y-1 bg-muted/50 p-3 rounded-lg">
+                              <p className="font-medium text-foreground">📍 Cách lấy link nhúng từ Google Maps:</p>
+                              <ol className="list-decimal list-inside space-y-1 ml-2">
+                                <li>Vào <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Maps</a></li>
+                                <li>Tìm kiếm địa điểm của bạn</li>
+                                <li>Nhấn nút "Chia sẻ" (Share)</li>
+                                <li>Chọn tab "Nhúng bản đồ" (Embed a map)</li>
+                                <li>Nhấn "Sao chép HTML" và dán vào mục src="..." ở đây</li>
+                              </ol>
+                            </div>
                             
                             {/* Google Maps Preview */}
-                            {field.value && field.value.includes('google.com/maps/embed') && (
+                            {field.value && field.value.includes('google.com/maps') && (
                               <div className="mt-4">
                                 <p className="text-sm font-medium mb-2 flex items-center gap-2">
                                   <Eye size={16} className="text-green-500" />

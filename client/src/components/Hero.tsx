@@ -206,12 +206,12 @@ export default function Hero() {
           variants={containerVariants}
         >
           <motion.h1
-            className="font-cursive text-6xl md:text-8xl lg:text-9xl mb-6 text-foreground relative"
+            className="font-cursive text-6xl md:text-8xl lg:text-9xl mb-6 text-foreground relative font-extrabold"
             data-testid="text-couple-names"
             variants={itemVariants}
           >
             <motion.span 
-              className="bg-gradient-to-r from-primary via-pink-400 to-rose-500 bg-clip-text text-transparent inline-block"
+              className="bg-gradient-to-r from-primary via-pink-400 to-rose-500 bg-clip-text text-transparent inline-block font-extrabold"
               animate={{
                 backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
               }}

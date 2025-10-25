@@ -140,7 +140,7 @@ export default function Navigation() {
               />
             </motion.div>
             <div className="flex flex-col">
-              <span className="font-cursive text-2xl md:text-3xl text-primary bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+              <span className="font-cursive text-2xl md:text-3xl text-primary bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent font-extrabold">
                 {coupleInfo ? `${coupleInfo.brideName.split(' ').pop()} & ${coupleInfo.groomName.split(' ').pop()}` : "Trang Web Cưới"}
               </span>
               <span className="text-xs text-muted-foreground -mt-1">
@@ -168,10 +168,10 @@ export default function Navigation() {
                     e.preventDefault();
                     scrollToSection(link.href);
                   }}
-                  className={`relative px-4 py-2 rounded-xl transition-all duration-300 group ${
+                  className={`relative px-4 py-2 rounded-xl transition-all duration-300 group border-2 ${
                     isActive
-                      ? "text-primary font-semibold"
-                      : "text-foreground hover:text-primary"
+                      ? "text-primary font-semibold border-primary"
+                      : "text-foreground hover:text-primary border-border/30 hover:border-primary/50"
                   }`}
                   data-testid={`nav-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
                   variants={itemVariants}
