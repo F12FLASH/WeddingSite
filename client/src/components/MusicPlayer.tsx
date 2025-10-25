@@ -58,12 +58,27 @@ export default function MusicPlayer() {
 
     // If custom background music URLs array is set in settings, use those
     if (settings?.backgroundMusicUrls && settings.backgroundMusicUrls.length > 0) {
-      const customSongs = settings.backgroundMusicUrls.map((url, index) => ({
-        title: `Nhạc Nền ${index + 1}`,
-        artist: "Đám Cưới",
-        src: url,
-        duration: "--:--"
-      }));
+      const customSongs = settings.backgroundMusicUrls.map((url, index) => {
+        // Extract filename from URL for title
+        const getSongTitle = (url: string) => {
+          try {
+            const urlParts = url.split('/');
+            const filename = urlParts[urlParts.length - 1];
+            const decodedName = decodeURIComponent(filename);
+            const nameWithoutExt = decodedName.replace(/\.[^/.]+$/, '');
+            return nameWithoutExt || `Nhạc Nền ${index + 1}`;
+          } catch {
+            return `Nhạc Nền ${index + 1}`;
+          }
+        };
+        
+        return {
+          title: getSongTitle(url),
+          artist: "Đám Cưới",
+          src: url,
+          duration: "--:--"
+        };
+      });
       return customSongs;
     }
 
@@ -192,6 +207,8 @@ export default function MusicPlayer() {
         src={currentSong.src}
         onEnded={nextSong}
         preload="metadata"
+        autoPlay
+        loop={playlist.length === 1}
       />
 
       {/* Music Player */}

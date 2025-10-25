@@ -42,7 +42,10 @@
 
 ### 🎵 Âm Thanh & Media
 - ✅ **Nhạc nền tự động phát** - Upload file MP3/WAV từ thiết bị (tối đa 10MB)
+- ✅ **Auto-play và loop** - Nhạc tự động phát khi vào trang và lặp lại khi hết
 - ✅ **Music Player** - Điều khiển phát/dừng, tắt tiếng, chuyển bài
+- ✅ **Playlist thông minh** - Tên bài hát tự động lấy từ tên file
+- ✅ **Upload nhiều bài hát** - Thêm và quản lý nhiều bài trong playlist (tối đa 50MB/file)
 - ✅ **Upload ảnh** - Tải lên ảnh địa điểm, cặp đôi, gallery (tối đa 5MB)
 - ✅ **Thư viện ảnh 3D** - Gallery với hiệu ứng chuyển động nâng cao
 - ✅ **Base64 upload** - Upload ảnh không cần Cloudinary API key
@@ -174,12 +177,15 @@ Hoặc sử dụng nút **"Deploy"** trên Replit để publish website.
    - Bật/tắt hiển thị
    - Popup sẽ hiện khi khách lướt đến 95% chiều cao trang web
 
-#### Cài Đặt Âm Thanh (ĐÃ ĐƠN GIẢN HÓA!)
+#### Cài Đặt Âm Thanh (CẢI TIẾN MỚI!)
 1. Vào **Admin → Cài Đặt → Tính Năng**
-2. Click **"Chọn File Âm Thanh"**
-3. Chọn file MP3/WAV từ thiết bị (tối đa 10MB)
-4. File sẽ tự động upload và phát trên trang chủ
-5. ⚠️ **Không còn hỗ trợ nhập URL** - chỉ upload từ thiết bị
+2. Click **"Thêm Bài Hát"** để upload nhiều bài
+3. Chọn file MP3/WAV từ thiết bị (tối đa 10MB/bài, tối đa 50MB tổng)
+4. Tên bài hát tự động lấy từ tên file (vd: "Bai_Hat_Cuoi.mp3" → "Bai Hat Cuoi")
+5. File sẽ tự động upload và phát trên trang chủ
+6. Nhạc tự động phát khi vào trang và lặp lại khi hết
+7. Xóa bài hát bằng icon thùng rác bên cạnh mỗi bài
+8. ⚠️ **Chỉ upload từ thiết bị** - không hỗ trợ nhập URL
 
 #### Quản Lý Nội Dung
 - **Thông tin cặp đôi**: Admin → Cặp Đôi (bao gồm tiểu sử riêng)
@@ -351,7 +357,10 @@ Nếu gặp vấn đề hoặc có câu hỏi:
 
 ### 🎵 Audio & Media
 - ✅ **Auto-playing background music** - Upload MP3/WAV files from device (max 10MB)
+- ✅ **Auto-play and loop** - Music plays automatically on page load and loops when finished
 - ✅ **Music Player** - Play/pause, mute, skip tracks
+- ✅ **Smart playlist** - Song names automatically extracted from file names
+- ✅ **Multiple song upload** - Add and manage multiple songs in playlist (max 50MB/file)
 - ✅ **Image upload** - Upload venue, couple, and gallery images (max 5MB)
 - ✅ **3D Photo gallery** - Gallery with advanced motion effects
 - ✅ **Base64 upload** - Upload images without Cloudinary API key
@@ -483,12 +492,15 @@ Or use the **"Deploy"** button on Replit to publish the website.
    - Enable/disable display
    - Popup shows when scrolling to 95% of page height
 
-#### Audio Settings (SIMPLIFIED!)
+#### Audio Settings (NEW IMPROVEMENTS!)
 1. Go to **Admin → Settings → Features**
-2. Click **"Choose Audio File"**
-3. Select MP3/WAV file from device (max 10MB)
-4. File will automatically upload and play on homepage
-5. ⚠️ **URL input removed** - device upload only
+2. Click **"Add Song"** to upload multiple songs
+3. Select MP3/WAV file from device (max 10MB/song, max 50MB total)
+4. Song name automatically extracted from filename (e.g., "Wedding_Song.mp3" → "Wedding Song")
+5. File will automatically upload and play on homepage
+6. Music auto-plays on page load and loops when finished
+7. Remove songs with trash icon next to each song
+8. ⚠️ **Device upload only** - URL input not supported
 
 #### Content Management
 - **Couple info**: Admin → Couple (includes individual bios)

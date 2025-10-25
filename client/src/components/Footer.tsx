@@ -11,7 +11,7 @@ export default function Footer() {
   });
 
   const { data: coupleInfo } = useQuery<CoupleInfo | null>({
-    queryKey: ["/api/couple-info"],
+    queryKey: ["/api/couple"],
   });
 
   const { data: settings } = useQuery<Settings | null>({

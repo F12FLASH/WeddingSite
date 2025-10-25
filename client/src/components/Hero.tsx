@@ -202,11 +202,11 @@ export default function Hero() {
       >
         {/* Wedding Announcement */}
         <motion.div
-          className="mb-2"
+          className="mb-6"
           variants={containerVariants}
         >
           <motion.h1
-            className="font-cursive text-6xl md:text-8xl lg:text-9xl mb-2 text-foreground relative"
+            className="font-cursive text-6xl md:text-8xl lg:text-9xl mb-6 text-foreground relative"
             data-testid="text-couple-names"
             variants={itemVariants}
           >
@@ -223,7 +223,7 @@ export default function Hero() {
           </motion.h1>
 
           <motion.div
-            className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-foreground mb-3"
+            className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-foreground mb-6"
             variants={itemVariants}
           >
             <motion.div

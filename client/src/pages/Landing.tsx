@@ -39,7 +39,7 @@ export default function Landing() {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.8,
+        duration: 0.4,
         ease: "easeOut"
       }
     }
@@ -142,7 +142,6 @@ export default function Landing() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={sectionVariants}
-        transition={{ delay: 0.2 }}
       >
         <About />
       </motion.section>
@@ -153,7 +152,6 @@ export default function Landing() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={sectionVariants}
-        transition={{ delay: 0.3 }}
       >
         <Schedule />
       </motion.section>
@@ -164,7 +162,6 @@ export default function Landing() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={sectionVariants}
-        transition={{ delay: 0.35 }}
       >
         <WeddingParty />
       </motion.section>
@@ -175,7 +172,6 @@ export default function Landing() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={sectionVariants}
-        transition={{ delay: 0.4 }}
       >
         <Gallery />
       </motion.section>
@@ -186,7 +182,6 @@ export default function Landing() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={sectionVariants}
-        transition={{ delay: 0.5 }}
       >
         <Messages />
       </motion.section>
@@ -197,7 +192,6 @@ export default function Landing() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={sectionVariants}
-        transition={{ delay: 0.6 }}
       >
         <RSVP />
       </motion.section>
@@ -208,7 +202,6 @@ export default function Landing() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={sectionVariants}
-        transition={{ delay: 0.7 }}
       >
         <Location />
       </motion.section>
@@ -219,7 +212,6 @@ export default function Landing() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={sectionVariants}
-        transition={{ delay: 0.8 }}
       >
         <Registry />
       </motion.section>
@@ -230,7 +222,6 @@ export default function Landing() {
         whileInView="visible"
         viewport={{ once: true }}
         variants={sectionVariants}
-        transition={{ delay: 0.9 }}
       >
         <Footer />
       </motion.section>
@@ -239,7 +230,7 @@ export default function Landing() {
       <motion.div
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 1.5, type: "spring", stiffness: 200 }}
+        transition={{ delay: 0.5, type: "spring", stiffness: 200 }}
       >
         <MusicPlayer />
       </motion.div>

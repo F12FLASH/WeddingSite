@@ -809,16 +809,31 @@ export default function AdminSettings() {
                               <p className="text-xs">Nhấn "Thêm Bài Hát" để upload nhạc</p>
                             </div>
                           ) : (
-                            (form.watch('backgroundMusicUrls') || []).map((url, index) => (
+                            (form.watch('backgroundMusicUrls') || []).map((url, index) => {
+                              // Extract filename from URL
+                              const getSongName = (url: string) => {
+                                try {
+                                  const urlParts = url.split('/');
+                                  const filename = urlParts[urlParts.length - 1];
+                                  // Decode URI component and remove file extension
+                                  const decodedName = decodeURIComponent(filename);
+                                  const nameWithoutExt = decodedName.replace(/\.[^/.]+$/, '');
+                                  return nameWithoutExt || `Bài hát ${index + 1}`;
+                                } catch {
+                                  return `Bài hát ${index + 1}`;
+                                }
+                              };
+                              
+                              return (
                               <div 
                                 key={index}
                                 className="flex items-center gap-3 p-3 bg-muted rounded-lg group hover:bg-muted/70 transition-colors"
                               >
                                 <Music size={18} className="text-primary flex-shrink-0" />
                                 <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-medium">Bài hát {index + 1}</p>
-                                  <p className="text-xs text-muted-foreground truncate">
-                                    {url.substring(url.lastIndexOf('/') + 1, url.lastIndexOf('/') + 30)}...
+                                  <p className="text-sm font-medium truncate">{getSongName(url)}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    Track #{index + 1}
                                   </p>
                                 </div>
                                 <Button
@@ -832,7 +847,7 @@ export default function AdminSettings() {
                                   <Trash2 size={16} className="text-destructive" />
                                 </Button>
                               </div>
-                            ))
+                            )})
                           )}
                         </div>
                         
