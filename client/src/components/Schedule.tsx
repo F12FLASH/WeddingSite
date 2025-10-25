@@ -210,16 +210,6 @@ export default function Schedule() {
             whileInView={{ width: "8rem" }}
             transition={{ duration: 1, delay: 0.6 }}
           />
-          
-          <motion.p
-            className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-          >
-            <span className="text-primary font-semibold bg-primary/10 px-3 py-1 rounded-full">15 Tháng 6, 2025</span> • 
-            <span className="text-foreground font-medium"> Rose Garden Estate</span>
-          </motion.p>
         </motion.div>
 
         {isLoading ? (

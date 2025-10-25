@@ -133,10 +133,12 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
 
   const { data: rsvps = [] } = useQuery<Rsvp[]>({
     queryKey: ["/api/rsvps"],
+    refetchInterval: 5000, // Poll every 5 seconds for real-time updates
   });
 
   const { data: messages = [] } = useQuery<GuestMessage[]>({
     queryKey: ["/api/messages"],
+    refetchInterval: 5000, // Poll every 5 seconds for real-time updates
   });
 
   const recentRsvps = rsvps.slice(-5).reverse();
@@ -209,6 +211,13 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
     const newViewed = new Set(viewedNotifications);
     recentRsvps.forEach(r => newViewed.add(`rsvp-${r.id}`));
     recentMessages.forEach(m => newViewed.add(`message-${m.id}`));
+    setViewedNotifications(newViewed);
+  };
+
+  const markAsRead = (id: string, type: 'rsvp' | 'message') => {
+    const notificationId = `${type}-${id}`;
+    const newViewed = new Set(viewedNotifications);
+    newViewed.add(notificationId);
     setViewedNotifications(newViewed);
   };
 
@@ -612,7 +621,11 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
                           <div className="p-3">
                             <p className="text-xs font-semibold text-muted-foreground mb-2">RSVP MỚI</p>
                             {unviewedRsvps.map((rsvp) => (
-                              <Link key={rsvp.id} href="/admin/rsvps">
+                              <Link 
+                                key={rsvp.id} 
+                                href="/admin/rsvps"
+                                onClick={() => markAsRead(rsvp.id!, 'rsvp')}
+                              >
                                 <div className="p-2 hover:bg-muted rounded-lg cursor-pointer mb-1 relative">
                                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary rounded-full" />
                                   <p className="text-sm font-medium pl-3">{rsvp.guestName}</p>
@@ -628,7 +641,11 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
                           <div className="p-3">
                             <p className="text-xs font-semibold text-muted-foreground mb-2">LỜI CHÚC CHỜ DUYỆT</p>
                             {unviewedMessages.map((msg) => (
-                              <Link key={msg.id} href="/admin/messages">
+                              <Link 
+                                key={msg.id} 
+                                href="/admin/messages"
+                                onClick={() => markAsRead(msg.id!, 'message')}
+                              >
                                 <div className="p-2 hover:bg-muted rounded-lg cursor-pointer mb-1 relative">
                                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary rounded-full" />
                                   <p className="text-sm font-medium pl-3">{msg.guestName}</p>
