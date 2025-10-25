@@ -1,974 +1,621 @@
-# 💍 Hệ Thống Website Đám Cưới | Wedding Website Platform
+# 💍 Website Đám Cưới / Wedding Website
 
-> Nền tảng website đám cưới hiện đại, đầy đủ tính năng với giao diện lãng mạn và hệ thống quản lý toàn diện
+<div align="center">
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-4.9+-blue.svg)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-18.3+-61DAFB.svg)](https://reactjs.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-20+-339933.svg)](https://nodejs.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-336791.svg)](https://www.postgresql.org/)
+![Wedding Website](https://img.shields.io/badge/Wedding-Website-ff69b4?style=for-the-badge&logo=heart&logoColor=white)
+![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-20.x-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 
-[English](#english-documentation) | [Tiếng Việt](#vietnamese-documentation)
+**Website đám cưới đẹp mắt, hiện đại với giao diện song ngữ Việt-Anh**
+
+[✨ Tính Năng](#-tính-năng) •
+[🚀 Cài Đặt](#-cài-đặt) •
+[📖 Hướng Dẫn](#-hướng-dẫn-sử-dụng) •
+[🛠️ Công Nghệ](#%EF%B8%8F-công-nghệ)
+
+</div>
 
 ---
 
-<a name="vietnamese-documentation"></a>
-## 🇻🇳 Tài Liệu Tiếng Việt
+## 📋 Mục Lục / Table of Contents
 
-### 📖 Mục Lục
-- [Giới Thiệu](#vn-intro)
-- [Tính Năng](#vn-features)
-- [Công Nghệ](#vn-tech)
-- [Cài Đặt](#vn-installation)
-- [Sử Dụng](#vn-usage)
-- [Cấu Trúc Dự Án](#vn-structure)
-- [API Documentation](#vn-api)
-- [Database](#vn-database)
-- [Deploy](#vn-deploy)
-- [Bảo Mật](#vn-security)
+- [🇻🇳 Tiếng Việt](#-phần-tiếng-việt)
+- [🇺🇸 English](#-english-section)
 
-<a name="vn-intro"></a>
-### 🌟 Giới Thiệu
+---
 
-Hệ thống website đám cưới toàn diện giúp các cặp đôi tạo một trang web đẹp mắt để chia sẻ thông tin đám cưới, quản lý khách mời, nhận lời chúc và theo dõi RSVP. Được xây dựng với công nghệ hiện đại, giao diện responsive và các tính năng quản lý mạnh mẽ.
+# 🇻🇳 Phần Tiếng Việt
 
-**✨ Điểm Nổi Bật:**
-- 🎨 Giao diện lãng mạn, sang trọng với hiệu ứng động mượt mà
-- 📱 Responsive hoàn toàn trên mọi thiết bị
-- 🔐 Hệ thống xác thực an toàn với Passport.js
-- 💾 Database PostgreSQL với backup tự động
-- ⚡ Performance tối ưu với React Query và caching
-- 🎯 SEO-friendly với meta tags đầy đủ
+## ✨ Tính Năng
 
-<a name="vn-features"></a>
-### ✨ Tính Năng Chính
+### 🎨 Giao Diện & Trải Nghiệm
+- ✅ **Thiết kế hiện đại** với animations mượt mà sử dụng Framer Motion
+- ✅ **Responsive** hoàn hảo trên mọi thiết bị (Mobile, Tablet, Desktop)
+- ✅ **Font chữ nghệ thuật** hỗ trợ đầy đủ tiếng Việt (Dancing Script, Great Vibes, Tangerine)
+- ✅ **Dark Mode** - Chế độ tối tự động theo hệ thống
+- ✅ **Loading screen** độc đáo với hiệu ứng chuyển động
+- ✅ **Popup quảng cáo** - 2 loại popup:
+  - Popup chào mừng: Hiển thị sau 1 giây khi vào trang lần đầu
+  - Popup cuối trang: Hiển thị khi lướt đến 95% chiều cao trang
 
-#### 🌐 Website Công Khai (Dành cho Khách Mời)
+### 🎵 Âm Thanh & Media
+- ✅ **Nhạc nền tự động phát** - Upload file MP3/WAV từ thiết bị (tối đa 10MB)
+- ✅ **Music Player** - Điều khiển phát/dừng, tắt tiếng, chuyển bài
+- ✅ **Upload ảnh** - Tải lên ảnh địa điểm, cặp đôi, gallery (tối đa 5MB)
+- ✅ **Thư viện ảnh 3D** - Gallery với hiệu ứng chuyển động nâng cao
+- ✅ **Base64 upload** - Upload ảnh không cần Cloudinary API key
 
-**1. Trang Chủ Hero**
-- Banner lớn với ảnh cặp đôi
-- Đếm ngược thời gian đến ngày cưới
-- Call-to-action buttons (RSVP, Xem Lịch Trình)
-- Animation mượt mà khi scroll
+### 📅 Quản Lý Sự Kiện
+- ✅ **Thông tin cặp đôi** - Tên, ảnh, tiểu sử riêng, câu chuyện tình yêu
+- ✅ **Lịch trình sự kiện** - Danh sách các hoạt động trong ngày cưới
+- ✅ **Địa điểm tổ chức** - Bản đồ Google Maps nhúng (iframe), thông tin liên hệ
+- ✅ **Thời gian sự kiện** - Hiển thị thời gian bắt đầu và kết thúc
+- ✅ **Wedding Party** - Giới thiệu phù dâu, phù rể
+- ✅ **FAQ** - Câu hỏi thường gặp
 
-**2. Về Chúng Tôi**
-- Câu chuyện tình yêu của cặp đôi
-- Ảnh riêng của cô dâu và chú rể
-- Typography thanh lịch với font chữ đẹp
+### 💌 Tương Tác Khách Mời
+- ✅ **RSVP Form** - Xác nhận tham dự với deadline tự động (7 ngày trước ngày cưới)
+- ✅ **Gửi lời chúc** - Khách mời gửi lời chúc phúc
+- ✅ **Kiểm duyệt tin nhắn** - Admin phê duyệt trước khi hiển thị
+- ✅ **Thông báo realtime** - Chuông thông báo RSVPs và tin nhắn mới với mark-as-read
 
-**3. Lịch Trình Sự Kiện**
-- Timeline hiển thị các sự kiện trong ngày cưới
-- Thời gian, địa điểm, mô tả chi tiết
-- Icon đặc trưng cho từng sự kiện
-- Layout tối ưu cho mobile
+### 💰 Quà Cưới
+- ✅ **Danh sách quà cưới** - Gợi ý quà tặng cho cặp đôi
+- ✅ **Chuyển khoản ngân hàng** - QR Code cho cô dâu và chú rể
+- ✅ **Thông tin tài khoản** - Hiển thị số tài khoản, tên ngân hàng
 
-**4. Album Ảnh**
-- Grid layout với hiệu ứng masonry
-- Click để phóng to ảnh
-- Phân loại theo danh mục (Pre-wedding, Engagement, etc.)
-- Lazy loading cho performance
+### ⚙️ Quản Trị (Admin Panel)
+- ✅ **Dashboard** - Tổng quan số liệu RSVPs, tin nhắn, lượt xem
+- ✅ **Quản lý nội dung** - Cập nhật thông tin cặp đôi, sự kiện, ảnh
+- ✅ **Quản lý popup** - Upload và bật/tắt popup chào mừng, popup cuối trang
+- ✅ **Cài đặt âm thanh** - Upload nhạc nền từ thiết bị (đã đơn giản hóa - chỉ upload)
+- ✅ **Cài đặt địa điểm** - Google Maps (iframe), ảnh địa điểm, thông tin liên hệ
+- ✅ **Export dữ liệu** - Xuất danh sách RSVP ra CSV với UTF-8 BOM (hỗ trợ Excel tiếng Việt)
+- ✅ **Xác thực an toàn** - Đăng nhập bằng Replit Auth
+- ✅ **Font riêng cho Admin** - Sử dụng Times New Roman với kích thước phù hợp
 
-**5. Lời Chúc**
-- Form gửi lời chúc dễ dàng
-- Chỉ hiển thị lời chúc đã được phê duyệt
-- Validation form đầy đủ
-- Animation cho message cards
+### 🔒 Bảo Mật & Hiệu Suất
+- ✅ **Authentication** - Bảo vệ trang admin bằng Replit Auth
+- ✅ **Database backup** - Sao lưu dữ liệu định kỳ
+- ✅ **Session management** - Quản lý phiên đăng nhập an toàn
+- ✅ **Rate limiting** - Bảo vệ API khỏi spam
 
-**6. RSVP Form**
-- Thu thập thông tin khách: tên, email, số điện thoại
-- Xác nhận tham dự (Có/Không)
-- Số lượng khách đi cùng
-- Lựa chọn món ăn
-- Yêu cầu đặc biệt (dị ứng, ăn chay, etc.)
-- Validation với Zod schema
+---
 
-**7. Quà Mừng**
-- Danh sách quà đăng ký
-- Thông tin: tên, mô tả, giá, hình ảnh
-- Link mua quà
-- Đánh dấu quà đã được mua
+## 🚀 Cài Đặt
 
-**8. Địa Điểm**
-- Tên và địa chỉ địa điểm tổ chức
-- **NEW**: Thông tin liên hệ địa điểm (điện thoại, email)
-- **NEW**: Thời gian bắt đầu và kết thúc sự kiện
-- Tọa độ bản đồ
-- Nút chỉ đường (Google Maps)
-- Thông tin đỗ xe, giao thông
+### Yêu Cầu Hệ Thống
+- Node.js 20.x trở lên
+- PostgreSQL database (Neon DB được khuyên dùng)
+- Trình duyệt hiện đại (Chrome, Firefox, Safari, Edge)
 
-**9. Trình Phát Nhạc**
-- Phát nhạc nền tự động
-- **NEW**: Tích hợp với URL nhạc tùy chỉnh từ Admin Settings
-- Controls: play/pause, volume, next/previous
-- Có thể minimize/expand
-- Animation đĩa nhạc quay
-- Playlist mặc định + nhạc tùy chỉnh
+### Các Bước Cài Đặt
 
-**10. Navigation & Footer**
-- Smooth scroll navigation
-- Highlight section đang xem
-- Mobile hamburger menu
-- Links mạng xã hội
-
-#### 🔐 Bảng Điều Khiển Admin
-
-**1. Dashboard / Tổng Quan**
-- Thống kê quan trọng: RSVPs, lời chúc, ảnh
-- Hoạt động gần đây
-- Nút hành động nhanh
-- Đếm ngược đến ngày cưới
-- Tỷ lệ phản hồi
-
-**2. Quản Lý Thông Tin Cặp Đôi**
-- Chỉnh sửa tên cô dâu, chú rể
-- Thiết lập ngày cưới
-- Viết/sửa câu chuyện tình yêu
-- **NEW**: Thêm tiểu sử riêng cho cô dâu và chú rể
-- Upload ảnh cô dâu, chú rể, hero image
-- Preview realtime
-- Validation form
-
-**3. Quản Lý Lịch Trình**
-- **CREATE**: Thêm sự kiện mới
-- **READ**: Danh sách tất cả sự kiện
-- **UPDATE**: Chỉnh sửa sự kiện
-- **DELETE**: Xóa sự kiện
-- Form fields: tiêu đề, mô tả, thời gian, địa điểm, icon, thứ tự
-
-**4. Quản Lý Album Ảnh**
-- **CREATE**: Thêm ảnh qua URL
-- **READ**: Hiển thị grid tất cả ảnh
-- **UPDATE**: Sửa caption, danh mục, thứ tự
-- **DELETE**: Xóa ảnh
-- Quản lý danh mục
-- Sắp xếp thứ tự hiển thị
-
-**5. Kiểm Duyệt Lời Chúc**
-- **READ**: Xem tất cả lời chúc
-- **UPDATE**: Phê duyệt/bỏ phê duyệt
-- **DELETE**: Xóa lời chúc không phù hợp
-- Filter theo trạng thái (tất cả, đã duyệt, chờ duyệt)
-- Hành động hàng loạt
-
-**6. Quản Lý RSVP**
-- **READ**: Xem tất cả RSVP
-- **DELETE**: Xóa RSVP (nếu cần)
-- Filter theo trạng thái (tham dự, từ chối)
-- Filter theo món ăn
-- Tìm kiếm theo tên, email
-- Thống kê: tổng số, tham dự, từ chối, số khách
-- Tỷ lệ phản hồi
-- Export CSV
-
-**7. Quản Lý Quà Mừng**
-- **CREATE**: Thêm món quà mới
-- **READ**: Danh sách tất cả quà
-- **UPDATE**: Sửa thông tin quà
-- **DELETE**: Xóa quà
-- Theo dõi trạng thái đã mua
-- Hiển thị giá
-
-**8. Cài Đặt**
-- **READ**: Load cấu hình hiện tại
-- **UPDATE**: Lưu cấu hình
-- Tên địa điểm
-- Địa chỉ
-- **NEW**: Số điện thoại và email địa điểm
-- **NEW**: Thời gian bắt đầu và kết thúc sự kiện
-- Tọa độ (latitude, longitude)
-- URL nhạc nền
-
-**9. Sidebar Tối Ưu**
-- Menu gọn gàng, dễ sử dụng
-- Nút "Xem Trang Chủ" để preview
-- Nút đăng xuất
-- Không che nội dung
-- Responsive trên mobile
-
-<a name="vn-tech"></a>
-### 🛠 Công Nghệ Sử Dụng
-
-**Frontend**
-```
-React 18.3+          - UI Framework
-TypeScript 5+        - Type Safety
-Vite 5+              - Build Tool & Dev Server
-Tailwind CSS 3.4+    - Styling Framework
-shadcn/ui            - Component Library
-Framer Motion 11+    - Animations
-TanStack Query 5+    - Data Fetching & Caching
-Wouter 3+            - Routing
-React Hook Form 7+   - Form Management
-Zod 3+               - Schema Validation
-Lucide React         - Icons
-```
-
-**Backend**
-```
-Node.js 20+          - Runtime
-Express 4+           - Web Framework
-TypeScript 5+        - Type Safety
-Drizzle ORM 0.36+    - Database ORM
-PostgreSQL 15+       - Database (Neon)
-Passport.js 0.7+     - Authentication
-bcrypt 5+            - Password Hashing
-connect-pg-simple    - Session Store
-```
-
-**Development Tools**
-```
-tsx                  - TypeScript Execution
-esbuild             - Fast JavaScript bundler
-Drizzle Kit         - Database Migrations
-cross-env           - Environment Variables
-dotenv              - .env File Support
-```
-
-<a name="vn-installation"></a>
-### 🚀 Cài Đặt & Chạy Dự Án
-
-#### Yêu Cầu Hệ Thống
-- Node.js 20.x hoặc cao hơn
-- PostgreSQL 15.x hoặc cao hơn (hoặc Neon Database)
-- npm 10.x hoặc cao hơn
-
-#### Bước 1: Clone Repository
+#### 1️⃣ Clone Repository
 ```bash
 git clone <repository-url>
 cd wedding-website
 ```
 
-#### Bước 2: Cài Đặt Dependencies
+#### 2️⃣ Cài Đặt Dependencies
 ```bash
 npm install
 ```
 
-#### Bước 3: Cấu Hình Biến Môi Trường
-
+#### 3️⃣ Cấu Hình Database
 Tạo file `.env` trong thư mục gốc:
-
 ```env
-# Database
-DATABASE_URL=postgresql://username:password@host:5432/database
-
-# Authentication
-SESSION_SECRET=your-very-secure-session-secret-min-32-chars
-
-# Server
-PORT=5000
-NODE_ENV=development
-
-# Optional: Replit specific (if deploying on Replit)
-REPL_ID=your-repl-id
-REPLIT_DOMAINS=your-domain.replit.dev
+DATABASE_URL=your_postgresql_connection_string
+SESSION_SECRET=your_random_secret_key
 ```
 
-**⚠️ Lưu Ý Bảo Mật:**
-- Không commit file `.env` vào git
-- Sử dụng session secret mạnh (ít nhất 32 ký tự ngẫu nhiên)
-- Thay đổi credentials mặc định trong production
-
-#### Bước 4: Setup Database
-
-**4.1. Tạo Database Schema**
+#### 4️⃣ Tạo Database Schema
 ```bash
 npm run db:push
 ```
 
-**4.2. Import Dữ Liệu Demo (Tùy Chọn)**
+#### 5️⃣ Seed Dữ Liệu Mẫu (Tùy chọn)
 ```bash
-# Nếu bạn có file backup
-psql $DATABASE_URL < database_backup.sql
-
-# Hoặc chạy seed script
-npx tsx server/seed.ts
+npm run seed
 ```
 
-Dữ liệu demo bao gồm:
-- 1 tài khoản admin (username: `admin`, password: `admin123`)
-- Thông tin cặp đôi mẫu
-- 5 sự kiện đám cưới
-- 6 ảnh trong album
-- 5 lời chúc (4 đã duyệt, 1 chờ duyệt)
-- 4 RSVP mẫu
-- 5 món quà
-- Cài đặt địa điểm
+Thông tin đăng nhập admin mặc định:
+- **Username:** `admin`
+- **Password:** `admin123`
+- ⚠️ **Lưu ý:** Đổi mật khẩu ngay sau khi đăng nhập lần đầu!
 
-#### Bước 5: Chạy Development Server
+#### 6️⃣ Chạy Development Server
 ```bash
 npm run dev
 ```
 
-Server sẽ chạy tại: `http://localhost:5000`
+Website sẽ chạy tại: `http://localhost:5000`
 
-- **Trang chủ công khai**: `http://localhost:5000/`
-- **Trang đăng nhập**: `http://localhost:5000/login`
-- **Admin dashboard**: `http://localhost:5000/admin` (yêu cầu đăng nhập)
+#### 7️⃣ Deploy lên Production
+```bash
+npm run build
+npm run start
+```
 
-<a name="vn-usage"></a>
-### 📖 Hướng Dẫn Sử Dụng
+Hoặc sử dụng nút **"Deploy"** trên Replit để publish website.
 
-#### Đăng Nhập Admin
+---
 
-1. Truy cập `/login`
-2. Nhập thông tin:
-   - Username: `admin`
-   - Password: `admin123` (đổi sau khi đăng nhập lần đầu)
-3. Click "Đăng Nhập"
+## 📖 Hướng Dẫn Sử Dụng
+
+### 🔐 Đăng Nhập Admin
+1. Truy cập `/login` hoặc click nút "Admin" trên trang chủ
+2. Đăng nhập bằng tài khoản admin
+3. Bạn sẽ được chuyển đến trang Dashboard
+
+### ⚙️ Cài Đặt Website
+
+#### Thông Tin Địa Điểm
+1. Vào **Admin → Cài Đặt → Tổng Quan**
+2. Nhập thông tin địa điểm tổ chức
+3. Upload ảnh địa điểm (tối đa 5MB)
+4. Nhập link Google Maps (nhúng iframe):
+   - Vào Google Maps → Tìm địa điểm → Chia sẻ → **Nhúng bản đồ**
+   - Copy toàn bộ URL trong thuộc tính `src` của thẻ `<iframe>`
+   - Dán vào trường "Link Google Maps"
+   - Ví dụ: `https://www.google.com/maps/embed?pb=...`
+
+#### Cài Đặt Popup (MỚI!)
+1. Vào **Admin → Cài Đặt → Popup Quảng Cáo**
+2. **Popup Chào Mừng:**
+   - Click "Tải Ảnh Popup Lên" để upload ảnh (tối đa 5MB)
+   - Bật/tắt hiển thị bằng nút toggle
+   - Popup sẽ hiện sau 1 giây khi khách vào trang lần đầu
+   - Lưu trữ localStorage để không hiện lại cho cùng một người
+3. **Popup Cuối Trang:**
+   - Upload ảnh popup tương tự
+   - Bật/tắt hiển thị
+   - Popup sẽ hiện khi khách lướt đến 95% chiều cao trang web
+
+#### Cài Đặt Âm Thanh (ĐÃ ĐƠN GIẢN HÓA!)
+1. Vào **Admin → Cài Đặt → Tính Năng**
+2. Click **"Chọn File Âm Thanh"**
+3. Chọn file MP3/WAV từ thiết bị (tối đa 10MB)
+4. File sẽ tự động upload và phát trên trang chủ
+5. ⚠️ **Không còn hỗ trợ nhập URL** - chỉ upload từ thiết bị
 
 #### Quản Lý Nội Dung
+- **Thông tin cặp đôi**: Admin → Cặp Đôi (bao gồm tiểu sử riêng)
+- **Lịch trình**: Admin → Lịch Trình
+- **Thư viện ảnh**: Admin → Thư Viện (hiệu ứng 3D nâng cao)
+- **Tin nhắn**: Admin → Tin Nhắn (phê duyệt/xóa)
+- **RSVP**: Admin → Xác Nhận Tham Dự (deadline tự động 7 ngày trước)
 
-**Cập Nhật Thông Tin Cặp Đôi:**
-1. Vào menu "Thông Tin Cô Dâu Chú Rể"
-2. Điền thông tin: tên, ngày cưới, câu chuyện
-3. Thêm URL ảnh cho cô dâu, chú rể và hero image
-4. Click "Lưu Thay Đổi"
+### 📊 Export Dữ Liệu
+1. Vào **Admin → Xác Nhận Tham Dự**
+2. Click **"Export CSV"**
+3. File CSV sẽ tải xuống với UTF-8 BOM (mở trực tiếp trong Excel không bị lỗi font)
 
-**Thêm Sự Kiện:**
-1. Vào menu "Lịch Trình"
-2. Click "Thêm Sự Kiện Mới"
-3. Điền: tiêu đề, mô tả, thời gian, địa điểm
-4. Chọn icon phù hợp
-5. Thiết lập thứ tự hiển thị
-6. Click "Tạo Sự Kiện"
+---
 
-**Quản Lý Ảnh:**
-1. Vào menu "Album Ảnh"
-2. Click "Thêm Ảnh Mới"
-3. Nhập URL ảnh
-4. Thêm caption và chọn danh mục
-5. Click "Thêm Ảnh"
+## 🛠️ Công Nghệ
 
-**Kiểm Duyệt Lời Chúc:**
-1. Vào menu "Lời Chúc"
-2. Xem danh sách lời chúc chờ duyệt
-3. Click "Phê Duyệt" để hiển thị công khai
-4. Click "Xóa" nếu nội dung không phù hợp
+### Frontend
+- **React 18.3** - UI library
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Utility-first CSS
+- **Framer Motion** - Animation library (hiệu ứng 3D cho Gallery)
+- **Shadcn/UI** - Component library
+- **TanStack Query** - Data fetching & caching
+- **Wouter** - Lightweight routing
+- **React Hook Form** - Form management
+- **Zod** - Schema validation
 
-**Xem RSVP:**
-1. Vào menu "Danh Sách Khách"
-2. Xem thống kê tổng quan
-3. Filter theo trạng thái hoặc món ăn
-4. Search theo tên hoặc email
-5. Export danh sách ra CSV nếu cần
+### Backend
+- **Express.js** - Web framework
+- **Node.js 20** - Runtime
+- **PostgreSQL (Neon)** - Database
+- **Drizzle ORM** - Type-safe ORM
+- **Passport.js** - Authentication
+- **Express Session** - Session management
 
-<a name="vn-structure"></a>
-### 📁 Cấu Trúc Dự Án
+### DevOps & Tools
+- **Vite** - Build tool & dev server
+- **TypeScript** - Type checking
+- **Drizzle Kit** - Database migrations
+- **Cross-env** - Environment variables
+
+---
+
+## 📂 Cấu Trúc Thư Mục
 
 ```
 wedding-website/
-├── client/                    # Frontend React Application
+├── client/                # Frontend code
 │   ├── src/
-│   │   ├── components/        # React Components
-│   │   │   ├── ui/           # shadcn/ui components
-│   │   │   ├── About.tsx     # About section
-│   │   │   ├── Gallery.tsx   # Photo gallery
-│   │   │   ├── Hero.tsx      # Hero section
-│   │   │   ├── Messages.tsx  # Guest messages
-│   │   │   ├── Navigation.tsx # Navigation bar
-│   │   │   ├── RSVP.tsx      # RSVP form
-│   │   │   └── ...
-│   │   ├── hooks/            # Custom React hooks
-│   │   │   ├── useAuth.ts    # Authentication hook
-│   │   │   └── use-toast.ts  # Toast notifications
-│   │   ├── lib/              # Utilities & helpers
-│   │   │   ├── queryClient.ts # React Query setup
-│   │   │   └── utils.ts      # Utility functions
-│   │   ├── pages/            # Page components
-│   │   │   ├── AdminCouple.tsx
-│   │   │   ├── AdminDashboard.tsx
-│   │   │   ├── AdminGallery.tsx
-│   │   │   ├── AdminHome.tsx
-│   │   │   ├── AdminMessages.tsx
-│   │   │   ├── AdminRegistry.tsx
-│   │   │   ├── AdminRSVPs.tsx
-│   │   │   ├── AdminSchedule.tsx
-│   │   │   ├── AdminSettings.tsx
-│   │   │   ├── Landing.tsx   # Public homepage
-│   │   │   ├── Login.tsx     # Login page
-│   │   │   └── NotFound.tsx  # 404 page
-│   │   ├── App.tsx           # Main app component
-│   │   ├── index.css         # Global styles
-│   │   └── main.tsx          # Entry point
-│   └── index.html            # HTML template
-├── server/                    # Backend Express Application
-│   ├── auth.ts               # Authentication setup
-│   ├── db.ts                 # Database connection
-│   ├── index.ts              # Server entry point
-│   ├── routes.ts             # API routes
-│   ├── seed.ts               # Database seeding
-│   ├── storage.ts            # Data access layer
-│   └── vite.ts               # Vite integration
-├── shared/                    # Shared code
-│   └── schema.ts             # Database schema & types
-├── scripts/                   # Utility scripts
-│   └── create_backup.ts      # Database backup script
-├── attached_assets/          # Static assets
-│   └── generated_images/     # Generated/uploaded images
-├── database_backup.sql       # Database backup file
-├── .env                      # Environment variables (not in git)
-├── .gitignore               # Git ignore rules
-├── drizzle.config.ts        # Drizzle ORM config
-├── package.json             # Dependencies & scripts
-├── tailwind.config.ts       # Tailwind CSS config
-├── tsconfig.json            # TypeScript config
-├── vite.config.ts           # Vite config
-├── README.md                # This file
-└── PROJECT_STATUS.md        # Project status & roadmap
+│   │   ├── components/    # React components (Hero, Gallery, RSVP, PopupManager, etc.)
+│   │   ├── pages/         # Page components (Landing, Admin pages)
+│   │   ├── lib/           # Utilities (queryClient, imageUpload, authUtils)
+│   │   └── index.css      # Global styles (Font definitions, theme colors)
+├── server/                # Backend code
+│   ├── routes.ts          # API routes (popups, settings, couple, etc.)
+│   ├── storage.ts         # Database operations
+│   ├── auth.ts            # Authentication (Replit Auth)
+│   └── index.ts           # Server entry
+├── shared/                # Shared code
+│   └── schema.ts          # Database schema & types (includes popups table)
+├── attached_assets/       # Static assets & uploaded files
+├── package.json
+└── README.md
 ```
 
-<a name="vn-api"></a>
-### 🔌 API Documentation
+---
 
-#### Authentication Endpoints
+## 🎨 Customization
 
-```
-POST   /api/login           - Login with username/password
-GET    /api/logout          - Logout (redirects to homepage)
-GET    /api/auth/user       - Get current user info (protected)
-```
-
-#### Couple Info Endpoints
-
-```
-GET    /api/couple          - Get couple information (public)
-POST   /api/couple          - Create/Update couple info (protected)
-```
-
-#### Schedule Events Endpoints
-
-```
-GET    /api/schedule        - List all events (public)
-POST   /api/schedule        - Create event (protected)
-PATCH  /api/schedule/:id    - Update event (protected)
-DELETE /api/schedule/:id    - Delete event (protected)
-```
-
-#### Photos Endpoints
-
-```
-GET    /api/photos          - List all photos (public)
-POST   /api/photos          - Add photo (protected)
-PATCH  /api/photos/:id      - Update photo (protected)
-DELETE /api/photos/:id      - Delete photo (protected)
-```
-
-#### Guest Messages Endpoints
-
-```
-GET    /api/messages        - Get messages (?approved=true for public)
-POST   /api/messages        - Submit message (public)
-PATCH  /api/messages/:id/approve - Approve/unapprove (protected)
-DELETE /api/messages/:id    - Delete message (protected)
-```
-
-#### RSVPs Endpoints
-
-```
-GET    /api/rsvps           - List all RSVPs (protected)
-POST   /api/rsvps           - Submit RSVP (public)
-DELETE /api/rsvps/:id       - Delete RSVP (protected)
-```
-
-#### Registry Endpoints
-
-```
-GET    /api/registry        - List registry items (public)
-POST   /api/registry        - Add item (protected)
-PATCH  /api/registry/:id    - Update item (protected)
-DELETE /api/registry/:id    - Delete item (protected)
-```
-
-#### Settings Endpoints
-
-```
-GET    /api/settings        - Get settings (public)
-POST   /api/settings        - Update settings (protected)
-```
-
-<a name="vn-database"></a>
-### 🗄 Database
-
-#### Schema
-
-**users** - Tài khoản admin
-```sql
-- id (varchar, PK, UUID)
-- username (varchar, unique)
-- password (varchar, hashed)
-- email (varchar, unique, optional)
-- firstName (varchar)
-- lastName (varchar)
-- createdAt (timestamp)
-- updatedAt (timestamp)
-```
-
-**sessions** - Authentication sessions
-```sql
-- sid (varchar, PK)
-- sess (json)
-- expire (timestamp)
-```
-
-**couple_info** - Thông tin cặp đôi
-```sql
-- id (varchar, PK, UUID)
-- brideName (varchar)
-- groomName (varchar)
-- bridePhoto (varchar, URL)
-- groomPhoto (varchar, URL)
-- brideDescription (text, optional)        # NEW: Tiểu sử cô dâu
-- groomDescription (text, optional)        # NEW: Tiểu sử chú rể
-- ourStory (text)
-- weddingDate (timestamp)
-- heroImage (varchar, URL)
-- createdAt (timestamp)
-- updatedAt (timestamp)
-```
-
-**schedule_events** - Lịch trình sự kiện
-```sql
-- id (varchar, PK, UUID)
-- title (varchar)
-- description (text)
-- eventTime (timestamp)
-- location (varchar)
-- icon (varchar)
-- order (integer)
-- createdAt (timestamp)
-- updatedAt (timestamp)
-```
-
-**photos** - Album ảnh
-```sql
-- id (varchar, PK, UUID)
-- url (varchar)
-- caption (text)
-- category (varchar)
-- order (integer)
-- createdAt (timestamp)
-- updatedAt (timestamp)
-```
-
-**guest_messages** - Lời chúc khách mời
-```sql
-- id (varchar, PK, UUID)
-- guestName (varchar)
-- message (text)
-- approved (boolean, default false)
-- createdAt (timestamp)
-```
-
-**rsvps** - RSVP responses
-```sql
-- id (varchar, PK, UUID)
-- guestName (varchar)
-- email (varchar)
-- phone (varchar)
-- attending (boolean)
-- guestCount (integer)
-- mealPreference (varchar)
-- specialRequirements (text)
-- createdAt (timestamp)
-```
-
-**registry_items** - Quà mừng
-```sql
-- id (varchar, PK, UUID)
-- name (varchar)
-- description (text)
-- price (numeric)
-- imageUrl (varchar)
-- purchaseUrl (varchar)
-- isPurchased (boolean, default false)
-- order (integer)
-- createdAt (timestamp)
-- updatedAt (timestamp)
-```
-
-**settings** - Cài đặt website
-```sql
-- id (varchar, PK, UUID)
-- venueName (varchar)
-- venueAddress (text)
-- venueMapLink (varchar)
-- venuePhone (varchar, optional)           # NEW: Số điện thoại địa điểm
-- venueEmail (varchar, optional)           # NEW: Email địa điểm
-- eventStartTime (timestamp, optional)     # NEW: Thời gian bắt đầu sự kiện
-- eventEndTime (timestamp, optional)       # NEW: Thời gian kết thúc sự kiện
-- backgroundMusicUrl (varchar)
-- backgroundMusicType (varchar)
-- updatedAt (timestamp)
-```
-
-#### Backup & Restore
-
-**Tạo Backup:**
-```bash
-# Sử dụng script tự động
-npx tsx scripts/create_backup.ts
-
-# Hoặc pg_dump (nếu có)
-pg_dump $DATABASE_URL > backup_$(date +%Y%m%d).sql
-```
-
-**Restore từ Backup:**
-```bash
-psql $DATABASE_URL < database_backup.sql
-```
-
-**Migrate Schema:**
-```bash
-# Push schema changes
-npm run db:push
-
-# Force push (nếu cần)
-npm run db:push --force
-```
-
-<a name="vn-deploy"></a>
-### 🚀 Production Deployment
-
-#### Build Production
-
-```bash
-# Build frontend & backend
-npm run build
-
-# Test production build locally
-npm start
-```
-
-#### Environment Variables for Production
-
-```env
-DATABASE_URL=your_production_database_url
-SESSION_SECRET=your_very_secure_production_secret
-NODE_ENV=production
-PORT=5000
-```
-
-#### Deployment Checklist
-
-- [ ] Đổi password admin mặc định
-- [ ] Set `NODE_ENV=production`
-- [ ] Sử dụng HTTPS (SSL/TLS)
-- [ ] Set session secret mạnh
-- [ ] Enable CORS phù hợp
-- [ ] Setup database backup tự động
-- [ ] Configure logging & monitoring
-- [ ] Test tất cả tính năng
-- [ ] Performance optimization (CDN, caching)
-- [ ] SEO optimization (meta tags, sitemap)
-
-#### Recommended Platforms
-
-- **Replit Autoscale** - Tự động scale, easy deployment
-- **Vercel** - Frontend hosting với Edge Functions
-- **Railway** - Full-stack với PostgreSQL
-- **Render** - Web service + PostgreSQL
-- **Heroku** - Classic PaaS platform
-
-<a name="vn-security"></a>
-### 🔒 Bảo Mật
-
-**Implemented Security Measures:**
-
-✅ **Authentication & Authorization**
-- Session-based authentication với Passport.js
-- Bcrypt password hashing (10 rounds)
-- Secure session cookies (httpOnly, secure in production)
-- Protected API routes với middleware
-
-✅ **Database Security**
-- SQL injection prevention qua Drizzle ORM
-- Parameterized queries
-- Input validation với Zod schemas
-
-✅ **XSS Protection**
-- React auto-escapes output
-- CSP headers (Content Security Policy)
-- Sanitized user inputs
-
-✅ **CSRF Protection**
-- Session-based CSRF tokens
-- SameSite cookies
-
-✅ **Environment Security**
-- Secrets trong .env file (không commit)
-- Environment-based configuration
-
-**⚠️ Security Recommendations:**
-
-1. **Change Default Credentials**
-   ```bash
-   # Sau khi deploy, đổi ngay password admin
-   username: admin
-   password: admin123 ← CHANGE THIS!
-   ```
-
-2. **Use Strong Session Secret**
-   ```env
-   # Generate strong random secret
-   SESSION_SECRET=$(openssl rand -base64 32)
-   ```
-
-3. **Enable HTTPS in Production**
-   - Force HTTPS redirect
-   - Secure cookies only over HTTPS
-   - HSTS headers
-
-4. **Rate Limiting** (Recommended to add)
-   ```bash
-   npm install express-rate-limit
-   ```
-
-5. **Security Headers** (Recommended to add)
-   ```bash
-   npm install helmet
-   ```
-
-6. **Input Validation**
-   - Always validate user inputs
-   - Use Zod schemas consistently
-   - Sanitize HTML content
-
-7. **Regular Updates**
-   ```bash
-   # Check for vulnerabilities
-   npm audit
-
-   # Fix vulnerabilities
-   npm audit fix
-   ```
-
-### 📝 Scripts
-
-```json
-{
-  "dev": "Start development server",
-  "build": "Build for production",
-  "start": "Run production server",
-  "db:push": "Push schema changes to database",
-  "db:push --force": "Force push schema (use with caution)"
+### Thay Đổi Màu Sắc
+Chỉnh sửa file `client/src/index.css`:
+```css
+:root {
+  --primary: 340 82% 52%;  /* Màu chính (hồng) */
+  --secondary: 340 25% 88%; /* Màu phụ */
 }
 ```
 
-### 🐛 Troubleshooting
-
-**Problem: Database connection failed**
-```bash
-# Check DATABASE_URL is correct
-echo $DATABASE_URL
-
-# Test connection
-psql $DATABASE_URL -c "SELECT 1"
+### Thay Đổi Font Chữ
+```css
+:root {
+  --font-cursive: 'Dancing Script', cursive; /* Font nghệ thuật (Trang chủ) */
+  --font-serif: 'Playfair Display', serif;   /* Font tiêu đề */
+  --font-admin: 'Times New Roman', serif;     /* Font admin panel */
+}
 ```
-
-**Problem: Session secret error**
-```bash
-# Ensure SESSION_SECRET is set
-echo $SESSION_SECRET
-
-# Generate new secret if needed
-openssl rand -base64 32
-```
-
-**Problem: Build fails**
-```bash
-# Clear node_modules and reinstall
-rm -rf node_modules package-lock.json
-npm install
-```
-
-**Problem: Port already in use**
-```bash
-# Find process using port 5000
-lsof -i :5000
-
-# Kill process
-kill -9 <PID>
-```
-
-### 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-### 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-### 🙏 Acknowledgments
-
-- Built with ❤️ for couples celebrating their special day
-- Thanks to all open source contributors
-- Special thanks to the React, Express, and Drizzle communities
 
 ---
 
-<a name="english-documentation"></a>
-## 🇬🇧 English Documentation
+## 🆕 Tính Năng Mới (Phiên Bản Hiện Tại)
 
-### 📖 Table of Contents
-- [Overview](#en-overview)
-- [Features](#en-features)
-- [Technology Stack](#en-tech)
-- [Installation](#en-installation)
-- [Usage](#en-usage)
-- [Project Structure](#en-structure)
-- [API Documentation](#en-api)
-- [Database](#en-database)
-- [Deployment](#en-deploy)
-- [Security](#en-security)
+### 1. Popup Quảng Cáo (NEW!)
+- ✅ Popup chào mừng hiển thị khi vào trang lần đầu
+- ✅ Popup cuối trang hiển thị khi lướt đến 95%
+- ✅ Quản lý upload và bật/tắt trong Admin Settings
+- ✅ LocalStorage để không hiện lại cho cùng người dùng
 
-<a name="en-overview"></a>
-### 🌟 Overview
+### 2. Upload Âm Thanh Đơn Giản (IMPROVED!)
+- ✅ Chỉ hỗ trợ upload từ thiết bị (đã xóa option nhập URL)
+- ✅ Upload file MP3/WAV lên server (tối đa 10MB)
+- ✅ Tự động phát nhạc nền trên trang chủ
 
-A comprehensive wedding website system that helps couples create a beautiful website to share wedding information, manage guests, receive wishes, and track RSVPs. Built with modern technology, responsive design, and powerful management features.
+### 3. Bản Đồ Google Maps (FIXED!)
+- ✅ Sử dụng iframe nhúng thay vì lat/lng
+- ✅ Hiển thị đầy đủ bản đồ tương tác trên trang chủ
+- ✅ Hướng dẫn rõ ràng cách lấy link nhúng từ Google Maps
 
-**✨ Highlights:**
-- 🎨 Romantic, elegant interface with smooth animations
-- 📱 Fully responsive on all devices
-- 🔐 Secure authentication system with Passport.js
-- 💾 PostgreSQL database with automatic backup
-- ⚡ Optimized performance with React Query and caching
-- 🎯 SEO-friendly with comprehensive meta tags
+### 4. RSVP Deadline Tự Động (VERIFIED!)
+- ✅ Tự động tính deadline = ngày cưới - 7 ngày
+- ✅ Hiển thị tiếng Việt đầy đủ
 
-<a name="en-features"></a>
-### ✨ Key Features
+### 5. Font Chữ Tiếng Việt (ENHANCED!)
+- ✅ Trang chủ: Dancing Script, Great Vibes, Tangerine (font nghệ thuật)
+- ✅ Admin: Times New Roman với kích thước phù hợp
+- ✅ Hỗ trợ đầy đủ dấu tiếng Việt
 
-#### 🌐 Public Website (For Guests)
+### 6. Thông Báo Đánh Dấu Đã Đọc (IMPROVED!)
+- ✅ Chuông thông báo với đếm số lượng chưa đọc
+- ✅ Nút "Đọc hết" để đánh dấu tất cả
+- ✅ LocalStorage lưu trạng thái đã xem
 
-1. **Hero Section** - Large banner with couple's photo, countdown timer, CTA buttons
-2. **About Us** - Love story, individual photos, elegant typography
-3. **Event Schedule** - Timeline of wedding day events with details
-4. **Photo Gallery** - Grid layout with categories and lightbox
-5. **Guest Messages** - Submit and view approved wishes
-6. **RSVP Form** - Collect attendance, meal preferences, special requirements
-7. **Gift Registry** - Display registry items with purchase links
-8. **Venue Location** - Address, map coordinates, directions
-9. **Music Player** - Background music with controls
-10. **Navigation & Footer** - Smooth scroll, mobile menu, social links
+### 7. Gallery 3D (ENHANCED!)
+- ✅ Hiệu ứng 3D với perspective transforms
+- ✅ Hover effects với rotateY, rotateX, rotateZ
+- ✅ Shimmer và sparkle effects
+- ✅ Spring-based animations
 
-#### 🔐 Admin Dashboard
+---
 
-1. **Dashboard** - Statistics, recent activity, quick actions
-2. **Couple Management** - Edit names, date, story, photos
-3. **Schedule Management** - Full CRUD for events
-4. **Gallery Management** - Add, edit, organize photos
-5. **Message Moderation** - Approve/delete guest messages
-6. **RSVP Tracking** - View RSVPs, statistics, export CSV
-7. **Registry Management** - Manage gift items, track purchases
-8. **Settings** - Configure venue, music, preferences
-9. **Optimized Sidebar** - Compact menu, View Homepage button, responsive
+## 📝 License
 
-<a name="en-tech"></a>
-### 🛠 Technology Stack
+Copyright © 2025. All rights reserved.
 
-**Frontend:** React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui, Framer Motion, TanStack Query, Wouter
+---
 
-**Backend:** Node.js 20, Express, TypeScript, Drizzle ORM, PostgreSQL, Passport.js, bcrypt
+## 🆘 Hỗ Trợ
 
-**Tools:** tsx, esbuild, Drizzle Kit, cross-env, dotenv
+Nếu gặp vấn đề hoặc có câu hỏi:
+1. Kiểm tra [Documentation](#-hướng-dẫn-sử-dụng)
+2. Đọc lại hướng dẫn upload và cài đặt
+3. Liên hệ support team
 
-<a name="en-installation"></a>
-### 🚀 Installation
+---
 
+<div align="center">
+
+### Được Phát Triển Với ❤️
+
+**Chúc bạn có một đám cưới tuyệt vời! 💐🎉**
+
+</div>
+
+---
+
+# 🇺🇸 English Section
+
+## ✨ Features
+
+### 🎨 Design & Experience
+- ✅ **Modern design** with smooth animations using Framer Motion
+- ✅ **Fully responsive** on all devices (Mobile, Tablet, Desktop)
+- ✅ **Artistic fonts** with full Vietnamese support (Dancing Script, Great Vibes, Tangerine)
+- ✅ **Dark Mode** - Automatic theme switching
+- ✅ **Unique loading screen** with motion effects
+- ✅ **Advertisement popups** - 2 types:
+  - Welcome popup: Shows after 1 second on first visit
+  - Scroll-end popup: Shows when scrolling to 95% of page height
+
+### 🎵 Audio & Media
+- ✅ **Auto-playing background music** - Upload MP3/WAV files from device (max 10MB)
+- ✅ **Music Player** - Play/pause, mute, skip tracks
+- ✅ **Image upload** - Upload venue, couple, and gallery images (max 5MB)
+- ✅ **3D Photo gallery** - Gallery with advanced motion effects
+- ✅ **Base64 upload** - Upload images without Cloudinary API key
+
+### 📅 Event Management
+- ✅ **Couple information** - Names, photos, individual bios, love story
+- ✅ **Event schedule** - List of wedding day activities
+- ✅ **Venue location** - Embedded Google Maps (iframe), contact info
+- ✅ **Event timing** - Display start and end times
+- ✅ **Wedding Party** - Introduce bridesmaids and groomsmen
+- ✅ **FAQ** - Frequently asked questions
+
+### 💌 Guest Interactions
+- ✅ **RSVP Form** - Attendance confirmation with automatic deadline (7 days before wedding)
+- ✅ **Send wishes** - Guests send congratulation messages
+- ✅ **Message moderation** - Admin approval before display
+- ✅ **Real-time notifications** - Bell notifications for new RSVPs and messages with mark-as-read
+
+### 💰 Wedding Gifts
+- ✅ **Gift registry** - Suggested gifts for the couple
+- ✅ **Bank transfer** - QR Codes for bride and groom
+- ✅ **Account information** - Display account number, bank name
+
+### ⚙️ Administration (Admin Panel)
+- ✅ **Dashboard** - Overview of RSVPs, messages, views
+- ✅ **Content management** - Update couple info, events, photos
+- ✅ **Popup management** - Upload and enable/disable welcome and scroll-end popups
+- ✅ **Audio settings** - Upload background music from device (simplified - upload only)
+- ✅ **Venue settings** - Google Maps (iframe), venue image, contact information
+- ✅ **Data export** - Export RSVP list to CSV with UTF-8 BOM (Excel Vietnamese support)
+- ✅ **Secure authentication** - Login with Replit Auth
+- ✅ **Separate admin font** - Uses Times New Roman with appropriate sizes
+
+### 🔒 Security & Performance
+- ✅ **Authentication** - Protect admin pages with Replit Auth
+- ✅ **Database backup** - Periodic data backup
+- ✅ **Session management** - Secure session handling
+- ✅ **Rate limiting** - Protect API from spam
+
+---
+
+## 🚀 Installation
+
+### System Requirements
+- Node.js 20.x or higher
+- PostgreSQL database (Neon DB recommended)
+- Modern browser (Chrome, Firefox, Safari, Edge)
+
+### Installation Steps
+
+#### 1️⃣ Clone Repository
 ```bash
-# Clone repository
 git clone <repository-url>
 cd wedding-website
+```
 
-# Install dependencies
+#### 2️⃣ Install Dependencies
+```bash
 npm install
+```
 
-# Configure environment variables
-cp .env.example .env
-# Edit .env with your configuration
+#### 3️⃣ Configure Database
+Create `.env` file in root directory:
+```env
+DATABASE_URL=your_postgresql_connection_string
+SESSION_SECRET=your_random_secret_key
+```
 
-# Setup database
+#### 4️⃣ Create Database Schema
+```bash
 npm run db:push
+```
 
-# Seed demo data (optional)
-npx tsx server/seed.ts
+#### 5️⃣ Seed Sample Data (Optional)
+```bash
+npm run seed
+```
 
-# Run development server
+Default admin credentials:
+- **Username:** `admin`
+- **Password:** `admin123`
+- ⚠️ **Note:** Change password immediately after first login!
+
+#### 6️⃣ Run Development Server
+```bash
 npm run dev
 ```
 
-Access: `http://localhost:5000`
+Website will run at: `http://localhost:5000`
 
-<a name="en-usage"></a>
-### 📖 Usage
-
-**Login:** `/login` (username: `admin`, password: `admin123`)
-
-**Admin Dashboard:** `/admin` (requires login)
-
-**Public Website:** `/` (open to all)
-
-<a name="en-structure"></a>
-### 📁 Project Structure
-
-See Vietnamese section above for detailed structure.
-
-<a name="en-api"></a>
-### 🔌 API Documentation
-
-See Vietnamese section above for complete API documentation.
-
-<a name="en-database"></a>
-### 🗄 Database
-
-**Tables:** users, sessions, couple_info, schedule_events, photos, guest_messages, rsvps, registry_items, settings
-
-**Backup:** `npx tsx scripts/create_backup.ts`
-
-**Restore:** `psql $DATABASE_URL < database_backup.sql`
-
-<a name="en-deploy"></a>
-### 🚀 Deployment
-
+#### 7️⃣ Deploy to Production
 ```bash
-# Build for production
 npm run build
-
-# Run production server
-npm start
+npm run start
 ```
 
-**Platforms:** Replit Autoscale, Vercel, Railway, Render, Heroku
-
-<a name="en-security"></a>
-### 🔒 Security
-
-✅ Session-based authentication
-✅ Bcrypt password hashing
-✅ SQL injection prevention
-✅ XSS protection
-✅ CSRF protection
-✅ Secure environment variables
-
-⚠️ Change default admin password after deployment!
+Or use the **"Deploy"** button on Replit to publish the website.
 
 ---
 
-## 📞 Support
+## 📖 User Guide
 
-For questions or issues:
-- Create an issue on GitHub
-- Email: support@example.com
-- Documentation: See PROJECT_STATUS.md
+### 🔐 Admin Login
+1. Go to `/login` or click "Admin" button on homepage
+2. Login with admin account
+3. You'll be redirected to Dashboard
 
-## 📊 Status
+### ⚙️ Website Settings
 
-- **Version:** 1.0.0
-- **Status:** Production Ready
-- **Last Updated:** October 2025
+#### Venue Information
+1. Go to **Admin → Settings → General**
+2. Enter venue information
+3. Upload venue image (max 5MB)
+4. Enter Google Maps link (embed iframe):
+   - Go to Google Maps → Find location → Share → **Embed a map**
+   - Copy entire URL from iframe's `src` attribute
+   - Paste into "Google Maps Link" field
+   - Example: `https://www.google.com/maps/embed?pb=...`
 
-**Made with 💝 for couples celebrating their special day**
+#### Popup Settings (NEW!)
+1. Go to **Admin → Settings → Advertisement Popups**
+2. **Welcome Popup:**
+   - Click "Upload Popup Image" to upload image (max 5MB)
+   - Enable/disable display with toggle switch
+   - Popup shows after 1 second on first visit
+   - Uses localStorage to not show again to same user
+3. **Scroll-End Popup:**
+   - Upload popup image similarly
+   - Enable/disable display
+   - Popup shows when scrolling to 95% of page height
+
+#### Audio Settings (SIMPLIFIED!)
+1. Go to **Admin → Settings → Features**
+2. Click **"Choose Audio File"**
+3. Select MP3/WAV file from device (max 10MB)
+4. File will automatically upload and play on homepage
+5. ⚠️ **URL input removed** - device upload only
+
+#### Content Management
+- **Couple info**: Admin → Couple (includes individual bios)
+- **Schedule**: Admin → Schedule
+- **Photo gallery**: Admin → Gallery (enhanced 3D effects)
+- **Messages**: Admin → Messages (approve/delete)
+- **RSVP**: Admin → RSVPs (automatic deadline 7 days before)
+
+### 📊 Export Data
+1. Go to **Admin → RSVPs**
+2. Click **"Export CSV"**
+3. CSV file downloads with UTF-8 BOM (opens directly in Excel without font issues)
+
+---
+
+## 🛠️ Technology Stack
+
+### Frontend
+- **React 18.3** - UI library
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Utility-first CSS
+- **Framer Motion** - Animation library (3D effects for Gallery)
+- **Shadcn/UI** - Component library
+- **TanStack Query** - Data fetching & caching
+- **Wouter** - Lightweight routing
+- **React Hook Form** - Form management
+- **Zod** - Schema validation
+
+### Backend
+- **Express.js** - Web framework
+- **Node.js 20** - Runtime
+- **PostgreSQL (Neon)** - Database
+- **Drizzle ORM** - Type-safe ORM
+- **Passport.js** - Authentication
+- **Express Session** - Session management
+
+### DevOps & Tools
+- **Vite** - Build tool & dev server
+- **TypeScript** - Type checking
+- **Drizzle Kit** - Database migrations
+- **Cross-env** - Environment variables
+
+---
+
+## 🆕 New Features (Current Version)
+
+### 1. Advertisement Popups (NEW!)
+- ✅ Welcome popup shows on first page visit
+- ✅ Scroll-end popup shows at 95% scroll
+- ✅ Upload and toggle management in Admin Settings
+- ✅ LocalStorage to prevent showing again to same user
+
+### 2. Simplified Audio Upload (IMPROVED!)
+- ✅ Device upload only (URL input removed)
+- ✅ Upload MP3/WAV files to server (max 10MB)
+- ✅ Auto-play background music on homepage
+
+### 3. Google Maps Display (FIXED!)
+- ✅ Uses embed iframe instead of lat/lng
+- ✅ Displays full interactive map on homepage
+- ✅ Clear instructions for getting embed link from Google Maps
+
+### 4. Auto RSVP Deadline (VERIFIED!)
+- ✅ Auto-calculates deadline = wedding date - 7 days
+- ✅ Full Vietnamese language display
+
+### 5. Vietnamese Fonts (ENHANCED!)
+- ✅ Homepage: Dancing Script, Great Vibes, Tangerine (artistic fonts)
+- ✅ Admin: Times New Roman with appropriate sizes
+- ✅ Full Vietnamese diacritics support
+
+### 6. Mark-as-Read Notifications (IMPROVED!)
+- ✅ Notification bell with unread count
+- ✅ "Mark all as read" button
+- ✅ LocalStorage saves viewed status
+
+### 7. 3D Gallery (ENHANCED!)
+- ✅ 3D effects with perspective transforms
+- ✅ Hover effects with rotateY, rotateX, rotateZ
+- ✅ Shimmer and sparkle effects
+- ✅ Spring-based animations
+
+---
+
+## 🎨 Customization
+
+### Change Colors
+Edit `client/src/index.css`:
+```css
+:root {
+  --primary: 340 82% 52%;  /* Primary color (pink) */
+  --secondary: 340 25% 88%; /* Secondary color */
+}
+```
+
+### Change Fonts
+```css
+:root {
+  --font-cursive: 'Dancing Script', cursive; /* Decorative font (Homepage) */
+  --font-serif: 'Playfair Display', serif;   /* Heading font */
+  --font-admin: 'Times New Roman', serif;     /* Admin panel font */
+}
+```
+
+---
+
+## 📝 License
+
+Copyright © 2025. All rights reserved.
+
+---
+
+## 🆘 Support
+
+If you encounter issues or have questions:
+1. Check [Documentation](#-user-guide)
+2. Re-read upload and settings instructions
+3. Contact support team
+
+---
+
+<div align="center">
+
+### Built With ❤️
+
+**Wishing you a wonderful wedding! 💐🎉**
+
+[![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red?style=for-the-badge)](https://github.com/yourusername)
+
+</div>
