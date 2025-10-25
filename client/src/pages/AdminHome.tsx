@@ -136,24 +136,23 @@ export default function AdminHome() {
     })
     .slice(0, 3);
 
-  // Get recent activity
+  // Get recent activity - combine RSVPs and Messages
   const recentActivity = [
-    ...rsvps.slice(-3).reverse().map(r => ({
-      type: 'rsvp',
+    ...recentRsvps.map(r => ({
+      type: 'rsvp' as const,
       name: r.guestName,
-      action: r.attending ? 'confirmed' : 'declined',
-      time: r.createdAt ? formatTimeAgo(new Date(r.createdAt)) : 'Vừa xong'
+      action: r.attending ? 'đã xác nhận tham dự' : 'đã từ chối tham dự',
+      time: r.createdAt ? formatTimeAgo(new Date(r.createdAt)) : 'Vừa xong',
+      timestamp: r.createdAt ? new Date(r.createdAt).getTime() : Date.now()
     })),
-    ...messages.slice(-2).reverse().map(m => ({
-      type: 'message',
+    ...recentMessages.map(m => ({
+      type: 'message' as const,
       name: m.guestName,
-      action: 'sent message',
-      time: m.createdAt ? formatTimeAgo(new Date(m.createdAt)) : 'Vừa xong'
+      action: 'đã gửi lời chúc',
+      time: m.createdAt ? formatTimeAgo(new Date(m.createdAt)) : 'Vừa xong',
+      timestamp: m.createdAt ? new Date(m.createdAt).getTime() : Date.now()
     })),
-  ].sort((a, b) => {
-    // Sort by most recent
-    return 0; // Keep insertion order for now
-  }).slice(0, 5);
+  ].sort((a, b) => b.timestamp - a.timestamp).slice(0, 8);
 
   const containerVariants = {
     hidden: { opacity: 0 },

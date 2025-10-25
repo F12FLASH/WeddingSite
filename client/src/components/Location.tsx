@@ -152,7 +152,7 @@ export default function Location() {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <motion.img
-                src={venueImage}
+                src={settings?.venueImage || venueImage}
                 alt="Địa Điểm Cưới"
                 className="w-full h-80 object-cover"
                 data-testid="img-venue"
@@ -160,7 +160,7 @@ export default function Location() {
                 transition={{ duration: 0.5 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                <p className="text-white text-lg font-medium">Rose Garden Estate</p>
+                <p className="text-white text-lg font-medium">{venueName}</p>
               </div>
             </motion.div>
 

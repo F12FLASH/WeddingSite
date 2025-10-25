@@ -183,20 +183,19 @@ export default function Gallery() {
           </motion.p>
         </motion.div>
 
-        {/* Photo Grid - Masonry Layout */}
+        {/* Photo Carousel & Grid Hybrid */}
         {isLoading ? (
           <motion.div
-            className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-            {[...Array(8)].map((_, i) => (
+            {[...Array(6)].map((_, i) => (
               <motion.div
                 key={i}
                 variants={itemVariants}
-                className="rounded-2xl overflow-hidden bg-gradient-to-br from-muted to-muted/50 animate-pulse break-inside-avoid mb-4"
-                style={{ height: `${200 + (i % 3) * 80}px` }}
+                className="rounded-2xl overflow-hidden bg-gradient-to-br from-muted to-muted/50 animate-pulse aspect-[4/3]"
                 whileHover={{ scale: 1.02 }}
                 transition={{ duration: 0.3 }}
               />
@@ -242,7 +241,7 @@ export default function Gallery() {
           </motion.div>
         ) : (
           <motion.div
-            className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -252,110 +251,156 @@ export default function Gallery() {
               <motion.div
                 key={photo.id}
                 variants={itemVariants}
-                className="group relative overflow-hidden rounded-2xl cursor-pointer shadow-lg bg-background break-inside-avoid mb-4"
+                className="group relative overflow-hidden rounded-3xl cursor-pointer shadow-2xl bg-background aspect-[4/3]"
                 style={{
                   transformStyle: "preserve-3d",
-                  perspective: "1000px"
+                  perspective: "1500px"
                 }}
                 whileHover={{ 
-                  scale: 1.08,
-                  y: -12,
-                  rotateY: index % 2 === 0 ? 5 : -5,
-                  rotateX: -3,
-                  zIndex: 10,
-                  boxShadow: "0 30px 60px -12px rgba(0, 0, 0, 0.35)",
-                  filter: "brightness(1.05)"
+                  scale: 1.05,
+                  y: -20,
+                  rotateY: index % 2 === 0 ? 8 : -8,
+                  rotateX: -5,
+                  rotateZ: index % 3 === 0 ? 3 : index % 3 === 1 ? -3 : 0,
+                  zIndex: 20,
+                  boxShadow: "0 40px 80px -15px rgba(0, 0, 0, 0.5)",
                 }}
                 whileTap={{ 
-                  scale: 0.92,
+                  scale: 0.90,
                   rotateY: 0,
-                  rotateX: 0
+                  rotateX: 0,
+                  rotateZ: 0
                 }}
                 transition={{ 
                   type: "spring", 
-                  stiffness: 260, 
-                  damping: 20,
-                  mass: 0.8
+                  stiffness: 200, 
+                  damping: 15,
+                  mass: 1
                 }}
                 onClick={() => openLightbox(index)}
                 data-testid={`photo-${index}`}
               >
+                {/* Background Glow */}
                 <motion.div
-                  className="relative overflow-hidden"
+                  className="absolute -inset-1 bg-gradient-to-r from-primary via-pink-500 to-purple-500 rounded-3xl opacity-0 blur-xl"
+                  whileHover={{ opacity: 0.6 }}
+                  transition={{ duration: 0.5 }}
+                />
+                
+                <motion.div
+                  className="relative w-full h-full overflow-hidden rounded-3xl"
                   style={{ transformStyle: "preserve-3d" }}
-                  whileHover={{ 
-                    scale: 1.15,
-                    rotateZ: index % 3 === 0 ? 2 : index % 3 === 1 ? -2 : 0
-                  }}
-                  transition={{ duration: 0.7, ease: [0.34, 1.56, 0.64, 1] }}
                 >
+                  {/* Image with Ken Burns Effect */}
                   <motion.img
                     src={photo.url}
                     alt={photo.caption || "Ảnh cưới"}
-                    className="w-full h-auto object-cover"
+                    className="w-full h-full object-cover"
                     style={{ transformStyle: "preserve-3d" }}
                     initial={{ 
-                      filter: "brightness(1) saturate(1) contrast(1)",
+                      filter: "brightness(0.95) saturate(0.95) contrast(1)",
                       scale: 1
                     }}
                     whileHover={{ 
-                      filter: "brightness(1.15) saturate(1.2) contrast(1.05)",
-                      scale: 1.02
+                      filter: "brightness(1.1) saturate(1.15) contrast(1.1)",
+                      scale: 1.2
                     }}
-                    transition={{ duration: 0.4 }}
+                    transition={{ duration: 0.8, ease: [0.43, 0.13, 0.23, 0.96] }}
                   />
                   
-                  {/* Enhanced Shimmer Effect with Rainbow Colors */}
+                  {/* Rainbow Shimmer Effect */}
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0"
-                    initial={{ x: "-100%", opacity: 0 }}
-                    whileHover={{ x: "200%", opacity: 1 }}
-                    transition={{ duration: 1, ease: "easeInOut" }}
-                  />
-                  
-                  {/* Magical Sparkle Effect */}
-                  <motion.div
-                    className="absolute inset-0 opacity-0"
+                    className="absolute inset-0"
                     style={{
-                      background: "radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.8) 0%, transparent 70%)",
-                      mixBlendMode: "overlay"
+                      background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.5), rgba(255,0,255,0.3), rgba(0,255,255,0.3), transparent)",
+                      backgroundSize: "200% 100%"
                     }}
-                    whileHover={{ opacity: 0.4 }}
-                    transition={{ duration: 0.5 }}
+                    initial={{ backgroundPosition: "-200% 0", opacity: 0 }}
+                    whileHover={{ 
+                      backgroundPosition: "200% 0", 
+                      opacity: 0.8,
+                      transition: { duration: 1.5, ease: "easeInOut" }
+                    }}
                   />
+                  
+                  {/* Radial Sparkle */}
+                  <motion.div
+                    className="absolute inset-0"
+                    style={{
+                      background: "radial-gradient(circle at center, rgba(255, 255, 255, 0.9) 0%, transparent 60%)",
+                      mixBlendMode: "soft-light"
+                    }}
+                    initial={{ opacity: 0, scale: 0 }}
+                    whileHover={{ opacity: 0.6, scale: 1.5 }}
+                    transition={{ duration: 0.6 }}
+                  />
+
+                  {/* Floating Hearts */}
+                  <motion.div
+                    className="absolute inset-0 pointer-events-none"
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                  >
+                    {[...Array(3)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        className="absolute text-primary/40"
+                        style={{
+                          left: `${20 + i * 30}%`,
+                          bottom: "10%"
+                        }}
+                        animate={{
+                          y: [-20, -100],
+                          opacity: [0, 1, 0],
+                          scale: [0.5, 1, 0.5]
+                        }}
+                        transition={{
+                          duration: 2,
+                          delay: i * 0.3,
+                          repeat: Infinity,
+                          repeatDelay: 1
+                        }}
+                      >
+                        <Heart size={20} fill="currentColor" />
+                      </motion.div>
+                    ))}
+                  </motion.div>
                 </motion.div>
                 
-                {/* Overlay */}
+                {/* Overlay with Gradient */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-4"
+                  className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 rounded-3xl flex flex-col justify-end p-6"
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.4 }}
                 >
                   {photo.caption && (
                     <motion.p
-                      className="text-white text-sm font-medium mb-2"
-                      initial={{ y: 20, opacity: 0 }}
+                      className="text-white text-base font-semibold mb-3 drop-shadow-lg"
+                      initial={{ y: 30, opacity: 0 }}
                       whileHover={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.1 }}
+                      transition={{ delay: 0.1, duration: 0.3 }}
                     >
                       {photo.caption}
                     </motion.p>
                   )}
                   <motion.div
-                    className="flex gap-2"
-                    initial={{ y: 20, opacity: 0 }}
+                    className="flex gap-3"
+                    initial={{ y: 30, opacity: 0 }}
                     whileHover={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
+                    transition={{ delay: 0.15, duration: 0.3 }}
                   >
-                    <button
+                    <motion.button
                       onClick={(e) => {
                         e.stopPropagation();
                         sharePhoto(photo);
                       }}
-                      className="p-2 bg-white/20 rounded-full backdrop-blur-sm hover:bg-white/30 transition-colors"
+                      className="p-3 bg-white/20 rounded-full backdrop-blur-md hover:bg-white/30 transition-colors"
+                      whileHover={{ scale: 1.2, rotate: 15 }}
+                      whileTap={{ scale: 0.9 }}
                     >
-                      <Share2 size={16} className="text-white" />
-                    </button>
+                      <Share2 size={18} className="text-white" />
+                    </motion.button>
                   </motion.div>
                 </motion.div>
               </motion.div>

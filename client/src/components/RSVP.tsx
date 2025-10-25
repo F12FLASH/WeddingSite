@@ -17,11 +17,15 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { motion, AnimatePresence } from "framer-motion";
-import type { CoupleInfo } from "@shared/schema";
+import type { CoupleInfo, Settings } from "@shared/schema";
 
 export default function RSVP() {
   const { data: coupleInfo } = useQuery<CoupleInfo | null>({
     queryKey: ["/api/couple"],
+  });
+  
+  const { data: settings } = useQuery<Settings | null>({
+    queryKey: ["/api/settings"],
   });
   const [formData, setFormData] = useState({
     guestName: "",
@@ -504,7 +508,15 @@ export default function RSVP() {
                   <Calendar className="text-primary mt-1 flex-shrink-0" size={20} />
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Ngày</p>
-                    <p className="text-foreground font-medium text-lg">15 Tháng 6, 2025</p>
+                    <p className="text-foreground font-medium text-lg">
+                      {coupleInfo?.weddingDate 
+                        ? new Date(coupleInfo.weddingDate).toLocaleDateString('vi-VN', { 
+                            day: 'numeric', 
+                            month: 'long', 
+                            year: 'numeric' 
+                          })
+                        : "15 Tháng 6, 2025"}
+                    </p>
                   </div>
                 </motion.div>
 
@@ -512,7 +524,17 @@ export default function RSVP() {
                   <Clock className="text-primary mt-1 flex-shrink-0" size={20} />
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Thời Gian</p>
-                    <p className="text-foreground font-medium text-lg">3:00 Chiều</p>
+                    <p className="text-foreground font-medium text-lg">
+                      {settings?.eventStartTime && settings?.eventEndTime
+                        ? (() => {
+                            const startTime = new Date(settings.eventStartTime);
+                            const endTime = new Date(settings.eventEndTime);
+                            const startTimeStr = startTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+                            const endTimeStr = endTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+                            return `${startTimeStr} - ${endTimeStr}`;
+                          })()
+                        : "3:00 Chiều - 10:00 Tối"}
+                    </p>
                   </div>
                 </motion.div>
 
@@ -520,9 +542,11 @@ export default function RSVP() {
                   <MapPin className="text-primary mt-1 flex-shrink-0" size={20} />
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">Địa Điểm</p>
-                    <p className="text-foreground font-medium text-lg">Rose Garden Estate</p>
+                    <p className="text-foreground font-medium text-lg">
+                      {settings?.venueName || "Rose Garden Estate"}
+                    </p>
                     <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
-                      123 Garden Lane, Spring Valley, CA 91977
+                      {settings?.venueAddress || "123 Garden Lane, Spring Valley, CA 91977"}
                     </p>
                   </div>
                 </motion.div>
