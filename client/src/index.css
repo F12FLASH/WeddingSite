@@ -388,28 +388,52 @@
   @apply transition-all duration-300 hover:shadow-lg hover:scale-110;
 }
 
-/* Admin pages - Times New Roman with larger sizes */
+/* Admin pages - Times New Roman with larger sizes and bold */
 [class*="Admin"],
 [data-admin-page="true"],
 .admin-container {
   font-family: var(--font-admin) !important;
-  font-size: 1.1rem !important;
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
 }
 
 .admin-page {
   font-family: var(--font-admin) !important;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.admin-page h1 {
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+}
+
+.admin-page h2 {
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+}
+
+.admin-page h3 {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
 }
 
 .admin-heading {
   font-family: var(--font-admin) !important;
-  font-size: 2.25rem;
-  font-weight: 600;
+  font-size: 2.5rem;
+  font-weight: 700;
 }
 
 .admin-text {
   font-family: var(--font-admin) !important;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.admin-label {
+  font-family: var(--font-admin) !important;
+  font-size: 1.1rem;
+  font-weight: 700;
 }
 
 /* Landing/Homepage - Vietnamese-friendly fonts */
