@@ -12,6 +12,7 @@ import {
   insertSettingsSchema,
   insertWeddingPartySchema,
   insertPopupSchema,
+  insertFaqSchema,
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -395,6 +396,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting popup:", error);
       res.status(500).json({ message: "Failed to delete popup" });
+    }
+  });
+
+  // ===== FAQ Routes =====
+  app.get("/api/faqs", async (req, res) => {
+    try {
+      const faqs = await storage.getAllFaqs();
+      res.json(faqs);
+    } catch (error) {
+      console.error("Error fetching FAQs:", error);
+      res.status(500).json({ message: "Failed to fetch FAQs" });
+    }
+  });
+
+  app.get("/api/faqs/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const faq = await storage.getFaq(id);
+      if (!faq) {
+        return res.status(404).json({ message: "FAQ not found" });
+      }
+      res.json(faq);
+    } catch (error) {
+      console.error("Error fetching FAQ:", error);
+      res.status(500).json({ message: "Failed to fetch FAQ" });
+    }
+  });
+
+  app.post("/api/faqs", isAuthenticated, async (req, res) => {
+    try {
+      const validated = insertFaqSchema.parse(req.body);
+      const faq = await storage.createFaq(validated);
+      res.json(faq);
+    } catch (error: any) {
+      console.error("Error creating FAQ:", error);
+      res.status(400).json({ message: error.message || "Failed to create FAQ" });
+    }
+  });
+
+  app.patch("/api/faqs/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validated = insertFaqSchema.partial().parse(req.body);
+      const faq = await storage.updateFaq(id, validated);
+      if (!faq) {
+        return res.status(404).json({ message: "FAQ not found" });
+      }
+      res.json(faq);
+    } catch (error: any) {
+      console.error("Error updating FAQ:", error);
+      res.status(400).json({ message: error.message || "Failed to update FAQ" });
+    }
+  });
+
+  app.delete("/api/faqs/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteFaq(id);
+      res.json({ message: "FAQ deleted" });
+    } catch (error) {
+      console.error("Error deleting FAQ:", error);
+      res.status(500).json({ message: "Failed to delete FAQ" });
     }
   });
 

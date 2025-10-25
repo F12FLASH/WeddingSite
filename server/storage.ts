@@ -10,6 +10,7 @@ import {
   settings,
   weddingParty,
   popups,
+  faqs,
   type User,
   type UpsertUser,
   type CoupleInfo,
@@ -30,6 +31,8 @@ import {
   type InsertWeddingParty,
   type Popup,
   type InsertPopup,
+  type Faq,
+  type InsertFaq,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
@@ -96,6 +99,13 @@ export interface IStorage {
   createPopup(popup: InsertPopup): Promise<Popup>;
   updatePopup(id: string, popup: Partial<InsertPopup>): Promise<Popup | undefined>;
   deletePopup(id: string): Promise<void>;
+
+  // FAQs
+  getAllFaqs(): Promise<Faq[]>;
+  getFaq(id: string): Promise<Faq | undefined>;
+  createFaq(faq: InsertFaq): Promise<Faq>;
+  updateFaq(id: string, faq: Partial<InsertFaq>): Promise<Faq | undefined>;
+  deleteFaq(id: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -358,6 +368,34 @@ export class DatabaseStorage implements IStorage {
 
   async deletePopup(id: string): Promise<void> {
     await db.delete(popups).where(eq(popups.id, id));
+  }
+
+  // FAQs
+  async getAllFaqs(): Promise<Faq[]> {
+    return await db.select().from(faqs).orderBy(faqs.order);
+  }
+
+  async getFaq(id: string): Promise<Faq | undefined> {
+    const [faq] = await db.select().from(faqs).where(eq(faqs.id, id));
+    return faq;
+  }
+
+  async createFaq(faqData: InsertFaq): Promise<Faq> {
+    const [created] = await db.insert(faqs).values(faqData).returning();
+    return created;
+  }
+
+  async updateFaq(id: string, faqData: Partial<InsertFaq>): Promise<Faq | undefined> {
+    const [updated] = await db
+      .update(faqs)
+      .set({ ...faqData, updatedAt: new Date() })
+      .where(eq(faqs.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteFaq(id: string): Promise<void> {
+    await db.delete(faqs).where(eq(faqs.id, id));
   }
 }
 

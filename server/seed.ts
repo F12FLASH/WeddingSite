@@ -120,6 +120,19 @@ async function seed() {
   });
   console.log("✅ Created settings");
 
+  // Create FAQs
+  const faqs = [
+    { question: "Đám cưới diễn ra vào lúc mấy giờ?", answer: "Tiệc cưới sẽ bắt đầu lúc 18:00 ngày 15 tháng 6 năm 2025. Quý khách vui lòng có mặt trước 17:30 để tham gia lễ chào đón.", order: 1 },
+    { question: "Trang phục khách mời nên mặc như thế nào?", answer: "Chúng tôi khuyến khích quý khách mặc trang phục lịch sự, trang trọng. Nam giới nên mặc vest hoặc áo sơ mi kết hợp quần tây. Nữ giới có thể mặc váy dạ hội hoặc áo dài.", order: 2 },
+    { question: "Có chỗ đậu xe không?", answer: "Rose Garden Estate có bãi đậu xe rộng rãi, miễn phí cho tất cả khách mời. Ngoài ra còn có dịch vụ xe đưa đón từ các khách sạn gần đó.", order: 3 },
+    { question: "Tôi có thể mang theo trẻ em không?", answer: "Chúng tôi rất vui khi đón tiếp các em nhỏ! Tuy nhiên, để đảm bảo không khí trang trọng, chúng tôi khuyến khích quý phụ huynh giữ gìn trật tự cho các em.", order: 4 },
+    { question: "Làm thế nào để xác nhận tham dự?", answer: "Quý khách vui lòng điền form RSVP trên website này trước ngày 8 tháng 6 năm 2025. Nếu có bất kỳ thay đổi nào, vui lòng liên hệ với chúng tôi sớm nhất có thể.", order: 5 },
+  ];
+  for (const faq of faqs) {
+    await storage.createFaq(faq);
+  }
+  console.log(`✅ Created ${faqs.length} FAQs`);
+
   console.log("🎉 Database seeding completed!");
 }
 
