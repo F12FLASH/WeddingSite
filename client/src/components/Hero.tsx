@@ -206,7 +206,7 @@ export default function Hero() {
           variants={containerVariants}
         >
           <motion.h1
-            className="font-cursive text-6xl md:text-8xl lg:text-9xl mb-8 text-foreground relative"
+            className="font-cursive text-6xl md:text-8xl lg:text-9xl mb-4 text-foreground relative"
             data-testid="text-couple-names"
             variants={itemVariants}
           >
@@ -223,7 +223,7 @@ export default function Hero() {
           </motion.h1>
 
           <motion.div
-            className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 text-foreground mb-8"
+            className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-foreground mb-6"
             variants={itemVariants}
           >
             <motion.div
@@ -256,14 +256,14 @@ export default function Hero() {
 
         {/* Countdown Timer */}
         <motion.div
-          className="flex justify-center gap-3 md:gap-6 mb-12"
+          className="flex justify-center gap-3 md:gap-6 mb-8"
           data-testid="countdown-timer"
           variants={containerVariants}
         >
           {countdownItems.map((item, index) => (
             <motion.div
               key={item.label}
-              className="text-center backdrop-blur-xl bg-card/60 rounded-3xl p-6 border border-card-border/50 shadow-2xl relative overflow-hidden"
+              className="text-center backdrop-blur-xl bg-card/60 rounded-2xl md:rounded-3xl p-3 md:p-6 border border-card-border/50 shadow-2xl relative overflow-hidden"
               variants={countdownVariants}
               whileHover={{ 
                 scale: 1.05,
@@ -275,7 +275,7 @@ export default function Hero() {
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent rounded-3xl" />
               
               <motion.div
-                className="text-4xl md:text-5xl font-serif font-bold text-primary relative z-10"
+                className="text-2xl md:text-4xl lg:text-5xl font-serif font-bold text-primary relative z-10"
                 key={item.value}
                 initial={{ scale: 1.2, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -283,8 +283,8 @@ export default function Hero() {
               >
                 {item.value.toString().padStart(2, '0')}
               </motion.div>
-              <div className="text-sm md:text-base text-muted-foreground mt-2 font-medium relative z-10 flex items-center justify-center gap-1">
-                <item.icon size={16} />
+              <div className="text-xs md:text-sm lg:text-base text-muted-foreground mt-1 md:mt-2 font-medium relative z-10 flex items-center justify-center gap-1">
+                <item.icon size={14} className="hidden md:inline" />
                 {item.label}
               </div>
             </motion.div>
@@ -298,7 +298,7 @@ export default function Hero() {
         >
           <motion.a
             href="#rsvp"
-            className="group relative inline-flex items-center justify-center min-h-12 px-10 rounded-full bg-primary text-primary-foreground border border-primary-border font-medium shadow-2xl overflow-hidden"
+            className="group relative inline-flex items-center justify-center min-h-10 md:min-h-12 px-6 md:px-10 rounded-full bg-primary text-primary-foreground border border-primary-border font-medium shadow-2xl overflow-hidden"
             data-testid="button-rsvp"
             variants={itemVariants}
             whileHover={{ 
@@ -309,14 +309,14 @@ export default function Hero() {
           >
             {/* Button shine effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-            <span className="relative z-10 text-lg font-semibold">
+            <span className="relative z-10 text-base md:text-lg font-semibold">
               Xác Nhận Tham Dự
             </span>
           </motion.a>
 
           <motion.button
             onClick={() => setShowInvitation(true)}
-            className="group inline-flex items-center justify-center min-h-12 px-10 rounded-full backdrop-blur-xl bg-background/70 text-foreground border border-border/50 font-medium shadow-xl hover:shadow-2xl transition-all duration-300"
+            className="group inline-flex items-center justify-center min-h-10 md:min-h-12 px-6 md:px-10 rounded-full backdrop-blur-xl bg-background/70 text-foreground border border-border/50 font-medium shadow-xl hover:shadow-2xl transition-all duration-300"
             data-testid="button-invitation"
             variants={itemVariants}
             whileHover={{ 
@@ -325,7 +325,7 @@ export default function Hero() {
             }}
             whileTap={{ scale: 0.95 }}
           >
-            <span className="text-lg font-semibold">
+            <span className="text-base md:text-lg font-semibold">
               Xem Thiệp Cưới
             </span>
           </motion.button>
