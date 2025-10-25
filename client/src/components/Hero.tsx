@@ -198,14 +198,6 @@ export default function Hero() {
           className="mb-8"
           variants={containerVariants}
         >
-          <motion.p
-            className="text-muted-foreground text-lg md:text-xl mb-6 font-light tracking-widest"
-            data-testid="text-wedding-announcement"
-            variants={itemVariants}
-          >
-            Với sự hiện diện của gia đình và bạn bè
-          </motion.p>
-          
           <motion.h1
             className="font-cursive text-6xl md:text-8xl lg:text-9xl mb-8 text-foreground relative"
             data-testid="text-couple-names"
