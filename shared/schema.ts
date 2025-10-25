@@ -179,10 +179,16 @@ export const settings = pgTable("settings", {
   venueMapLink: text("venue_map_link"), // Google Maps link instead of lat/lng
   venuePhone: varchar("venue_phone"),
   venueEmail: varchar("venue_email"),
+  venueImage: text("venue_image"), // Venue image/photo
   eventStartTime: timestamp("event_start_time"),
   eventEndTime: timestamp("event_end_time"),
   backgroundMusicUrl: text("background_music_url"), // YouTube, MP3 link, or uploaded file
   backgroundMusicType: varchar("background_music_type"), // 'youtube', 'mp3', 'upload'
+  // Bank transfer information
+  brideQrCodeUrl: text("bride_qr_code_url"), // QR code for bride's bank transfer
+  groomQrCodeUrl: text("groom_qr_code_url"), // QR code for groom's bank transfer
+  brideBankInfo: text("bride_bank_info"), // Bride's bank account information
+  groomBankInfo: text("groom_bank_info"), // Groom's bank account information
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 

@@ -119,6 +119,21 @@
 [x] 83. Verified all data is displaying correctly from database
 [x] 84. Wedding website fully functional with new database! 🎉
 
+## Current Session (Oct 25, 2025) 🚧 IN PROGRESS
+[x] 91. Cross-env package reinstalled - server running successfully
+[x] 92. Database schema updated with bank transfer fields (bride/groom QR codes and bank info)
+[x] 93. Database schema pushed to production
+[x] 94. AdminRegistry completely rewritten - now manages bank transfer QR codes instead of gift items
+[x] 95. Registry homepage component updated - displays QR codes and bank transfer information
+[ ] 96. Fix RSVP count display (if needed)
+[ ] 97. Fix Start Time and End Time date parsing in AdminSettings
+[ ] 98. Add image upload for venue location
+[ ] 99. Fix audio upload functionality
+[ ] 100. Fix music player persistence on page reload
+[ ] 101. Fix RSVP form input errors
+[ ] 102. Create comprehensive database backup for deployment
+[ ] 103. Test all features and verify everything works
+
 ## Latest Bug Fixes Session (Oct 24, 2025 - Night) ✅ COMPLETED
 [x] 85. Fixed eventStartTime and eventEndTime datetime fields - proper Date type conversion in AdminSettings
 [x] 86. Fixed homepage hero background image - now displays heroImage from database (coupleInfo table)
