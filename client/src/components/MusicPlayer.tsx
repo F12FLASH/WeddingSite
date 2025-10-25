@@ -56,7 +56,18 @@ export default function MusicPlayer() {
       }
     ];
 
-    // If custom background music URL is set in settings, add it as the first song
+    // If custom background music URLs array is set in settings, use those
+    if (settings?.backgroundMusicUrls && settings.backgroundMusicUrls.length > 0) {
+      const customSongs = settings.backgroundMusicUrls.map((url, index) => ({
+        title: `Nhạc Nền ${index + 1}`,
+        artist: "Đám Cưới",
+        src: url,
+        duration: "--:--"
+      }));
+      return customSongs;
+    }
+
+    // Fallback: If single background music URL is set (backward compatibility)
     if (settings?.backgroundMusicUrl) {
       const customSong = {
         title: "Nhạc Nền Đám Cưới",
@@ -106,7 +117,7 @@ export default function MusicPlayer() {
     }
   }, [isPlaying]);
 
-  // Reload audio and restart playback when backgroundMusicUrl changes
+  // Reload audio and restart playback when backgroundMusicUrl or backgroundMusicUrls changes
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -118,7 +129,7 @@ export default function MusicPlayer() {
     if (isPlaying) {
       audio.play().catch(console.error);
     }
-  }, [settings?.backgroundMusicUrl]);
+  }, [settings?.backgroundMusicUrl, settings?.backgroundMusicUrls]);
 
   useEffect(() => {
     const audio = audioRef.current;

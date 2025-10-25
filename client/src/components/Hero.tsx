@@ -1,14 +1,15 @@
-import { Heart, Calendar, MapPin, Clock } from "lucide-react";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import { Heart, Calendar, MapPin, Clock, X } from "lucide-react";
+import { motion, useMotionValue, useTransform, animate, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import heroImage from "@assets/generated_images/Romantic_wedding_couple_hero_background_0afd25e7.png";
 import { useQuery } from "@tanstack/react-query";
-import type { CoupleInfo, Settings } from "@shared/schema";
+import type { CoupleInfo, Settings, Popup } from "@shared/schema";
 
 export default function Hero() {
   const [isVisible, setIsVisible] = useState(false);
   const count = useMotionValue(0);
   const rounded = useTransform(count, Math.round);
+  const [showInvitation, setShowInvitation] = useState(false);
 
   const { data: coupleInfo } = useQuery<CoupleInfo | null>({
     queryKey: ["/api/couple"],
@@ -17,6 +18,12 @@ export default function Hero() {
   const { data: settings } = useQuery<Settings | null>({
     queryKey: ["/api/settings"],
   });
+
+  const { data: popups } = useQuery<Popup[]>({
+    queryKey: ["/api/popups"],
+  });
+
+  const welcomePopup = popups?.find((p) => p.type === "welcome" && p.isActive);
 
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
@@ -116,7 +123,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24">
       {/* Background Image with Gradient Overlay */}
       <motion.div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -307,10 +314,10 @@ export default function Hero() {
             </span>
           </motion.a>
 
-          <motion.a
-            href="#registry"
+          <motion.button
+            onClick={() => setShowInvitation(true)}
             className="group inline-flex items-center justify-center min-h-12 px-10 rounded-full backdrop-blur-xl bg-background/70 text-foreground border border-border/50 font-medium shadow-xl hover:shadow-2xl transition-all duration-300"
-            data-testid="button-registry"
+            data-testid="button-invitation"
             variants={itemVariants}
             whileHover={{ 
               scale: 1.05,
@@ -319,9 +326,9 @@ export default function Hero() {
             whileTap={{ scale: 0.95 }}
           >
             <span className="text-lg font-semibold">
-              Xem Danh Sách Quà
+              Xem Thiệp Cưới
             </span>
-          </motion.a>
+          </motion.button>
         </motion.div>
       </motion.div>
 
@@ -352,6 +359,62 @@ export default function Hero() {
           Cuộn xuống
         </motion.p>
       </motion.div>
+
+      {/* Wedding Invitation Popup */}
+      <AnimatePresence>
+        {showInvitation && welcomePopup && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowInvitation(false)}
+            data-testid="popup-overlay-invitation"
+          >
+            <motion.div
+              className="relative max-w-2xl w-full bg-white dark:bg-gray-900 rounded-3xl shadow-2xl overflow-hidden"
+              initial={{ scale: 0.8, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 50 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              onClick={(e) => e.stopPropagation()}
+              data-testid="popup-content-invitation"
+            >
+              <button
+                onClick={() => setShowInvitation(false)}
+                className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                data-testid="button-close-invitation"
+              >
+                <X className="text-white" size={24} />
+              </button>
+              
+              <div className="relative">
+                <img
+                  src={welcomePopup.imageUrl}
+                  alt={welcomePopup.title || "Thiệp Cưới"}
+                  className="w-full max-h-[80vh] object-contain"
+                  data-testid="img-invitation"
+                />
+                
+                {(welcomePopup.title || welcomePopup.description) && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
+                    {welcomePopup.title && (
+                      <h3 className="text-2xl font-bold mb-2" data-testid="heading-invitation-title">
+                        {welcomePopup.title}
+                      </h3>
+                    )}
+                    {welcomePopup.description && (
+                      <p className="text-lg" data-testid="text-invitation-description">
+                        {welcomePopup.description}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

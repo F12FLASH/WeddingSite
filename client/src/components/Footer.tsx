@@ -1,6 +1,8 @@
 import { Heart, Instagram, Facebook, Twitter } from "lucide-react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import { useQuery } from "@tanstack/react-query";
+import type { CoupleInfo, Settings } from "@shared/schema";
 
 export default function Footer() {
   const [ref, inView] = useInView({
@@ -8,18 +10,13 @@ export default function Footer() {
     threshold: 0.1,
   });
 
-  const footerLinks = [
-    { name: "Xác Nhận", href: "#rsvp" },
-    { name: "Quà Mừng", href: "#registry" },
-    { name: "Địa Điểm", href: "#location" },
-    { name: "Album Ảnh", href: "#gallery" }
-  ];
+  const { data: coupleInfo } = useQuery<CoupleInfo | null>({
+    queryKey: ["/api/couple-info"],
+  });
 
-  const socialLinks = [
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Twitter, href: "#", label: "Twitter" }
-  ];
+  const { data: settings } = useQuery<Settings | null>({
+    queryKey: ["/api/settings"],
+  });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -43,6 +40,19 @@ export default function Footer() {
       }
     }
   };
+
+  const socialLinks = [
+    { icon: Instagram, href: settings?.instagramUrl || "#", label: "Instagram", show: !!settings?.instagramUrl },
+    { icon: Facebook, href: settings?.facebookUrl || "#", label: "Facebook", show: !!settings?.facebookUrl },
+    { icon: Twitter, href: settings?.twitterUrl || "#", label: "Twitter", show: !!settings?.twitterUrl }
+  ].filter(link => link.show);
+
+  const coupleNames = coupleInfo 
+    ? `${coupleInfo.brideName.split(' ').pop()} & ${coupleInfo.groomName.split(' ').pop()}`
+    : "Cô Dâu & Chú Rể";
+
+  const footerText = settings?.footerText || "Cùng chia sẻ câu chuyện tình yêu của chúng tôi";
+  const hashtag = settings?.hashtag || `#${coupleNames.replace(/\s+/g, '')}2025`;
 
   return (
     <motion.footer
@@ -83,15 +93,15 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
           variants={containerVariants}
-          className="grid md:grid-cols-3 gap-12 mb-12"
+          className="flex flex-col items-center justify-center gap-8"
         >
-          {/* Brand Section */}
+          {/* Brand Section - Centered */}
           <motion.div
             variants={itemVariants}
-            className="text-center md:text-left"
+            className="text-center"
           >
             <motion.div
-              className="flex items-center gap-3 justify-center md:justify-start mb-6"
+              className="flex items-center gap-3 justify-center mb-6"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
@@ -109,107 +119,72 @@ export default function Footer() {
                 <Heart className="text-primary" size={28} fill="currentColor" />
               </motion.div>
               <span className="font-cursive text-3xl text-primary bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                Sarah & Michael
+                {coupleNames}
               </span>
             </motion.div>
             <motion.p
-              className="text-muted-foreground text-lg leading-relaxed"
+              className="text-muted-foreground text-lg leading-relaxed max-w-2xl"
               whileHover={{ scale: 1.02 }}
             >
-              Cùng chia sẻ câu chuyện tình yêu của chúng tôi
+              {footerText}
             </motion.p>
           </motion.div>
 
-          {/* Quick Links */}
-          <motion.div
-            variants={itemVariants}
-            className="text-center"
-          >
-            <motion.h3
-              className="font-serif text-xl mb-6 text-foreground"
-              whileHover={{ scale: 1.05 }}
-            >
-              Liên Kết Nhanh
-            </motion.h3>
-            <div className="space-y-3">
-              {footerLinks.map((link, idx) => (
-                <motion.a
-                  key={idx}
-                  href={link.href}
-                  className="block text-muted-foreground hover:text-primary transition-all duration-300 text-base font-medium group"
-                  data-testid={`footer-link-${link.name.toLowerCase()}`}
-                  whileHover={{ 
-                    x: 5,
-                    color: "hsl(var(--primary))"
-                  }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
-                  <span className="relative">
-                    {link.name}
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300" />
-                  </span>
-                </motion.a>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Social & Contact */}
-          <motion.div
-            variants={itemVariants}
-            className="text-center md:text-right"
-          >
-            <motion.h3
-              className="font-serif text-xl mb-6 text-foreground"
-              whileHover={{ scale: 1.05 }}
-            >
-              Kết Nối Với Chúng Tôi
-            </motion.h3>
+          {/* Social & Hashtag */}
+          {socialLinks.length > 0 && (
             <motion.div
-              className="flex gap-4 justify-center md:justify-end mb-6"
-              variants={containerVariants}
+              variants={itemVariants}
+              className="text-center"
             >
-              {socialLinks.map((social, idx) => (
-                <motion.a
-                  key={idx}
-                  href={social.href}
-                  className="social-icon"
-                  data-testid={`link-${social.label.toLowerCase()}`}
-                  variants={itemVariants}
-                  whileHover={{ 
-                    scale: 1.2,
-                    rotate: 360,
-                    backgroundColor: "hsl(var(--primary))",
-                    color: "white"
-                  }}
-                  whileTap={{ scale: 0.9 }}
-                  transition={{ type: "spring", stiffness: 400 }}
-                >
-                  <social.icon size={20} />
-                </motion.a>
-              ))}
+              <motion.div
+                className="flex gap-4 justify-center mb-4"
+                variants={containerVariants}
+              >
+                {socialLinks.map((social, idx) => (
+                  <motion.a
+                    key={idx}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-icon"
+                    data-testid={`link-${social.label.toLowerCase()}`}
+                    variants={itemVariants}
+                    whileHover={{ 
+                      scale: 1.2,
+                      rotate: 360,
+                      backgroundColor: "hsl(var(--primary))",
+                      color: "white"
+                    }}
+                    whileTap={{ scale: 0.9 }}
+                    transition={{ type: "spring", stiffness: 400 }}
+                  >
+                    <social.icon size={20} />
+                  </motion.a>
+                ))}
+              </motion.div>
+              <motion.p
+                className="text-muted-foreground text-lg font-medium bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent"
+                animate={{
+                  backgroundPosition: ['0%', '100%', '0%'],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                style={{
+                  backgroundSize: '200% 100%',
+                }}
+              >
+                {hashtag}
+              </motion.p>
             </motion.div>
-            <motion.p
-              className="text-muted-foreground text-lg font-medium bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent"
-              animate={{
-                backgroundPosition: ['0%', '100%', '0%'],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              style={{
-                backgroundSize: '200% 100%',
-              }}
-            >
-              #SarahAndMichael2025
-            </motion.p>
-          </motion.div>
+          )}
         </motion.div>
 
         {/* Copyright */}
         <motion.div
-          className="text-center pt-12 border-t border-card-border"
+          className="text-center pt-12 border-t border-card-border mt-12"
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.8, duration: 0.6 }}
@@ -218,7 +193,7 @@ export default function Footer() {
             className="text-muted-foreground text-base flex items-center justify-center gap-2"
             whileHover={{ scale: 1.02 }}
           >
-            © 2025 Sarah & Michael. Được tạo với{" "}
+            © 2025 {coupleNames}. Được tạo với{" "}
             <motion.span
               animate={{
                 scale: [1, 1.3, 1],
@@ -267,4 +242,3 @@ export default function Footer() {
     </motion.footer>
   );
 }
-

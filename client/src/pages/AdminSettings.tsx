@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Save, Settings as SettingsIcon, Music, MapPin, Palette, Bell, Shield, Eye, Upload, Image, Trash2, Power } from "lucide-react";
+import { Save, Settings as SettingsIcon, Music, MapPin, Palette, Bell, Shield, Eye, Upload, Image, Trash2, Power, Heart, Instagram } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import type { Settings, Popup } from "@shared/schema";
@@ -54,6 +54,12 @@ export default function AdminSettings() {
       eventEndTime: undefined as Date | undefined,
       backgroundMusicUrl: "",
       backgroundMusicType: "upload",
+      backgroundMusicUrls: [] as string[],
+      footerText: "",
+      facebookUrl: "",
+      instagramUrl: "",
+      twitterUrl: "",
+      hashtag: "",
     },
   });
 
@@ -81,6 +87,12 @@ export default function AdminSettings() {
         eventEndTime: toLocalDatetimeString(settings.eventEndTime) as any,
         backgroundMusicUrl: settings.backgroundMusicUrl || "",
         backgroundMusicType: settings.backgroundMusicType || "upload",
+        backgroundMusicUrls: settings.backgroundMusicUrls || [],
+        footerText: settings.footerText || "",
+        facebookUrl: settings.facebookUrl || "",
+        instagramUrl: settings.instagramUrl || "",
+        twitterUrl: settings.twitterUrl || "",
+        hashtag: settings.hashtag || "",
       });
     }
   }, [settings, form]);
@@ -144,17 +156,26 @@ export default function AdminSettings() {
 
     try {
       const audioUrl = await uploadImageToCloudinary(file);
-      form.setValue('backgroundMusicUrl', audioUrl);
+      const currentUrls = form.getValues('backgroundMusicUrls') || [];
+      const newUrls = [...currentUrls, audioUrl];
+      form.setValue('backgroundMusicUrls', newUrls);
       form.setValue('backgroundMusicType', 'upload');
+      
+      // Auto-save playlist to database
+      const formData = form.getValues();
+      await updateMutation.mutateAsync({
+        ...formData,
+        backgroundMusicUrls: newUrls,
+      });
       
       toast({
         title: "✅ Thành công!",
-        description: "Đã tải lên nhạc nền thành công",
+        description: "Đã thêm bài hát vào playlist",
       });
     } catch (error) {
       toast({
         title: "❌ Lỗi",
-        description: "Không thể tải lên file nhạc nền",
+        description: "Không thể tải lên file nhạc",
         variant: "destructive",
       });
     } finally {
@@ -162,6 +183,32 @@ export default function AdminSettings() {
       if (event.target) {
         event.target.value = '';
       }
+    }
+  };
+
+  const handleRemoveSong = async (index: number) => {
+    const currentUrls = form.getValues('backgroundMusicUrls') || [];
+    const newUrls = currentUrls.filter((_, i) => i !== index);
+    form.setValue('backgroundMusicUrls', newUrls);
+    
+    // Auto-save playlist to database
+    const formData = form.getValues();
+    try {
+      await updateMutation.mutateAsync({
+        ...formData,
+        backgroundMusicUrls: newUrls,
+      });
+      
+      toast({
+        title: "✅ Đã xóa",
+        description: "Đã xóa bài hát khỏi playlist",
+      });
+    } catch (error) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể xóa bài hát",
+        variant: "destructive",
+      });
     }
   };
 
@@ -213,6 +260,7 @@ export default function AdminSettings() {
 
   const tabs = [
     { id: "general", label: "🌐 Tổng Quan", icon: SettingsIcon },
+    { id: "footer", label: "📄 Chân Trang", icon: Heart },
     { id: "popups", label: "🖼️ Popup Quảng Cáo", icon: Image },
     { id: "features", label: "⚙️ Tính Năng", icon: Bell },
     { id: "security", label: "🔒 Bảo Mật", icon: Shield },
@@ -563,6 +611,141 @@ export default function AdminSettings() {
                 </div>
               )}
 
+              {activeTab === "footer" && (
+                <div className="space-y-6">
+                  <Card>
+                    <CardHeader className="bg-gradient-to-r from-pink-500/5 to-pink-500/10 border-b">
+                      <CardTitle className="flex items-center gap-2">
+                        <Heart className="text-pink-500" size={20} />
+                        Quản Lý Chân Trang
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6 pt-6">
+                      <FormField
+                        control={form.control}
+                        name="footerText"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">💬 Thông Điệp Chân Trang</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="Cùng chia sẻ câu chuyện tình yêu của chúng tôi"
+                                className="h-12 text-lg"
+                                data-testid="input-footer-text"
+                                {...field}
+                              />
+                            </FormControl>
+                            <p className="text-xs text-muted-foreground">
+                              Tin nhắn sẽ hiển thị ở cuối trang
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="hashtag"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">#️⃣ Hashtag Đám Cưới</FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="#CôDâuChúRể2025"
+                                className="h-12 text-lg"
+                                data-testid="input-hashtag"
+                                {...field}
+                              />
+                            </FormControl>
+                            <p className="text-xs text-muted-foreground">
+                              Hashtag sẽ hiển thị ở chân trang
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="border-t pt-6">
+                        <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                          <Instagram className="text-pink-500" size={18} />
+                          Liên Kết Mạng Xã Hội
+                        </h4>
+                        <div className="space-y-4">
+                          <FormField
+                            control={form.control}
+                            name="facebookUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-medium">Facebook URL</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="url"
+                                    placeholder="https://facebook.com/your-page"
+                                    className="h-12"
+                                    data-testid="input-facebook-url"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <p className="text-xs text-muted-foreground">
+                                  Để trống nếu không muốn hiển thị icon Facebook
+                                </p>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="instagramUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-medium">Instagram URL</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="url"
+                                    placeholder="https://instagram.com/your-profile"
+                                    className="h-12"
+                                    data-testid="input-instagram-url"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <p className="text-xs text-muted-foreground">
+                                  Để trống nếu không muốn hiển thị icon Instagram
+                                </p>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name="twitterUrl"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-sm font-medium">Twitter/X URL</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    type="url"
+                                    placeholder="https://twitter.com/your-handle"
+                                    className="h-12"
+                                    data-testid="input-twitter-url"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <p className="text-xs text-muted-foreground">
+                                  Để trống nếu không muốn hiển thị icon Twitter
+                                </p>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
               {activeTab === "popups" && (
                 <div className="space-y-6">
                   <PopupManagement popups={popups} />
@@ -579,58 +762,86 @@ export default function AdminSettings() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 pt-6">
-                      <FormField
-                        control={form.control}
-                        name="backgroundMusicUrl"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-sm font-medium">🎵 Upload File Nhạc Nền</FormLabel>
-                            <div className="space-y-3">
-                              {field.value && (
-                                <div className="p-3 bg-muted rounded-lg">
-                                  <p className="text-sm text-muted-foreground">
-                                    ✅ Đã có nhạc nền: {field.value.substring(0, 50)}...
+                      <div>
+                        <FormLabel className="text-sm font-medium">🎵 Playlist Nhạc Nền</FormLabel>
+                        <p className="text-xs text-muted-foreground mb-3">
+                          Tải lên nhiều bài hát. Playlist sẽ tự động phát lại từ đầu khi hết.
+                        </p>
+                        
+                        {/* Upload Button */}
+                        <div className="flex gap-2 mb-4">
+                          <input
+                            type="file"
+                            ref={audioFileInputRef}
+                            onChange={handleAudioFileSelect}
+                            accept="audio/*"
+                            className="hidden"
+                          />
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            className="h-12 flex-1"
+                            onClick={() => audioFileInputRef.current?.click()}
+                            disabled={uploadingAudio}
+                            data-testid="button-upload-audio"
+                          >
+                            {uploadingAudio ? (
+                              <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                className="mr-2"
+                              >
+                                <Upload size={18} />
+                              </motion.div>
+                            ) : (
+                              <Music size={18} className="mr-2" />
+                            )}
+                            {uploadingAudio ? "Đang tải lên..." : "Thêm Bài Hát"}
+                          </Button>
+                        </div>
+
+                        {/* Playlist Display */}
+                        <div className="space-y-2">
+                          {(form.watch('backgroundMusicUrls') || []).length === 0 ? (
+                            <div className="p-4 border border-dashed rounded-lg text-center text-muted-foreground">
+                              <Music size={32} className="mx-auto mb-2 opacity-50" />
+                              <p className="text-sm">Chưa có bài hát nào</p>
+                              <p className="text-xs">Nhấn "Thêm Bài Hát" để upload nhạc</p>
+                            </div>
+                          ) : (
+                            (form.watch('backgroundMusicUrls') || []).map((url, index) => (
+                              <div 
+                                key={index}
+                                className="flex items-center gap-3 p-3 bg-muted rounded-lg group hover:bg-muted/70 transition-colors"
+                              >
+                                <Music size={18} className="text-primary flex-shrink-0" />
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium">Bài hát {index + 1}</p>
+                                  <p className="text-xs text-muted-foreground truncate">
+                                    {url.substring(url.lastIndexOf('/') + 1, url.lastIndexOf('/') + 30)}...
                                   </p>
                                 </div>
-                              )}
-                              <div className="flex gap-2">
-                                <input
-                                  type="file"
-                                  ref={audioFileInputRef}
-                                  onChange={handleAudioFileSelect}
-                                  accept="audio/*"
-                                  className="hidden"
-                                />
-                                <Button 
-                                  type="button" 
-                                  variant="outline" 
-                                  className="h-12 flex-1"
-                                  onClick={() => audioFileInputRef.current?.click()}
-                                  disabled={uploadingAudio}
-                                  data-testid="button-upload-audio"
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="flex-shrink-0 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                                  onClick={() => handleRemoveSong(index)}
+                                  data-testid={`button-remove-song-${index}`}
                                 >
-                                  {uploadingAudio ? (
-                                    <motion.div
-                                      animate={{ rotate: 360 }}
-                                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                                      className="mr-2"
-                                    >
-                                      <Upload size={18} />
-                                    </motion.div>
-                                  ) : (
-                                    <Upload size={18} className="mr-2" />
-                                  )}
-                                  {uploadingAudio ? "Đang tải lên..." : "Chọn File Âm Thanh"}
+                                  <Trash2 size={16} className="text-destructive" />
                                 </Button>
                               </div>
-                            </div>
-                            <p className="text-xs text-muted-foreground">
-                              Chọn file MP3, WAV hoặc các định dạng âm thanh khác (tối đa 10MB)
-                            </p>
-                            <FormMessage />
-                          </FormItem>
+                            ))
+                          )}
+                        </div>
+                        
+                        {(form.watch('backgroundMusicUrls') || []).length > 0 && (
+                          <p className="text-xs text-muted-foreground mt-2">
+                            📊 Tổng: {(form.watch('backgroundMusicUrls') || []).length} bài hát trong playlist
+                          </p>
                         )}
-                      />
+                      </div>
                     </CardContent>
                   </Card>
                 </div>
