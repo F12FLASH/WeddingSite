@@ -564,7 +564,18 @@ export default function RSVP() {
                   variants={itemVariants}
                 >
                   <p className="text-sm text-foreground font-medium text-center">
-                    ⏰ Vui lòng phản hồi trước ngày 01/05/2025
+                    ⏰ Vui lòng phản hồi trước ngày{' '}
+                    {coupleInfo?.weddingDate 
+                      ? (() => {
+                          const deadline = new Date(coupleInfo.weddingDate);
+                          deadline.setDate(deadline.getDate() - 7);
+                          return deadline.toLocaleDateString('vi-VN', { 
+                            day: '2-digit', 
+                            month: '2-digit', 
+                            year: 'numeric' 
+                          });
+                        })()
+                      : "01/05/2025"}
                   </p>
                 </motion.div>
               </motion.div>

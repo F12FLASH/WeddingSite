@@ -80,10 +80,10 @@
   --chart-5: 25 85% 55%;
 
   /* Font Families - Vietnamese wedding fonts */
-  --font-sans: 'Cormorant Garamond', Georgia, serif;
-  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Noto Serif', 'Cormorant Garamond', Georgia, serif;
+  --font-serif: 'Playfair Display', 'Noto Serif', Georgia, serif;
   --font-cursive: 'Dancing Script', 'Great Vibes', 'Tangerine', cursive;
-  --font-body: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Noto Serif', 'Cormorant Garamond', Georgia, serif;
   --font-mono: Menlo, monospace;
   --font-admin: 'Times New Roman', Times, serif;
   --radius: .5rem;
@@ -389,23 +389,37 @@
 }
 
 /* Admin pages - Times New Roman with larger sizes */
-[class*="Admin"] {
+[class*="Admin"],
+[data-admin-page="true"],
+.admin-container {
   font-family: var(--font-admin) !important;
+  font-size: 1.1rem !important;
 }
 
 .admin-page {
   font-family: var(--font-admin) !important;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
 }
 
 .admin-heading {
   font-family: var(--font-admin) !important;
-  font-size: 2rem;
+  font-size: 2.25rem;
+  font-weight: 600;
 }
 
-/* Landing page body text - Cormorant Garamond */
-.landing-text {
+.admin-text {
+  font-family: var(--font-admin) !important;
+  font-size: 1.05rem;
+}
+
+/* Landing/Homepage - Vietnamese-friendly fonts */
+body {
   font-family: var(--font-body);
-  font-size: 1.125rem;
+}
+
+.landing-text, 
+.homepage-text {
+  font-family: var(--font-body);
+  font-size: 1.15rem;
   line-height: 1.75;
 }

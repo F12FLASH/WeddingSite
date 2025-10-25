@@ -111,14 +111,6 @@ const menuItems = [
     bgColor: "bg-yellow-50 dark:bg-yellow-950/20"
   },
   {
-    title: "Popup",
-    url: "/admin/popups",
-    icon: ImagePlus,
-    description: "Quản lý popup hình ảnh",
-    color: "text-indigo-500",
-    bgColor: "bg-indigo-50 dark:bg-indigo-950/20"
-  },
-  {
     title: "Cài Đặt",
     url: "/admin/settings",
     icon: Settings,
@@ -698,9 +690,10 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
+            data-admin-page="true"
           >
-            <div className="max-w-7xl mx-auto w-full p-6 lg:p-8">
-              <div className="bg-background/80 backdrop-blur-sm rounded-3xl border border-border/50 shadow-sm min-h-[calc(100vh-12rem)]">
+            <div className="max-w-7xl mx-auto w-full p-6 lg:p-8" data-admin-page="true">
+              <div className="bg-background/80 backdrop-blur-sm rounded-3xl border border-border/50 shadow-sm min-h-[calc(100vh-12rem)]" data-admin-page="true">
                 {children}
               </div>
             </div>

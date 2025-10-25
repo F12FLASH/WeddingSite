@@ -106,6 +106,20 @@ export default function MusicPlayer() {
     }
   }, [isPlaying]);
 
+  // Reload audio and restart playback when backgroundMusicUrl changes
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    // Force reload audio element when URL changes
+    audio.load();
+    
+    // Restart playback if music was playing
+    if (isPlaying) {
+      audio.play().catch(console.error);
+    }
+  }, [settings?.backgroundMusicUrl]);
+
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;

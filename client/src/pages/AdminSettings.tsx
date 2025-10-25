@@ -387,6 +387,28 @@ export default function AdminSettings() {
                             <p className="text-xs text-muted-foreground">
                               Vào Google Maps → Chia sẻ → Nhúng bản đồ → Sao chép URL trong thuộc tính src
                             </p>
+                            
+                            {/* Google Maps Preview */}
+                            {field.value && field.value.includes('google.com/maps/embed') && (
+                              <div className="mt-4">
+                                <p className="text-sm font-medium mb-2 flex items-center gap-2">
+                                  <Eye size={16} className="text-green-500" />
+                                  Xem Trước Bản Đồ
+                                </p>
+                                <div className="w-full h-64 rounded-lg overflow-hidden border-2 border-border shadow-lg">
+                                  <iframe
+                                    src={field.value}
+                                    width="100%"
+                                    height="100%"
+                                    style={{ border: 0 }}
+                                    allowFullScreen
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                  />
+                                </div>
+                              </div>
+                            )}
+                            
                             <FormMessage />
                           </FormItem>
                         )}
