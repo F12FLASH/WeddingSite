@@ -242,3 +242,24 @@ export const insertFaqSchema = createInsertSchema(faqs).omit({
 
 export type InsertFaq = z.infer<typeof insertFaqSchema>;
 export type Faq = typeof faqs.$inferSelect;
+
+// Popups
+export const popups = pgTable("popups", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  type: varchar("type").notNull().unique(), // 'welcome' or 'scroll_end' - unique constraint
+  imageUrl: text("image_url").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+  title: varchar("title"),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertPopupSchema = createInsertSchema(popups).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertPopup = z.infer<typeof insertPopupSchema>;
+export type Popup = typeof popups.$inferSelect;

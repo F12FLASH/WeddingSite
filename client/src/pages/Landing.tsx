@@ -10,6 +10,7 @@ import Registry from "@/components/Registry";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import MusicPlayer from "@/components/MusicPlayer";
+import PopupManager from "@/components/PopupManager";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useEffect, useState } from "react";
 
@@ -242,6 +243,9 @@ export default function Landing() {
       >
         <MusicPlayer />
       </motion.div>
+
+      {/* Popup Manager */}
+      <PopupManager />
 
       {/* Scroll to Top Button */}
       <ScrollToTop />

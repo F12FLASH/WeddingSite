@@ -19,6 +19,7 @@ import {
   Home,
   ExternalLink,
   CheckCircle,
+  ImagePlus,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import {
@@ -108,6 +109,14 @@ const menuItems = [
     description: "Quản lý danh sách quà",
     color: "text-yellow-500",
     bgColor: "bg-yellow-50 dark:bg-yellow-950/20"
+  },
+  {
+    title: "Popup",
+    url: "/admin/popups",
+    icon: ImagePlus,
+    description: "Quản lý popup hình ảnh",
+    color: "text-indigo-500",
+    bgColor: "bg-indigo-50 dark:bg-indigo-950/20"
   },
   {
     title: "Cài Đặt",

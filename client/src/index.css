@@ -1,11 +1,11 @@
-/* Vietnamese Wedding Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&family=Tangerine:wght@400;700&display=swap');
+/* Vietnamese Wedding Fonts - Support tiếng Việt */
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Great+Vibes&family=Tangerine:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* LIGHT MODE */
+/* LIGHT MODE + Font Families */
 :root {
   --button-outline: rgba(0,0,0, .10);
   --badge-outline: rgba(0,0,0, .05);
@@ -79,10 +79,13 @@
   --chart-4: 280 65% 60%;
   --chart-5: 25 85% 55%;
 
-  --font-sans: 'Dancing Script', Poppins, sans-serif;
-  --font-serif: 'Great Vibes', Cormorant Garamond, serif;
-  --font-cursive: 'Tangerine', Parisienne, cursive;
+  /* Font Families - Vietnamese wedding fonts */
+  --font-sans: 'Cormorant Garamond', Georgia, serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-cursive: 'Dancing Script', 'Great Vibes', 'Tangerine', cursive;
+  --font-body: 'Cormorant Garamond', Georgia, serif;
   --font-mono: Menlo, monospace;
+  --font-admin: 'Times New Roman', Times, serif;
   --radius: .5rem;
   --shadow-2xs: 0px 1px 2px 0px hsl(340 40% 30% / 0.05);
   --shadow-xs: 0px 1px 3px 0px hsl(340 40% 30% / 0.08);
@@ -383,4 +386,26 @@
 
 .hover-elevate {
   @apply transition-all duration-300 hover:shadow-lg hover:scale-110;
+}
+
+/* Admin pages - Times New Roman with larger sizes */
+[class*="Admin"] {
+  font-family: var(--font-admin) !important;
+}
+
+.admin-page {
+  font-family: var(--font-admin) !important;
+  font-size: 1.05rem;
+}
+
+.admin-heading {
+  font-family: var(--font-admin) !important;
+  font-size: 2rem;
+}
+
+/* Landing page body text - Cormorant Garamond */
+.landing-text {
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  line-height: 1.75;
 }

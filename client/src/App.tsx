@@ -17,6 +17,7 @@ import AdminGallery from "@/pages/AdminGallery";
 import AdminRegistry from "@/pages/AdminRegistry";
 import AdminSettings from "@/pages/AdminSettings";
 import AdminWeddingParty from "@/pages/AdminWeddingParty";
+import AdminPopups from "@/pages/AdminPopups";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -124,6 +125,15 @@ function Router() {
           <ProtectedRoute>
             <AdminDashboard>
               <AdminWeddingParty />
+            </AdminDashboard>
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/popups">
+        {() => (
+          <ProtectedRoute>
+            <AdminDashboard>
+              <AdminPopups />
             </AdminDashboard>
           </ProtectedRoute>
         )}

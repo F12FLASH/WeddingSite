@@ -11,6 +11,7 @@ import {
   insertRegistryItemSchema,
   insertSettingsSchema,
   insertWeddingPartySchema,
+  insertPopupSchema,
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -335,6 +336,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting wedding party member:", error);
       res.status(500).json({ message: "Failed to delete wedding party member" });
+    }
+  });
+
+  // ===== Popups Routes =====
+  app.get("/api/popups", async (req, res) => {
+    try {
+      const popupsList = await storage.getAllPopups();
+      res.json(popupsList);
+    } catch (error) {
+      console.error("Error fetching popups:", error);
+      res.status(500).json({ message: "Failed to fetch popups" });
+    }
+  });
+
+  app.get("/api/popups/:type", async (req, res) => {
+    try {
+      const { type } = req.params;
+      const popup = await storage.getPopupByType(type);
+      res.json(popup || null);
+    } catch (error) {
+      console.error("Error fetching popup by type:", error);
+      res.status(500).json({ message: "Failed to fetch popup" });
+    }
+  });
+
+  app.post("/api/popups", isAuthenticated, async (req, res) => {
+    try {
+      const validated = insertPopupSchema.parse(req.body);
+      const popup = await storage.createPopup(validated);
+      res.json(popup);
+    } catch (error: any) {
+      console.error("Error creating popup:", error);
+      res.status(400).json({ message: error.message || "Failed to create popup" });
+    }
+  });
+
+  app.patch("/api/popups/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validated = insertPopupSchema.partial().parse(req.body);
+      const popup = await storage.updatePopup(id, validated);
+      if (!popup) {
+        return res.status(404).json({ message: "Popup not found" });
+      }
+      res.json(popup);
+    } catch (error: any) {
+      console.error("Error updating popup:", error);
+      res.status(400).json({ message: error.message || "Failed to update popup" });
+    }
+  });
+
+  app.delete("/api/popups/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deletePopup(id);
+      res.json({ message: "Popup deleted" });
+    } catch (error) {
+      console.error("Error deleting popup:", error);
+      res.status(500).json({ message: "Failed to delete popup" });
     }
   });
 

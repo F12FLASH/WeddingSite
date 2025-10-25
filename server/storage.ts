@@ -9,6 +9,7 @@ import {
   registryItems,
   settings,
   weddingParty,
+  popups,
   type User,
   type UpsertUser,
   type CoupleInfo,
@@ -27,6 +28,8 @@ import {
   type InsertSettings,
   type WeddingParty,
   type InsertWeddingParty,
+  type Popup,
+  type InsertPopup,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
@@ -85,6 +88,14 @@ export interface IStorage {
   createWeddingPartyMember(member: InsertWeddingParty): Promise<WeddingParty>;
   updateWeddingPartyMember(id: string, member: Partial<InsertWeddingParty>): Promise<WeddingParty | undefined>;
   deleteWeddingPartyMember(id: string): Promise<void>;
+
+  // Popups
+  getAllPopups(): Promise<Popup[]>;
+  getPopup(id: string): Promise<Popup | undefined>;
+  getPopupByType(type: string): Promise<Popup | undefined>;
+  createPopup(popup: InsertPopup): Promise<Popup>;
+  updatePopup(id: string, popup: Partial<InsertPopup>): Promise<Popup | undefined>;
+  deletePopup(id: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -314,6 +325,39 @@ export class DatabaseStorage implements IStorage {
 
   async deleteWeddingPartyMember(id: string): Promise<void> {
     await db.delete(weddingParty).where(eq(weddingParty.id, id));
+  }
+
+  // Popups
+  async getAllPopups(): Promise<Popup[]> {
+    return await db.select().from(popups);
+  }
+
+  async getPopup(id: string): Promise<Popup | undefined> {
+    const [popup] = await db.select().from(popups).where(eq(popups.id, id));
+    return popup;
+  }
+
+  async getPopupByType(type: string): Promise<Popup | undefined> {
+    const [popup] = await db.select().from(popups).where(eq(popups.type, type));
+    return popup;
+  }
+
+  async createPopup(popupData: InsertPopup): Promise<Popup> {
+    const [created] = await db.insert(popups).values(popupData).returning();
+    return created;
+  }
+
+  async updatePopup(id: string, popupData: Partial<InsertPopup>): Promise<Popup | undefined> {
+    const [updated] = await db
+      .update(popups)
+      .set({ ...popupData, updatedAt: new Date() })
+      .where(eq(popups.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deletePopup(id: string): Promise<void> {
+    await db.delete(popups).where(eq(popups.id, id));
   }
 }
 
