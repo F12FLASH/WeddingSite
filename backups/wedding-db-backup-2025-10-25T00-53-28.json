@@ -1,0 +1,354 @@
+{
+  "timestamp": "2025-10-25T00:53:28.247Z",
+  "data": {
+    "users": [
+      {
+        "id": "1c12b03a-c489-4513-97b3-35efc45fef7f",
+        "username": "admin",
+        "password": "$2b$10$.DozQ5opW164lTYOgMHeCO4KCEWpc4K0Ahjnrj5TuaqZgr53SwrdS",
+        "email": "admin@wedding.com",
+        "firstName": "Wedding",
+        "lastName": "Admin",
+        "createdAt": "2025-10-25T00:44:40.939Z",
+        "updatedAt": "2025-10-25T00:44:40.939Z"
+      }
+    ],
+    "coupleInfo": [
+      {
+        "id": "ebc7ddf5-3706-463b-8532-4463d54be930",
+        "brideName": "Nguyễn Thu Hà",
+        "groomName": "Trần Minh Tuấn",
+        "bridePhoto": "/attached_assets/generated_images/Elegant_bride_portrait_photo_6abee8e2.png",
+        "groomPhoto": "/attached_assets/generated_images/Handsome_groom_portrait_photo_1678e40a.png",
+        "brideDescription": "Cô dâu Thu Hà - Người phụ nữ dịu dàng, xinh đẹp và tài năng. Cô là một giáo viên mầm non với tấm lòng nhân hậu và luôn yêu thương trẻ em.",
+        "groomDescription": "Chú rể Minh Tuấn - Chàng trai lịch lãm, tài giỏi và có trách nhiệm. Anh là kỹ sư phần mềm với niềm đam mê công nghệ và khát vọng xây dựng tương lai tươi sáng.",
+        "ourStory": "Chúng tôi gặp nhau vào một buổi chiều xuân ấm áp tại công viên Hồ Gươm. Từ ánh mắt đầu tiên, chúng tôi đã biết rằng đây là duyên phận trời định. Sau 3 năm bên nhau, chúng tôi quyết định bước vào hôn nhân để cùng nhau xây dựng một tổ ấm hạnh phúc.",
+        "weddingDate": "2025-06-15T00:00:00.000Z",
+        "heroImage": "/attached_assets/generated_images/Romantic_wedding_couple_hero_background_0afd25e7.png",
+        "createdAt": "2025-10-25T00:44:40.952Z",
+        "updatedAt": "2025-10-25T00:44:40.952Z"
+      }
+    ],
+    "scheduleEvents": [
+      {
+        "id": "c0ee4581-7ae1-4a5a-ac81-bb1c9cf897b9",
+        "title": "Lễ Vu Quy",
+        "description": "Lễ vu quy tại nhà gái",
+        "eventTime": "2025-06-15T08:00:00.000Z",
+        "location": "Nhà gái - 123 Trần Hưng Đạo, Hà Nội",
+        "icon": "home",
+        "order": 1,
+        "createdAt": "2025-10-25T00:44:40.957Z",
+        "updatedAt": "2025-10-25T00:44:40.957Z"
+      },
+      {
+        "id": "c919216c-32c7-48f1-9634-e63d8df787ed",
+        "title": "Rước Dâu",
+        "description": "Rước dâu về nhà chú rể",
+        "eventTime": "2025-06-15T10:30:00.000Z",
+        "location": "Từ nhà gái đến nhà trai",
+        "icon": "car",
+        "order": 2,
+        "createdAt": "2025-10-25T00:44:40.961Z",
+        "updatedAt": "2025-10-25T00:44:40.961Z"
+      },
+      {
+        "id": "8e7382c3-593c-4af9-a72b-0287aed9100e",
+        "title": "Lễ Thành Hôn",
+        "description": "Lễ thành hôn tại nhà trai",
+        "eventTime": "2025-06-15T12:00:00.000Z",
+        "location": "Nhà trai - 456 Láng Hạ, Hà Nội",
+        "icon": "church",
+        "order": 3,
+        "createdAt": "2025-10-25T00:44:40.964Z",
+        "updatedAt": "2025-10-25T00:44:40.964Z"
+      },
+      {
+        "id": "c54eac76-d6f7-4765-9288-23f51c85258b",
+        "title": "Tiệc Cưới",
+        "description": "Tiệc cưới chiêu đãi khách mời",
+        "eventTime": "2025-06-15T18:00:00.000Z",
+        "location": "Rose Garden Estate",
+        "icon": "glass",
+        "order": 4,
+        "createdAt": "2025-10-25T00:44:40.967Z",
+        "updatedAt": "2025-10-25T00:44:40.967Z"
+      },
+      {
+        "id": "02dc29b5-ae63-4c30-bc49-a0b669c61ef0",
+        "title": "Múa Hát",
+        "description": "Chương trình văn nghệ",
+        "eventTime": "2025-06-15T20:00:00.000Z",
+        "location": "Rose Garden Estate",
+        "icon": "music",
+        "order": 5,
+        "createdAt": "2025-10-25T00:44:40.972Z",
+        "updatedAt": "2025-10-25T00:44:40.972Z"
+      }
+    ],
+    "photos": [
+      {
+        "id": "55c7d75e-001a-46a9-9625-c1a0d7613923",
+        "url": "/attached_assets/generated_images/Pre-wedding_cherry_blossom_photo_87d19e2a.png",
+        "caption": "Ảnh cưới ở vườn anh đào",
+        "category": "pre-wedding",
+        "order": 1,
+        "createdAt": "2025-10-25T00:44:40.976Z",
+        "updatedAt": "2025-10-25T00:44:40.976Z"
+      },
+      {
+        "id": "8ed2ef99-0e2d-44d9-9acc-35aa9ce68647",
+        "url": "/attached_assets/generated_images/Couple_engagement_park_photo_8a5ab5d9.png",
+        "caption": "Kỷ niệm ngày đính hôn",
+        "category": "engagement",
+        "order": 2,
+        "createdAt": "2025-10-25T00:44:40.980Z",
+        "updatedAt": "2025-10-25T00:44:40.980Z"
+      },
+      {
+        "id": "3003db1e-97db-4f3b-bb55-08909bec5f43",
+        "url": "/attached_assets/generated_images/Wedding_venue_ceremony_setup_4b2b0b2c.png",
+        "caption": "Địa điểm tổ chức lễ cưới",
+        "category": "ceremony",
+        "order": 3,
+        "createdAt": "2025-10-25T00:44:40.983Z",
+        "updatedAt": "2025-10-25T00:44:40.983Z"
+      },
+      {
+        "id": "55509312-fea5-46a7-bd11-bfb290bb52c8",
+        "url": "/attached_assets/generated_images/Romantic_wedding_couple_hero_background_0afd25e7.png",
+        "caption": "Ảnh cưới lãng mạn",
+        "category": "wedding",
+        "order": 4,
+        "createdAt": "2025-10-25T00:44:40.987Z",
+        "updatedAt": "2025-10-25T00:44:40.987Z"
+      },
+      {
+        "id": "4d53b63e-56b5-4e2c-ba6d-6363a271d3f0",
+        "url": "/attached_assets/generated_images/Elegant_bride_portrait_photo_6abee8e2.png",
+        "caption": "Chân dung cô dâu",
+        "category": "portrait",
+        "order": 5,
+        "createdAt": "2025-10-25T00:44:40.990Z",
+        "updatedAt": "2025-10-25T00:44:40.990Z"
+      },
+      {
+        "id": "6cd2839d-16ae-43a1-9db0-307c0302e128",
+        "url": "/attached_assets/generated_images/Handsome_groom_portrait_photo_1678e40a.png",
+        "caption": "Chân dung chú rể",
+        "category": "portrait",
+        "order": 6,
+        "createdAt": "2025-10-25T00:44:40.993Z",
+        "updatedAt": "2025-10-25T00:44:40.993Z"
+      }
+    ],
+    "guestMessages": [
+      {
+        "id": "6623c515-c2cd-44c0-bb4b-25e63133ec08",
+        "guestName": "Nguyễn Văn An",
+        "message": "Chúc hai bạn trăm năm hạnh phúc!",
+        "approved": true,
+        "createdAt": "2025-10-25T00:44:40.996Z"
+      },
+      {
+        "id": "a3cbed28-8e23-4cf4-aabc-2d6d562c0a6f",
+        "guestName": "Trần Thị Bình",
+        "message": "Hạnh phúc mãi mãi bên nhau!",
+        "approved": true,
+        "createdAt": "2025-10-25T00:44:41.000Z"
+      },
+      {
+        "id": "e6fa90eb-208d-4342-9856-0d2eb25e1b37",
+        "guestName": "Lê Hoàng Cường",
+        "message": "Chúc mừng đám cưới, hạnh phúc viên mãn!",
+        "approved": true,
+        "createdAt": "2025-10-25T00:44:41.003Z"
+      },
+      {
+        "id": "d222aabb-964b-48ad-9fe6-6e711727ab1b",
+        "guestName": "Phạm Thu Duyên",
+        "message": "Yêu nhau mãi mãi nhé!",
+        "approved": true,
+        "createdAt": "2025-10-25T00:44:41.007Z"
+      },
+      {
+        "id": "117502be-ecb8-464e-a43e-f5fc11caf949",
+        "guestName": "Vũ Minh Hiếu",
+        "message": "Xin chúc mừng!",
+        "approved": false,
+        "createdAt": "2025-10-25T00:44:41.010Z"
+      }
+    ],
+    "rsvps": [
+      {
+        "id": "595d5822-459d-4898-aa24-1091b1c0fd21",
+        "guestName": "Nguyễn Thị Mai",
+        "email": "mai@example.com",
+        "phone": "0912345678",
+        "attending": true,
+        "guestCount": 2,
+        "mealPreference": "chicken",
+        "specialRequirements": "",
+        "createdAt": "2025-10-25T00:44:41.015Z"
+      },
+      {
+        "id": "21d8e97e-07d9-4ba1-a962-624be4e345a3",
+        "guestName": "Trần Văn Nam",
+        "email": "nam@example.com",
+        "phone": "0987654321",
+        "attending": true,
+        "guestCount": 3,
+        "mealPreference": "beef",
+        "specialRequirements": "Dị ứng hải sản",
+        "createdAt": "2025-10-25T00:44:41.017Z"
+      },
+      {
+        "id": "ee187abe-0bbe-4070-8147-143e45374a52",
+        "guestName": "Lê Thị Oanh",
+        "email": "oanh@example.com",
+        "phone": "0923456789",
+        "attending": false,
+        "guestCount": 1,
+        "mealPreference": "vegetarian",
+        "specialRequirements": "",
+        "createdAt": "2025-10-25T00:44:41.020Z"
+      },
+      {
+        "id": "da2adceb-5f79-4dc7-b426-5098aacac6c0",
+        "guestName": "Phạm Văn Phúc",
+        "email": "phuc@example.com",
+        "phone": "0934567890",
+        "attending": true,
+        "guestCount": 4,
+        "mealPreference": "fish",
+        "specialRequirements": "",
+        "createdAt": "2025-10-25T00:44:41.023Z"
+      }
+    ],
+    "registryItems": [
+      {
+        "id": "9547951d-030e-4896-8129-21bc8bf64042",
+        "name": "Bộ Đồ Ăn Cao Cấp",
+        "description": "Bộ đồ ăn sứ cao cấp 24 món",
+        "price": 2500000,
+        "imageUrl": "https://placehold.co/400x300/pink/white?text=Bộ+Đồ+Ăn",
+        "purchaseUrl": "https://example.com",
+        "isPurchased": false,
+        "order": 1,
+        "createdAt": "2025-10-25T00:44:41.028Z",
+        "updatedAt": "2025-10-25T00:44:41.028Z"
+      },
+      {
+        "id": "d6dd74f7-7d98-4984-896b-3e8ce9197755",
+        "name": "Máy Hút Bụi Thông Minh",
+        "description": "Máy hút bụi tự động thông minh",
+        "price": 8000000,
+        "imageUrl": "https://placehold.co/400x300/blue/white?text=Máy+Hút+Bụi",
+        "purchaseUrl": "https://example.com",
+        "isPurchased": false,
+        "order": 2,
+        "createdAt": "2025-10-25T00:44:41.031Z",
+        "updatedAt": "2025-10-25T00:44:41.031Z"
+      },
+      {
+        "id": "5a02db42-3135-4c9b-9cf1-0b356dee6a53",
+        "name": "Nồi Cơm Điện Cao Cấp",
+        "description": "Nồi cơm điện tử cao cấp 1.8L",
+        "price": 3500000,
+        "imageUrl": "https://placehold.co/400x300/green/white?text=Nồi+Cơm",
+        "purchaseUrl": "https://example.com",
+        "isPurchased": true,
+        "order": 3,
+        "createdAt": "2025-10-25T00:44:41.034Z",
+        "updatedAt": "2025-10-25T00:44:41.034Z"
+      },
+      {
+        "id": "86f838f0-8dbe-4e01-bb5e-40b6bafb4fa7",
+        "name": "Bàn Ăn Gỗ Tự Nhiên",
+        "description": "Bàn ăn gỗ tự nhiên 6 ghế",
+        "price": 15000000,
+        "imageUrl": "https://placehold.co/400x300/brown/white?text=Bàn+Ăn",
+        "purchaseUrl": "https://example.com",
+        "isPurchased": false,
+        "order": 4,
+        "createdAt": "2025-10-25T00:44:41.037Z",
+        "updatedAt": "2025-10-25T00:44:41.037Z"
+      },
+      {
+        "id": "34ebca80-3ace-4077-b206-cd0410a873ce",
+        "name": "Máy Giặt Cửa Trước",
+        "description": "Máy giặt cửa trước 9kg",
+        "price": 12000000,
+        "imageUrl": "https://placehold.co/400x300/purple/white?text=Máy+Giặt",
+        "purchaseUrl": "https://example.com",
+        "isPurchased": false,
+        "order": 5,
+        "createdAt": "2025-10-25T00:44:41.043Z",
+        "updatedAt": "2025-10-25T00:44:41.043Z"
+      }
+    ],
+    "settings": [
+      {
+        "id": "5431167a-1de3-49a2-8a98-129e43ea581e",
+        "venueName": "Rose Garden Estate",
+        "venueAddress": "123 Garden Lane, Spring Valley, CA 91977",
+        "venueMapLink": "https://www.google.com/maps/search/?api=1&query=Rose+Garden+Estate+Spring+Valley+CA",
+        "venuePhone": "0123 456 789",
+        "venueEmail": "contact@rosegarden.com",
+        "venueImage": null,
+        "eventStartTime": "2025-06-15T18:00:00.000Z",
+        "eventEndTime": "2025-06-15T22:00:00.000Z",
+        "backgroundMusicUrl": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        "backgroundMusicType": "mp3",
+        "brideQrCodeUrl": null,
+        "groomQrCodeUrl": null,
+        "brideBankInfo": null,
+        "groomBankInfo": null,
+        "updatedAt": "2025-10-25T00:53:22.014Z"
+      }
+    ],
+    "weddingParty": [
+      {
+        "id": "58b08793-a99b-4f43-bbf9-b9d890cccee6",
+        "name": "Nguyễn Thu Thảo",
+        "role": "Phù Dâu",
+        "description": "Bạn thân của cô dâu từ thời cấp 3",
+        "photoUrl": "https://i.pravatar.cc/300?img=5",
+        "order": 1,
+        "createdAt": "2025-10-25T00:44:41.046Z",
+        "updatedAt": "2025-10-25T00:44:41.046Z"
+      },
+      {
+        "id": "2504a7ff-283b-4c1c-9278-1aaab7193fb8",
+        "name": "Lê Hương Giang",
+        "role": "Phù Dâu",
+        "description": "Đồng nghiệp thân thiết của cô dâu",
+        "photoUrl": "https://i.pravatar.cc/300?img=10",
+        "order": 2,
+        "createdAt": "2025-10-25T00:44:41.049Z",
+        "updatedAt": "2025-10-25T00:44:41.049Z"
+      },
+      {
+        "id": "34f81635-6650-4da7-b233-cc738924728f",
+        "name": "Trần Quang Huy",
+        "role": "Phù Rể",
+        "description": "Bạn thân từ nhỏ của chú rể",
+        "photoUrl": "https://i.pravatar.cc/300?img=12",
+        "order": 3,
+        "createdAt": "2025-10-25T00:44:41.051Z",
+        "updatedAt": "2025-10-25T00:44:41.051Z"
+      },
+      {
+        "id": "fec7f9e0-e221-4047-bef8-039dc0a41fcf",
+        "name": "Vũ Đức Anh",
+        "role": "Phù Rể",
+        "description": "Đồng nghiệp thân thiết của chú rể",
+        "photoUrl": "https://i.pravatar.cc/300?img=15",
+        "order": 4,
+        "createdAt": "2025-10-25T00:44:41.060Z",
+        "updatedAt": "2025-10-25T00:44:41.060Z"
+      }
+    ],
+    "faqs": []
+  }
+}

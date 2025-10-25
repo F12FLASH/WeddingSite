@@ -6,12 +6,21 @@ import { useQuery } from "@tanstack/react-query";
 import type { Settings } from "@shared/schema";
 
 export default function MusicPlayer() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(() => {
+    const saved = localStorage.getItem('musicPlayer_isPlaying');
+    return saved === 'true';
+  });
+  const [isMuted, setIsMuted] = useState(() => {
+    const saved = localStorage.getItem('musicPlayer_isMuted');
+    return saved === 'true';
+  });
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [currentSongIndex, setCurrentSongIndex] = useState(() => {
+    const saved = localStorage.getItem('musicPlayer_currentSongIndex');
+    return saved ? parseInt(saved, 10) : 0;
+  });
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const { data: settings } = useQuery<Settings | null>({
@@ -61,7 +70,14 @@ export default function MusicPlayer() {
     return defaultPlaylist;
   })();
 
-  const currentSong = playlist[currentSongIndex];
+  // Validate and clamp currentSongIndex to prevent crashes when playlist length changes
+  useEffect(() => {
+    if (currentSongIndex >= playlist.length) {
+      setCurrentSongIndex(0);
+    }
+  }, [playlist.length, currentSongIndex]);
+
+  const currentSong = playlist[currentSongIndex] || playlist[0];
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -96,6 +112,19 @@ export default function MusicPlayer() {
 
     audio.muted = isMuted;
   }, [isMuted]);
+
+  // Persist state to localStorage
+  useEffect(() => {
+    localStorage.setItem('musicPlayer_isPlaying', String(isPlaying));
+  }, [isPlaying]);
+
+  useEffect(() => {
+    localStorage.setItem('musicPlayer_isMuted', String(isMuted));
+  }, [isMuted]);
+
+  useEffect(() => {
+    localStorage.setItem('musicPlayer_currentSongIndex', String(currentSongIndex));
+  }, [currentSongIndex]);
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
