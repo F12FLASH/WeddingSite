@@ -35,7 +35,9 @@ export default function AdminSettings() {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("general");
   const [uploadingAudio, setUploadingAudio] = useState(false);
+  const [uploadingVenueImage, setUploadingVenueImage] = useState(false);
   const audioFileInputRef = useRef<HTMLInputElement>(null);
+  const venueImageInputRef = useRef<HTMLInputElement>(null);
 
   const { data: settings, isLoading } = useQuery<Settings | null>({
     queryKey: ["/api/settings"],
@@ -47,6 +49,7 @@ export default function AdminSettings() {
       venueName: "",
       venueAddress: "",
       venueMapLink: "",
+      venueImage: "",
       venuePhone: "",
       venueEmail: "",
       eventStartTime: undefined as Date | undefined,
@@ -75,6 +78,7 @@ export default function AdminSettings() {
         venueName: settings.venueName || "",
         venueAddress: settings.venueAddress || "",
         venueMapLink: settings.venueMapLink || "",
+        venueImage: settings.venueImage || "",
         venuePhone: settings.venuePhone || "",
         venueEmail: settings.venueEmail || "",
         eventStartTime: toLocalDatetimeString(settings.eventStartTime) as any,
@@ -163,6 +167,54 @@ export default function AdminSettings() {
       });
     } finally {
       setUploadingAudio(false);
+      if (event.target) {
+        event.target.value = '';
+      }
+    }
+  };
+
+  const handleVenueImageSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type (images)
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Vui lòng chọn file ảnh (JPG, PNG, etc.)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (5MB for images)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Kích thước file không được vượt quá 5MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploadingVenueImage(true);
+
+    try {
+      const imageUrl = await uploadImageToCloudinary(file);
+      form.setValue('venueImage', imageUrl);
+      
+      toast({
+        title: "✅ Thành công!",
+        description: "Đã tải lên ảnh địa điểm thành công",
+      });
+    } catch (error) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể tải lên ảnh địa điểm",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingVenueImage(false);
       if (event.target) {
         event.target.value = '';
       }
@@ -355,6 +407,69 @@ export default function AdminSettings() {
                             </FormControl>
                             <p className="text-xs text-muted-foreground">
                               Link Google Maps để khách mời có thể chỉ đường dễ dàng
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="venueImage"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">🖼️ Ảnh Địa Điểm</FormLabel>
+                            <div className="space-y-3">
+                              {field.value && (
+                                <div className="relative w-full max-w-md">
+                                  <img
+                                    src={field.value}
+                                    alt="Venue"
+                                    className="w-full h-48 object-cover rounded-lg border-2 border-border"
+                                  />
+                                </div>
+                              )}
+                              <div className="flex gap-2">
+                                <FormControl>
+                                  <Input
+                                    type="url"
+                                    placeholder="Hoặc nhập URL ảnh địa điểm..."
+                                    className="h-12 flex-1"
+                                    data-testid="input-venue-image"
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <input
+                                  type="file"
+                                  ref={venueImageInputRef}
+                                  onChange={handleVenueImageSelect}
+                                  accept="image/*"
+                                  className="hidden"
+                                />
+                                <Button 
+                                  type="button" 
+                                  variant="outline" 
+                                  size="icon" 
+                                  className="h-12 w-12"
+                                  onClick={() => venueImageInputRef.current?.click()}
+                                  disabled={uploadingVenueImage}
+                                  data-testid="button-upload-venue-image"
+                                >
+                                  {uploadingVenueImage ? (
+                                    <motion.div
+                                      animate={{ rotate: 360 }}
+                                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                    >
+                                      <Upload size={18} />
+                                    </motion.div>
+                                  ) : (
+                                    <Upload size={18} />
+                                  )}
+                                </Button>
+                              </div>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Tải lên ảnh địa điểm để hiển thị tại trang chủ
                             </p>
                             <FormMessage />
                           </FormItem>

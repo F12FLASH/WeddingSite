@@ -100,16 +100,20 @@ export default function Gallery() {
   const itemVariants = {
     hidden: { 
       opacity: 0, 
-      scale: 0.8,
-      y: 30
+      scale: 0.5,
+      y: 60,
+      rotate: -10
     },
     visible: {
       opacity: 1,
       scale: 1,
       y: 0,
+      rotate: 0,
       transition: {
-        duration: 0.6,
-        ease: "easeOut"
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+        duration: 0.8
       }
     }
   };
@@ -245,22 +249,39 @@ export default function Gallery() {
                 variants={itemVariants}
                 className="group relative overflow-hidden rounded-2xl cursor-pointer shadow-lg bg-background break-inside-avoid mb-4"
                 whileHover={{ 
-                  scale: 1.02,
-                  y: -4,
-                  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+                  scale: 1.05,
+                  y: -8,
+                  rotate: index % 2 === 0 ? 2 : -2,
+                  zIndex: 10,
+                  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
                 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 onClick={() => openLightbox(index)}
                 data-testid={`photo-${index}`}
               >
-                <motion.img
-                  src={photo.url}
-                  alt={photo.caption || "Ảnh cưới"}
-                  className="w-full h-auto object-cover"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.5 }}
-                />
+                <motion.div
+                  className="relative overflow-hidden"
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                >
+                  <motion.img
+                    src={photo.url}
+                    alt={photo.caption || "Ảnh cưới"}
+                    className="w-full h-auto object-cover"
+                    initial={{ filter: "brightness(1)" }}
+                    whileHover={{ filter: "brightness(1.1)" }}
+                    transition={{ duration: 0.3 }}
+                  />
+                  
+                  {/* Shimmer Effect */}
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                    initial={{ x: "-100%" }}
+                    whileHover={{ x: "200%" }}
+                    transition={{ duration: 0.8, ease: "easeInOut" }}
+                  />
+                </motion.div>
                 
                 {/* Overlay */}
                 <motion.div

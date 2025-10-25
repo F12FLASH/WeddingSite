@@ -195,6 +195,9 @@ export const settings = pgTable("settings", {
 export const insertSettingsSchema = createInsertSchema(settings).omit({
   id: true,
   updatedAt: true,
+}).extend({
+  eventStartTime: z.coerce.date().optional(),
+  eventEndTime: z.coerce.date().optional(),
 });
 
 export type InsertSettings = z.infer<typeof insertSettingsSchema>;
