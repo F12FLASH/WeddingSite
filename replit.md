@@ -4,6 +4,8 @@
 
 This is a modern, full-stack wedding website application that allows couples to share their wedding details, manage RSVPs, display photo galleries, and interact with guests. The platform features a romantic, photo-centric public-facing website for guests and a comprehensive admin dashboard for wedding management. Built with React, Express, and PostgreSQL, it emphasizes elegant design with smooth animations and an intuitive user experience.
 
+**Vietnamese Wedding Tradition**: Following Vietnamese customs, the traditional gift registry has been replaced with a bank transfer system featuring QR codes for both bride and groom families, making it easier for guests to send monetary gifts.
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -66,8 +68,11 @@ Preferred communication style: Simple, everyday language.
 5. **photos** - Gallery images with URLs, captions, and display order
 6. **guestMessages** - Guest well-wishes with approval workflow
 7. **rsvps** - Guest responses with attendance, count, meal preferences
-8. **registryItems** - Gift registry with store names, URLs, descriptions, images
-9. **settings** - Global site settings (venue details, music URL, etc.)
+8. **registryItems** - Gift registry with store names, URLs, descriptions, images (deprecated - replaced by bank transfer system)
+9. **settings** - Global site settings including:
+   - Venue details (name, address, phone, email, map link, start/end times)
+   - Background music configuration (URL and type)
+   - **Bank transfer information** (brideQrCodeUrl, groomQrCodeUrl, brideBankInfo, groomBankInfo, venueImage)
 
 **Data Modeling Decisions**
 - UUIDs as primary keys using PostgreSQL's `gen_random_uuid()`
