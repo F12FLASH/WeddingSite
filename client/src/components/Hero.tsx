@@ -206,22 +206,24 @@ export default function Hero() {
           variants={containerVariants}
         >
           <motion.h1
-            className="font-cursive text-6xl md:text-8xl lg:text-9xl mb-6 text-foreground relative font-bold"
+            className="font-cursive text-6xl md:text-8xl lg:text-9xl mb-6 text-foreground relative font-medium"
             data-testid="text-couple-names"
             variants={itemVariants}
           >
             <motion.span 
-              className="bg-gradient-to-r from-primary via-pink-400 to-rose-500 bg-clip-text text-transparent inline-block font-bold"
+              className="bg-gradient-to-r from-primary via-pink-400 to-rose-500 bg-clip-text text-transparent inline-block font-medium"
               animate={{
-                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                scale: [1, 1.05, 1],
+                textShadow: [
+                  "0 0 8px rgba(236, 72, 153, 0)",
+                  "0 0 20px rgba(236, 72, 153, 0.6)",
+                  "0 0 8px rgba(236, 72, 153, 0)"
+                ]
               }}
               transition={{
-                duration: 5,
+                duration: 3,
                 repeat: Infinity,
-                ease: "linear"
-              }}
-              style={{
-                backgroundSize: "200% 200%"
+                ease: "easeInOut"
               }}
             >
               {coupleInfo ? `${coupleInfo.brideName} & ${coupleInfo.groomName}` : "Sarah & Michael"}
@@ -285,11 +287,11 @@ export default function Hero() {
             variants={itemVariants}
           >
             <motion.div
-              className="flex items-center gap-2 text-xl md:text-2xl"
+              className="flex items-center gap-3 text-xl md:text-3xl"
               whileHover={{ scale: 1.05 }}
             >
-              <Calendar className="text-primary" size={28} />
-              <span className="font-serif">
+              <Calendar className="text-primary" size={32} />
+              <span className="font-serif font-medium">
                 {coupleInfo?.weddingDate 
                   ? new Date(coupleInfo.weddingDate).toLocaleDateString('vi-VN', { 
                       day: 'numeric', 
@@ -301,11 +303,11 @@ export default function Hero() {
             </motion.div>
             
             <motion.div
-              className="flex items-center gap-2 text-xl md:text-2xl"
+              className="flex items-center gap-3 text-xl md:text-3xl"
               whileHover={{ scale: 1.05 }}
             >
-              <MapPin className="text-primary" size={28} />
-              <span className="font-serif">
+              <MapPin className="text-primary" size={32} />
+              <span className="font-serif font-medium">
                 {settings?.venueName || "Grand Ballroom"}
               </span>
             </motion.div>

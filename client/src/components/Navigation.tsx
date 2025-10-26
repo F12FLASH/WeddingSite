@@ -140,7 +140,7 @@ export default function Navigation() {
               />
             </motion.div>
             <div className="flex flex-col">
-              <span className="font-cursive text-2xl md:text-3xl text-primary bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent font-bold">
+              <span className="font-cursive text-2xl md:text-3xl text-primary bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent font-medium">
                 {coupleInfo ? `${coupleInfo.brideName.split(' ').pop()} & ${coupleInfo.groomName.split(' ').pop()}` : "Trang Web Cưới"}
               </span>
               <span className="text-xs text-muted-foreground -mt-1">
@@ -168,10 +168,10 @@ export default function Navigation() {
                     e.preventDefault();
                     scrollToSection(link.href);
                   }}
-                  className={`relative px-4 py-2 rounded-xl transition-all duration-300 group ${
+                  className={`relative px-5 py-2.5 rounded-xl transition-all duration-300 group text-base ${
                     isActive
-                      ? "text-primary font-medium"
-                      : "text-foreground hover:text-primary"
+                      ? "text-primary font-semibold"
+                      : "text-foreground hover:text-primary font-medium"
                   }`}
                   data-testid={`nav-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
                   variants={itemVariants}
@@ -263,10 +263,10 @@ export default function Navigation() {
                       e.preventDefault();
                       scrollToSection(link.href);
                     }}
-                    className={`block px-4 py-4 rounded-xl transition-all duration-300 ${
+                    className={`block px-4 py-4 rounded-xl transition-all duration-300 text-base ${
                       isActive
-                        ? "bg-primary/10 text-primary font-medium"
-                        : "text-foreground hover:bg-card hover:text-primary"
+                        ? "bg-primary/10 text-primary font-semibold"
+                        : "text-foreground hover:bg-card hover:text-primary font-medium"
                     }`}
                     data-testid={`mobile-nav-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
                     variants={itemVariants}

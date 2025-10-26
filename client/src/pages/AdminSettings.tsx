@@ -24,18 +24,26 @@ import {
 import { uploadImageToCloudinary } from "@/lib/imageUpload";
 import { Switch } from "@/components/ui/switch";
 
-// Helper function to validate and provide guidance on Google Maps URLs
-const convertToGoogleMapsEmbed = (url: string): string => {
-  if (!url) return url;
+// Helper function to extract embed URL from iframe HTML or convert regular Google Maps URLs
+const convertToGoogleMapsEmbed = (input: string): string => {
+  if (!input) return input;
   
-  // If already an embed URL, return as is
-  if (url.includes('/maps/embed')) {
-    return url;
+  // Check if input is an iframe HTML tag
+  if (input.trim().startsWith('<iframe')) {
+    // Extract the src attribute from the iframe
+    const srcMatch = input.match(/src=["']([^"']+)["']/);
+    if (srcMatch && srcMatch[1]) {
+      return srcMatch[1];
+    }
   }
   
-  // For other Google Maps URLs, return as is - they need to use the embed format
-  // The user must get the embed URL from Google Maps Share -> Embed map -> Copy HTML
-  return url;
+  // If already an embed URL, return as is
+  if (input.includes('/maps/embed')) {
+    return input;
+  }
+  
+  // For other Google Maps URLs, return as is
+  return input;
 };
 
 export default function AdminSettings() {
