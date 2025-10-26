@@ -331,9 +331,12 @@ var DatabaseStorage = class {
   }
   async upsertUser(userData) {
     const [user] = await db.insert(users).values(userData).onConflictDoUpdate({
-      target: users.id,
+      target: users.username,
       set: {
-        ...userData,
+        password: userData.password,
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
         updatedAt: /* @__PURE__ */ new Date()
       }
     }).returning();
