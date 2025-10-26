@@ -289,7 +289,6 @@ import * as dotenv from "dotenv";
 import { Pool } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 dotenv.config();
-console.log("DATABASE_URL loaded:", !!process.env.DATABASE_URL);
 if (!process.env.DATABASE_URL) {
   throw new Error(
     "DATABASE_URL must be set. Did you forget to provision a database?"
@@ -298,9 +297,10 @@ if (!process.env.DATABASE_URL) {
 var pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
-  // Thêm các config để ổn định kết nối
-  max: 20,
-  idleTimeoutMillis: 3e4,
+  // Serverless optimization: Only 1 connection per instance
+  max: 1,
+  // Disable idle timeout - Vercel handles function lifecycle
+  idleTimeoutMillis: 0,
   connectionTimeoutMillis: 1e4
 });
 var db = drizzle(pool, { schema: schema_exports });
@@ -311,11 +311,15 @@ async function testConnection() {
     const result = await client.query("SELECT NOW()");
     console.log("\u{1F4C5} Database time:", result.rows[0].now);
     client.release();
+    return true;
   } catch (error) {
-    console.error("\u274C Failed to connect to Neon:", error);
+    console.error("\u274C Failed to connect to database:", error);
+    return false;
   }
 }
-testConnection();
+if (process.env.NODE_ENV === "development" && process.env.TEST_DB_CONNECTION !== "false") {
+  testConnection();
+}
 
 // server/storage.ts
 import { eq, desc } from "drizzle-orm";
