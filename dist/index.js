@@ -289,7 +289,6 @@ import * as dotenv from "dotenv";
 import { Pool } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 dotenv.config();
-console.log("DATABASE_URL loaded:", !!process.env.DATABASE_URL);
 if (!process.env.DATABASE_URL) {
   throw new Error(
     "DATABASE_URL must be set. Did you forget to provision a database?"
@@ -298,9 +297,10 @@ if (!process.env.DATABASE_URL) {
 var pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
-  // Thêm các config để ổn định kết nối
-  max: 20,
-  idleTimeoutMillis: 3e4,
+  // Serverless optimization: Only 1 connection per instance
+  max: 1,
+  // Disable idle timeout - Vercel handles function lifecycle
+  idleTimeoutMillis: 0,
   connectionTimeoutMillis: 1e4
 });
 var db = drizzle(pool, { schema: schema_exports });
@@ -311,11 +311,15 @@ async function testConnection() {
     const result = await client.query("SELECT NOW()");
     console.log("\u{1F4C5} Database time:", result.rows[0].now);
     client.release();
+    return true;
   } catch (error) {
-    console.error("\u274C Failed to connect to Neon:", error);
+    console.error("\u274C Failed to connect to database:", error);
+    return false;
   }
 }
-testConnection();
+if (process.env.NODE_ENV === "development" && process.env.TEST_DB_CONNECTION !== "false") {
+  testConnection();
+}
 
 // server/storage.ts
 import { eq, desc } from "drizzle-orm";
@@ -331,9 +335,12 @@ var DatabaseStorage = class {
   }
   async upsertUser(userData) {
     const [user] = await db.insert(users).values(userData).onConflictDoUpdate({
-      target: users.id,
+      target: users.username,
       set: {
-        ...userData,
+        password: userData.password,
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
         updatedAt: /* @__PURE__ */ new Date()
       }
     }).returning();
@@ -557,6 +564,9 @@ if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET environment variable is required");
 }
 function getSession() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL is required for session storage - sessions will NOT work without it!");
+  }
   const sessionTtl = 7 * 24 * 60 * 60 * 1e3;
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
@@ -565,6 +575,9 @@ function getSession() {
     ttl: sessionTtl,
     tableName: "sessions"
   });
+  if (!sessionStore) {
+    throw new Error("Failed to create PostgreSQL session store - sessions will NOT work!");
+  }
   return session({
     secret: process.env.SESSION_SECRET,
     store: sessionStore,
@@ -573,6 +586,7 @@ function getSession() {
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: sessionTtl
     }
   });
@@ -1148,6 +1162,9 @@ var vite_config_default = defineConfig({
     emptyOutDir: true
   },
   server: {
+    host: "0.0.0.0",
+    port: 5e3,
+    allowedHosts: true,
     fs: {
       strict: true,
       deny: ["**/.*"]
@@ -1225,6 +1242,20 @@ function serveStatic(app) {
 // server/app.ts
 async function createApp() {
   const app = express2();
+  app.use((req, res, next) => {
+    const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || ["http://localhost:5000"];
+    const origin = req.headers.origin;
+    if (origin && allowedOrigins.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(200);
+    }
+    next();
+  });
   app.use(express2.json({
     limit: "50mb",
     verify: (req, _res, buf) => {

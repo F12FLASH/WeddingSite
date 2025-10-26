@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "cross-env NODE_ENV=development npx --yes tsx server/index.ts",
-    "build": "vite build && esbuild server/app.ts server/routes.ts server/auth.ts server/storage.ts server/db.ts server/vite.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --external:@neondatabase/serverless --external:pg --external:drizzle-orm && npm run build:copy-assets",
+    "build": "vite build && esbuild server/index.ts server/app.ts server/routes.ts server/auth.ts server/storage.ts server/db.ts server/vite.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --external:@neondatabase/serverless --external:pg --external:drizzle-orm && npm run build:copy-assets",
     "build:server": "esbuild server/app.ts server/routes.ts server/auth.ts server/storage.ts server/db.ts server/vite.ts --platform=node --packages=external --bundle --format=esm --outdir=dist --external:@neondatabase/serverless --external:pg --external:drizzle-orm",
     "build:copy-assets": "cp -r attached_assets dist/public/attached_assets 2>/dev/null || mkdir -p dist/public/attached_assets && cp -r attached_assets/* dist/public/attached_assets/ 2>/dev/null || echo 'No assets to copy'",
     "start": "NODE_ENV=production node dist/index.js",
