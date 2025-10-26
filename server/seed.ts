@@ -172,6 +172,28 @@ Cảm ơn tất cả những ai đã và đang đồng hành cùng chúng tôi t
   }
   console.log(`✅ Created ${faqs.length} FAQs`);
 
+  // Create popups
+  const popups = [
+    {
+      type: "welcome",
+      imageUrl: "/attached_assets/wedding_images/popup/dautrang.gif",
+      isActive: true,
+      title: "Chào Mừng Đến Với Đám Cưới Của Chúng Tôi!",
+      description: "Xuân Lâm & Xuân Lợi trân trọng kính mời quý khách",
+    },
+    {
+      type: "scroll_end",
+      imageUrl: "/attached_assets/wedding_images/popup/cuoitrang.gif",
+      isActive: true,
+      title: "Cảm Ơn Bạn Đã Ghé Thăm!",
+      description: "Hẹn gặp bạn tại đám cưới của chúng tôi",
+    },
+  ];
+  for (const popup of popups) {
+    await storage.createPopup(popup);
+  }
+  console.log(`✅ Created ${popups.length} popups`);
+
   // Create music track for Beautiful in white
   await storage.createMusicTrack({
     title: "Beautiful in White",
@@ -194,6 +216,7 @@ Cảm ơn tất cả những ai đã và đang đồng hành cùng chúng tôi t
   console.log("   - 5 registry items");
   console.log("   - 6 wedding party members");
   console.log("   - 8 FAQs");
+  console.log("   - 2 popups");
   console.log("   - 1 music track");
   console.log("   - Settings configured");
 }
