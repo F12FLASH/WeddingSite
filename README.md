@@ -334,123 +334,514 @@ npm run start
 
 ---
 
-## 📱 Deploy lên Vercel
+## 📱 Deploy lên Vercel - Hướng Dẫn Chi Tiết
 
-### Tại Sao Chọn Vercel?
-- ✅ **Miễn phí** cho personal projects
-- ✅ **Deploy tự động** từ GitHub
-- ✅ **HTTPS** miễn phí
-- ✅ **Custom domain** support
+### 🎯 Tổng Quan Kiến Trúc Deployment
+
+Website này sử dụng kiến trúc **Full-Stack Serverless** trên Vercel:
+- **Frontend**: Static assets (React/Vite) được build và serve từ Vercel CDN
+- **Backend**: Express.js API chạy như Vercel Serverless Functions
+- **Database**: PostgreSQL trên Neon (serverless database)
+- **Session**: Lưu trong PostgreSQL, hoạt động tốt với serverless
+- **Static files**: Ảnh và nhạc được serve từ attached_assets folder
+
+### ✅ Tại Sao Chọn Vercel?
+- ✅ **Miễn phí** cho personal projects (Hobby plan)
+- ✅ **Deploy tự động** từ GitHub với mỗi lần push
+- ✅ **HTTPS miễn phí** với SSL certificate tự động
+- ✅ **Custom domain** hỗ trợ miễn phí
 - ✅ **Global CDN** - Tốc độ nhanh toàn cầu
-- ✅ **Serverless Functions** - Hỗ trợ Express.js
+- ✅ **Serverless Functions** - Hỗ trợ Node.js/Express.js
+- ✅ **Zero configuration** - Tự động detect và build
 
-### Bước 1: Chuẩn Bị Repository trên GitHub
+---
 
-#### A. Tạo Repository mới trên GitHub
-1. Truy cập [GitHub](https://github.com/) và đăng nhập
-2. Click **"New repository"**
-3. Đặt tên: `wedding-website` hoặc `xuanlam-xuanloi-wedding`
-4. Chọn **Private** (để bảo mật)
-5. Click **"Create repository"**
+## 📋 Checklist Trước Khi Deploy
 
-#### B. Push Code lên GitHub
+Trước khi bắt đầu, đảm bảo bạn có:
+
+- [ ] Tài khoản GitHub (miễn phí)
+- [ ] Tài khoản Vercel (miễn phí, đăng nhập bằng GitHub)
+- [ ] Tài khoản Neon Database (miễn phí)
+- [ ] Code đã được test kỹ ở local
+- [ ] Đã chuẩn bị ảnh thật của cặp đôi (thay ảnh mẫu)
+
+---
+
+## 🚀 Bước 1: Chuẩn Bị Database Production
+
+### 1.1. Tạo Neon Database cho Production
+
+1. **Truy cập** [Neon Console](https://console.neon.tech/)
+2. **Đăng nhập** hoặc đăng ký tài khoản miễn phí
+3. **Tạo Project mới**:
+   - Click **"Create a project"**
+   - Tên project: `wedding-website-production`
+   - Region: Chọn gần với người dùng chính (VD: Singapore cho Việt Nam)
+4. **Copy Connection String**:
+   - Vào tab **"Dashboard"**
+   - Tìm **"Connection string"**
+   - Click **"Copy"**
+   - Lưu lại, dạng: `postgresql://user:pass@ep-xxx.region.neon.tech/neondb?sslmode=require`
+
+### 1.2. Chạy Database Migration cho Production
+
+Từ máy local, chạy migration lên production database:
+
 ```bash
-# Initialize git (nếu chưa có)
+# Set DATABASE_URL tạm thời cho lệnh này
+DATABASE_URL="postgresql://user:pass@ep-xxx.region.neon.tech/neondb?sslmode=require" npm run db:push
+
+# Seed dữ liệu mẫu (admin account, sample data)
+DATABASE_URL="postgresql://user:pass@ep-xxx.region.neon.tech/neondb?sslmode=require" npx tsx server/seed.ts
+```
+
+✅ **Kết quả**: Production database đã có đầy đủ:
+- 12 bảng (users, couple_info, schedule_events, photos, etc.)
+- Admin account: `admin` / `admin123`
+- Dữ liệu mẫu để test
+
+---
+
+## 🐙 Bước 2: Push Code lên GitHub
+
+### 2.1. Tạo Repository mới trên GitHub
+
+1. Truy cập [GitHub](https://github.com/) và đăng nhập
+2. Click **"New repository"** (nút xanh góc phải)
+3. Cấu hình:
+   - **Repository name**: `wedding-website` (hoặc tên tùy thích)
+   - **Visibility**: **Private** ⚠️ (quan trọng để bảo mật)
+   - **Không** check "Add README" (vì đã có README)
+4. Click **"Create repository"**
+
+### 2.2. Push Code từ Local lên GitHub
+
+```bash
+# Bước 1: Initialize git (nếu chưa có)
 git init
 
-# Add all files
-git add .
-
-# Commit
-git commit -m "Initial commit - Wedding website"
-
-# Add remote
+# Bước 2: Add remote repository
 git remote add origin https://github.com/your-username/wedding-website.git
 
-# Push to GitHub
+# Bước 3: Add all files (đảm bảo .env không được commit)
+git add .
+
+# Bước 4: Commit
+git commit -m "feat: Initial commit - Wedding website ready for Vercel deployment"
+
+# Bước 5: Push to GitHub
 git push -u origin main
 ```
 
-### Bước 2: Kết Nối Neon Database cho Production
+⚠️ **LƯU Ý**: File `.env` sẽ **KHÔNG** được push lên GitHub vì đã có trong `.gitignore`
 
-1. Truy cập [Neon Console](https://console.neon.tech/)
-2. Tạo **production branch** mới (hoặc dùng main branch)
-3. Copy **Connection String** cho production
-4. Lưu lại để cấu hình trên Vercel
+---
 
-### Bước 3: Deploy lên Vercel
+## 🎨 Bước 3: Deploy lên Vercel
 
-#### A. Import Project
-1. Truy cập [Vercel](https://vercel.com/) và đăng nhập bằng GitHub
-2. Click **"Add New Project"**
-3. Chọn repository `wedding-website` từ GitHub
-4. Click **"Import"**
+### 3.1. Import Project từ GitHub
 
-#### B. Cấu hình Project Settings
+1. **Truy cập** [Vercel Dashboard](https://vercel.com/dashboard)
+2. **Đăng nhập** bằng GitHub
+3. **Click** "Add New..." → **"Project"**
+4. **Import Repository**:
+   - Tìm repository `wedding-website`
+   - Click **"Import"**
 
-**Framework Preset**: Other (để default)
+### 3.2. Cấu hình Project Settings
 
-**Root Directory**: `./` (để trống hoặc để default)
+Vercel sẽ tự động detect, nhưng đảm bảo các settings sau:
 
-**Build & Output Settings**:
-- **Build Command**: `npm run build`
-- **Output Directory**: `dist/public`
-- **Install Command**: `npm install`
+#### General Settings:
+- **Framework Preset**: Other
+- **Root Directory**: `./` (để trống)
+- **Node.js Version**: 20.x
 
-#### C. Environment Variables (Quan trọng!)
+#### Build & Development Settings:
+- **Build Command**: `npm run build` ✅ (tự động detect)
+- **Output Directory**: `dist/public` ✅
+- **Install Command**: `npm install` ✅
 
-Click **"Environment Variables"** và thêm:
+### 3.3. Cấu hình Environment Variables ⚠️ (QUAN TRỌNG)
 
-```
-DATABASE_URL=your_neon_production_connection_string
-SESSION_SECRET=your_production_secret_key_different_from_dev
-NODE_ENV=production
-```
+Click tab **"Environment Variables"** và thêm **tất cả** các biến sau:
 
-⚠️ **LƯU Ý**: 
-- Sử dụng **production connection string** từ Neon
-- `SESSION_SECRET` production phải **khác** với development
-- Không commit `.env` lên GitHub!
+| Key | Value | Mô tả |
+|-----|-------|-------|
+| `DATABASE_URL` | `postgresql://user:pass@...` | Connection string từ Neon (Bước 1.1) |
+| `SESSION_SECRET` | `[random-64-char-string]` | Generate bằng lệnh bên dưới |
+| `NODE_ENV` | `production` | Chế độ production |
+| `ALLOWED_ORIGINS` | `https://your-site.vercel.app` | Sẽ cập nhật sau khi có URL |
 
-#### D. Deploy
-
-1. Click **"Deploy"**
-2. Chờ 2-3 phút để Vercel build và deploy
-3. Sau khi hoàn thành, bạn sẽ có URL dạng: `https://your-site.vercel.app`
-
-### Bước 4: Chạy Database Migration trên Production
-
-Sau khi deploy lần đầu:
-
-1. Vào **Vercel Dashboard** → Project → **Settings** → **Functions**
-2. Hoặc chạy từ local với production DATABASE_URL:
-
+**Cách tạo SESSION_SECRET ngẫu nhiên:**
 ```bash
-# Tạm thời set production DATABASE_URL
-DATABASE_URL="your_production_db_url" npm run db:push
-
-# Seed production database
-DATABASE_URL="your_production_db_url" npx tsx server/seed.ts
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
 
-✅ Bây giờ production database đã có đầy đủ tables và dữ liệu mẫu!
+⚠️ **Lưu ý**:
+- `DATABASE_URL` production **PHẢI KHÁC** với development
+- `SESSION_SECRET` production **PHẢI KHÁC** với development
+- **KHÔNG BAO GIỜ** commit `.env` lên GitHub
+- Apply to: **Production**, **Preview**, **Development** (all 3)
 
-### Bước 5: Thay Thế Dữ Liệu Mẫu
+### 3.4. Deploy
 
-1. Truy cập `https://your-site.vercel.app/login`
-2. Đăng nhập với `admin` / `admin123`
-3. Vào **Admin Panel** và cập nhật:
-   - Thông tin cặp đôi (tên, ảnh, câu chuyện)
-   - Upload ảnh thật từ `attached_assets/wedding_images/`
-   - Cập nhật lịch trình sự kiện
-   - Thêm QR codes chuyển khoản
-   - Đổi mật khẩu admin (Settings → Change Password)
+1. **Click** "Deploy" (nút xanh)
+2. **Chờ** 3-5 phút để Vercel build và deploy
+3. **Theo dõi** build logs để đảm bảo không có lỗi
 
-### Bước 6: Custom Domain (Tùy chọn)
+✅ **Kết quả**: Sau khi build thành công, bạn sẽ có URL dạng:
+```
+https://wedding-website-abc123.vercel.app
+```
 
-1. Mua domain (VD: `xuanlam-xuanloi.com`)
-2. Vào **Vercel Dashboard** → **Domains**
-3. Add domain và follow hướng dẫn DNS setup
+---
+
+## 🔧 Bước 4: Cập Nhật CORS và Environment Variables
+
+### 4.1. Cập Nhật ALLOWED_ORIGINS
+
+Sau khi có URL Vercel, quay lại **Vercel Dashboard**:
+
+1. **Project** → **Settings** → **Environment Variables**
+2. **Edit** biến `ALLOWED_ORIGINS`
+3. **Thay đổi** value thành URL thực của bạn:
+   ```
+   https://wedding-website-abc123.vercel.app
+   ```
+4. **Save**
+5. **Redeploy**: Vào tab **"Deployments"** → Click **"..."** → **"Redeploy"**
+
+### 4.2. Test Website
+
+1. **Mở** `https://your-site.vercel.app`
+2. **Kiểm tra**:
+   - ✅ Trang chủ hiển thị bình thường
+   - ✅ Ảnh và nhạc load được
+   - ✅ Có thể gửi RSVP và lời chúc
+   - ✅ Có thể đăng nhập admin tại `/login`
+
+---
+
+## 🔐 Bước 5: Test Admin Panel và Đổi Mật Khẩu
+
+### 5.1. Đăng Nhập Admin
+
+1. **Truy cập** `https://your-site.vercel.app/login`
+2. **Đăng nhập**:
+   - Username: `admin`
+   - Password: `admin123`
+3. **Vào Admin Dashboard** để kiểm tra
+
+### 5.2. Đổi Mật Khẩu Admin (BẮT BUỘC)
+
+⚠️ **QUAN TRỌNG**: Đổi mật khẩu ngay sau lần đăng nhập đầu tiên!
+
+1. **Admin Panel** → **Settings** (Cài Đặt)
+2. **Kéo xuống** phần "Change Password"
+3. **Nhập**:
+   - Old Password: `admin123`
+   - New Password: `your-secure-password`
+   - Confirm Password: `your-secure-password`
+4. **Save**
+
+### 5.3. Cập Nhật Thông Tin Thật
+
+Thay thế dữ liệu mẫu bằng thông tin thật:
+
+#### Thông Tin Cặp Đôi
+- **Admin** → **Cặp Đôi**
+- Cập nhật: Tên, ảnh, tiểu sử, câu chuyện tình yêu, ngày cưới
+- Upload ảnh hero (ảnh nền trang chủ)
+
+#### Thư Viện Ảnh
+- **Admin** → **Thư Viện**
+- **Xóa** ảnh mẫu
+- **Upload** ảnh thật (max 5MB mỗi ảnh)
+- Thêm caption và category
+
+#### Lịch Trình
+- **Admin** → **Lịch Trình**
+- Cập nhật thời gian, địa điểm thật
+- Thêm/sửa/xóa sự kiện
+
+#### Địa Điểm & Google Maps
+- **Admin** → **Cài Đặt** → **Tổng Quan**
+- Nhập link Google Maps embed (iframe)
+- Cập nhật thông tin liên hệ
+
+#### QR Code Mừng Cưới
+- **Admin** → **Quà Cưới**
+- Upload QR code từ app ngân hàng
+- Nhập thông tin tài khoản
+
+---
+
+## 🐛 Troubleshooting - Giải Quyết Lỗi Thường Gặp
+
+### ❌ Lỗi: "Cannot load data" / Không tải được dữ liệu
+
+**Nguyên nhân**: API không kết nối được với database hoặc CORS bị chặn
+
+**Giải pháp**:
+
+1. **Kiểm tra Environment Variables** trên Vercel:
+   ```bash
+   # Vào Vercel Dashboard → Settings → Environment Variables
+   # Đảm bảo có đầy đủ:
+   DATABASE_URL=postgresql://...
+   SESSION_SECRET=...
+   NODE_ENV=production
+   ALLOWED_ORIGINS=https://your-site.vercel.app
+   ```
+
+2. **Kiểm tra Database Connection**:
+   - Vào [Neon Console](https://console.neon.tech/)
+   - Kiểm tra database có active không
+   - Test connection string bằng cách chạy local:
+     ```bash
+     DATABASE_URL="your_prod_url" npm run dev
+     ```
+
+3. **Check Vercel Function Logs**:
+   - Vercel Dashboard → Project → **"Functions"** tab
+   - Xem error logs để tìm lỗi cụ thể
+
+4. **Redeploy** sau khi sửa:
+   - Vercel Dashboard → **"Deployments"**
+   - Click **"..."** → **"Redeploy"**
+
+### ❌ Lỗi: "Cannot access admin page" / Không vào được trang admin
+
+**Nguyên nhân**: Session không hoạt động hoặc routing bị lỗi
+
+**Giải pháp**:
+
+1. **Clear Browser Cache và Cookies**:
+   ```
+   Chrome: F12 → Application → Clear storage → Clear site data
+   ```
+
+2. **Thử Incognito Mode** để loại trừ cache issues
+
+3. **Kiểm tra SESSION_SECRET**:
+   - Phải được set trên Vercel Environment Variables
+   - Phải khác với development
+
+4. **Check Database Sessions Table**:
+   ```sql
+   -- Vào Neon Console → SQL Editor, chạy:
+   SELECT * FROM sessions LIMIT 10;
+   ```
+   - Nếu không có table, chạy lại `npm run db:push`
+
+5. **Test Login Flow**:
+   - Vào `/login`
+   - Mở DevTools → Network tab
+   - Thử đăng nhập và xem response từ `/api/login`
+   - Nếu 401/500, check function logs
+
+### ❌ Lỗi: Build Failed trên Vercel
+
+**Nguyên nhân**: Dependency issues hoặc build configuration sai
+
+**Giải pháp**:
+
+1. **Check Build Logs** chi tiết:
+   - Vercel Dashboard → Deployment → **"Building"** step
+   - Tìm dòng lỗi đầu tiên
+
+2. **Common Issues**:
+   ```bash
+   # Lỗi: "Cannot find module"
+   # → Thêm package vào dependencies (không phải devDependencies)
+   npm install <package-name> --save
+
+   # Lỗi: "TypeScript error"
+   # → Sửa lỗi TypeScript hoặc tắt check tạm thời
+   # Thêm vào tsconfig.json:
+   "skipLibCheck": true
+   ```
+
+3. **Test Build Locally**:
+   ```bash
+   npm run build
+   # Nếu fail local → fix lỗi
+   # Nếu success local nhưng fail Vercel → check Node version
+   ```
+
+4. **Set Node Version** trên Vercel:
+   - Settings → General → Node.js Version → **20.x**
+
+### ❌ Lỗi: Static Files (Images/Music) không load
+
+**Nguyên nhân**: Routing configuration hoặc file không được deploy
+
+**Giải pháp**:
+
+1. **Kiểm tra Files có trong build**:
+   - Vercel Dashboard → Deployment → **"Output"** tab
+   - Tìm folder `attached_assets/`
+
+2. **Verify vercel.json Routes**:
+   ```json
+   {
+     "routes": [
+       {
+         "src": "/attached_assets/(.*)",
+         "dest": "/attached_assets/$1"
+       },
+       {
+         "src": "/wedding_music/(.*)",
+         "dest": "/attached_assets/wedding_music/$1"
+       }
+     ]
+   }
+   ```
+
+3. **Test URL trực tiếp**:
+   ```
+   https://your-site.vercel.app/attached_assets/wedding_images/album/photo1.jpg
+   ```
+
+4. **Ensure .gitignore không block files**:
+   ```bash
+   # Kiểm tra attached_assets không nằm trong .gitignore
+   cat .gitignore | grep attached
+   ```
+
+---
+
+## 🌍 Bước 6: Custom Domain (Tùy Chọn)
+
+### 6.1. Mua Domain
+
+Mua domain từ các nhà cung cấp:
+- **Namecheap** (khuyên dùng)
+- **GoDaddy**
+- **Google Domains**
+- **Tên Miền Việt** (cho .vn domain)
+
+Ví dụ: `xuanlam-xuanloi.com` hoặc `damcuoi-lamvsloi.vn`
+
+### 6.2. Cấu hình Domain trên Vercel
+
+1. **Vercel Dashboard** → Project → **"Settings"** → **"Domains"**
+2. **Add Domain**:
+   - Nhập domain: `xuanlam-xuanloi.com`
+   - Click **"Add"**
+3. **Configure DNS** theo hướng dẫn Vercel:
+
+   **Option A: Vercel Nameservers (Khuyên dùng)**
+   ```
+   Vào domain registrar (Namecheap, GoDaddy...)
+   → DNS Settings
+   → Change Nameservers to:
+     ns1.vercel-dns.com
+     ns2.vercel-dns.com
+   ```
+
+   **Option B: CNAME/A Records**
+   ```
+   Type: A
+   Name: @
+   Value: 76.76.21.21
+
+   Type: CNAME
+   Name: www
+   Value: cname.vercel-dns.com
+   ```
+
+4. **Chờ** 24-48h để DNS propagate (thường chỉ vài phút)
+
+5. **Update ALLOWED_ORIGINS**:
+   ```bash
+   # Vercel → Settings → Environment Variables
+   ALLOWED_ORIGINS=https://xuanlam-xuanloi.com,https://www.xuanlam-xuanloi.com
+   ```
+
+6. **Redeploy**
+
+---
+
+## ✅ Checklist Sau Deploy
+
+Sau khi deploy thành công, kiểm tra:
+
+### Frontend:
+- [ ] Trang chủ load bình thường
+- [ ] Ảnh hero hiển thị
+- [ ] Thư viện ảnh hoạt động
+- [ ] Google Maps embed hiển thị
+- [ ] Nhạc nền tự động phát
+- [ ] QR code hiển thị rõ nét
+- [ ] Responsive tốt trên mobile
+
+### Backend API:
+- [ ] `/api/couple` trả về data
+- [ ] `/api/schedule` trả về events
+- [ ] `/api/photos` trả về images
+- [ ] `/api/messages` hoạt động
+- [ ] `/api/rsvps` hoạt động
+
+### Admin Panel:
+- [ ] Đăng nhập thành công tại `/login`
+- [ ] Dashboard hiển thị thống kê
+- [ ] Upload ảnh hoạt động
+- [ ] Cập nhật thông tin được save
+- [ ] Export CSV RSVP hoạt động
+- [ ] Đã đổi mật khẩu admin
+
+### Performance:
+- [ ] Trang load < 3 giây
+- [ ] Lighthouse score > 80
+- [ ] Không có lỗi console
+
+---
+
+## 📊 Monitoring và Maintenance
+
+### Daily Checks:
+- Check RSVP mới
+- Duyệt tin nhắn chúc mừng
+- Export danh sách khách (backup)
+
+### Vercel Analytics (Miễn phí):
+- **Vercel Dashboard** → Project → **"Analytics"**
+- Xem visitor count, page views, performance metrics
+
+### Database Backup:
+```bash
+# Chạy script backup thủ công (nếu cần)
+DATABASE_URL="your_prod_url" npx tsx scripts/create_backup.ts
+```
+
+---
+
+## 🆘 Support và Liên Hệ
+
+Nếu gặp vấn đề không giải quyết được:
+
+1. **Check Vercel Status**: https://vercel-status.com/
+2. **Check Neon Status**: https://neon.tech/status
+3. **Vercel Community**: https://github.com/vercel/vercel/discussions
+4. **Project Issues**: Tạo issue trên GitHub repo của bạn
+
+---
+
+## 🎉 Hoàn Thành!
+
+Chúc mừng! Website đám cưới của bạn đã được deploy thành công lên Vercel.
+
+**Next Steps**:
+1. ✅ Đổi mật khẩu admin
+2. ✅ Cập nhật thông tin thật
+3. ✅ Test trên nhiều thiết bị
+4. ✅ Chia sẻ link với gia đình và bạn bè
+5. ✅ Theo dõi RSVPs và tin nhắn
+
+**Lưu ý**: Mỗi khi push code mới lên GitHub, Vercel sẽ tự động deploy lại!
 
 ---
 

@@ -11,14 +11,27 @@ if (!process.env.SESSION_SECRET) {
 }
 
 export function getSession() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL is required for session storage - sessions will NOT work without it!");
+  }
+
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const pgStore = connectPg(session);
+  
+  // CRITICAL: Always use PostgreSQL store for serverless compatibility
+  // MemoryStore would lose sessions between serverless function invocations
   const sessionStore = new pgStore({
     conString: process.env.DATABASE_URL,
     createTableIfMissing: false,
     ttl: sessionTtl,
     tableName: "sessions",
   });
+
+  // Verify store is created successfully
+  if (!sessionStore) {
+    throw new Error("Failed to create PostgreSQL session store - sessions will NOT work!");
+  }
+
   return session({
     secret: process.env.SESSION_SECRET!,
     store: sessionStore,
@@ -27,6 +40,7 @@ export function getSession() {
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: sessionTtl,
     },
   });

@@ -557,6 +557,9 @@ if (!process.env.SESSION_SECRET) {
   throw new Error("SESSION_SECRET environment variable is required");
 }
 function getSession() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("DATABASE_URL is required for session storage - sessions will NOT work without it!");
+  }
   const sessionTtl = 7 * 24 * 60 * 60 * 1e3;
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
@@ -565,6 +568,9 @@ function getSession() {
     ttl: sessionTtl,
     tableName: "sessions"
   });
+  if (!sessionStore) {
+    throw new Error("Failed to create PostgreSQL session store - sessions will NOT work!");
+  }
   return session({
     secret: process.env.SESSION_SECRET,
     store: sessionStore,
@@ -573,6 +579,7 @@ function getSession() {
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: sessionTtl
     }
   });
@@ -1148,6 +1155,9 @@ var vite_config_default = defineConfig({
     emptyOutDir: true
   },
   server: {
+    host: "0.0.0.0",
+    port: 5e3,
+    allowedHosts: true,
     fs: {
       strict: true,
       deny: ["**/.*"]
@@ -1183,6 +1193,20 @@ function serveStatic(app) {
 // server/app.ts
 async function createApp() {
   const app = express2();
+  app.use((req, res, next) => {
+    const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || ["http://localhost:5000"];
+    const origin = req.headers.origin;
+    if (origin && allowedOrigins.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(200);
+    }
+    next();
+  });
   app.use(express2.json({
     limit: "50mb",
     verify: (req, _res, buf) => {
