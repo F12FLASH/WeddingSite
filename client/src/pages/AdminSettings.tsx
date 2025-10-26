@@ -339,9 +339,9 @@ export default function AdminSettings() {
   };
 
   const tabs = [
-    { id: "general", label: "🌐 Tổng Quan", icon: SettingsIcon },
+    { id: "general", label: "🌐 Địa Điểm", icon: SettingsIcon },
     { id: "footer", label: "📄 Chân Trang", icon: Heart },
-    { id: "popups", label: "🖼️ Popup Quảng Cáo", icon: Image },
+    { id: "popups", label: "🖼️ Popup Thiệp", icon: Image },
     { id: "features", label: "⚙️ Tính Năng", icon: Bell },
     { id: "security", label: "🔒 Bảo Mật", icon: Shield },
   ];
