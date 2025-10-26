@@ -265,7 +265,7 @@ export default function Navigation() {
                     }}
                     className={`block px-4 py-4 rounded-xl transition-all duration-300 ${
                       isActive
-                        ? "bg-primary/10 text-primary font-semibold border border-primary/20"
+                        ? "bg-primary/10 text-primary font-medium"
                         : "text-foreground hover:bg-card hover:text-primary"
                     }`}
                     data-testid={`mobile-nav-${link.name.toLowerCase().replace(/\s+/g, '-')}`}
