@@ -26,8 +26,9 @@ Preferred communication style: Simple, everyday language.
   - Deployment configuration set for Replit autoscale deployment
   - Project ready for development and building
 
-### Font Customization Feature
+### Font Customization Feature (Enhanced)
 - **Date**: October 27, 2025
+- **Status**: ✅ COMPLETED
 - **Changes**:
   - Added comprehensive font customization system with 4 font types:
     - `fontHeading` - Main heading font
@@ -36,13 +37,40 @@ Preferred communication style: Simple, everyday language.
     - `fontSerif` - Additional serif font for special sections
   - All fonts support Vietnamese characters (dấu thanh, diacritics)
   - Dynamic Google Fonts loading via FontProvider component
-  - Admin UI with live preview for each font selection
+  - Admin UI with **live preview** for each font selection using FontPreview component
   - Vietnamese-compatible font options:
     - Cursive: Dancing Script, Yellowtail, Yesteryear
     - Serif: Cormorant Garamond, Playfair Display, Noto Serif, Crimson Text, Lora
     - System fonts: Georgia, Times New Roman
   - CSS variables automatically updated when fonts change
   - Production-ready with Vercel deployment support
+
+### Popup System Refinement
+- **Date**: October 27, 2025
+- **Status**: ✅ COMPLETED
+- **Changes**:
+  - Removed all text overlays from popup images
+  - Popups now display only the uploaded image with pure visual focus
+  - Preserved animations (fadeIn, scale, blur effects)
+  - Maintained localStorage-based dismissal system
+  - Improved UX with clean, distraction-free popup experience
+
+### Music Management System Migration
+- **Date**: October 27, 2025
+- **Status**: ✅ COMPLETED
+- **Changes**:
+  - Migrated music management from settings fields to dedicated `music_tracks` database table
+  - Created full CRUD API for music tracks: `/api/music-tracks`
+  - Admin UI supports:
+    - Upload music files (MP3/WAV, max 10MB) via Cloudinary
+    - Rename track titles and artists
+    - Delete tracks
+    - Toggle active/inactive status
+    - Reorder tracks in playlist
+  - MusicPlayer component now fetches tracks from `/api/music-tracks` API
+  - Fallback to default wedding playlist when no active tracks exist
+  - Prevents runtime errors when playlist transitions from active→empty→active
+  - Production-ready with proper error handling and edge case coverage
 
 ### Windows Development Script
 - Improved `start-local.bat` with better Vietnamese language support
