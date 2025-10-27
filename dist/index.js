@@ -208,6 +208,13 @@ var settings = pgTable("settings", {
   // Twitter link
   hashtag: varchar("hashtag"),
   // Wedding hashtag
+  // Font customization
+  fontHeading: varchar("font_heading"),
+  // Font for headings (Parisienne, Alex Brush, Great Vibes, etc.)
+  fontBody: varchar("font_body"),
+  // Font for body text (Cormorant Garamond, Playfair Display, etc.)
+  fontCursive: varchar("font_cursive"),
+  // Font for cursive elements (Parisienne, Allura, Satisfy, etc.)
   updatedAt: timestamp("updated_at").defaultNow()
 });
 var insertSettingsSchema = createInsertSchema(settings).omit({

@@ -4,12 +4,14 @@ setlocal enabledelayedexpansion
 
 REM ========================================
 REM Wedding Website - Local Development Setup
+REM Automated setup for Windows users
 REM ========================================
 
-set "GREEN=[✓]"
-set "RED=[✗]"
-set "YELLOW=[!]"
-set "BLUE=[i]"
+set "GREEN=[32m✓[0m"
+set "RED=[31m✗[0m"
+set "YELLOW=[33m![0m"
+set "BLUE=[34mi[0m"
+set "CYAN=[36m★[0m"
 
 call :print_header
 call :check_nodejs || exit /b 1
@@ -26,89 +28,105 @@ REM ========================================
 
 :print_header
 echo.
-echo ╔════════════════════════════╗
+echo ╔═══════════════════════════════════════╗
 echo ║        WEDDING WEBSITE SETUP          ║
 echo ║         Local Development             ║
-echo ╚════════════════════════════╝
+echo ╚═══════════════════════════════════════╝
+echo.
+echo %CYAN% Chào mừng đến với Wedding Website Setup!
 echo.
 goto :eof
 
 :check_nodejs
-echo %BLUE% Checking Node.js installation...
+echo %BLUE% Đang kiểm tra Node.js...
 where node >nul 2>nul
 if %ERRORLEVEL% NEQ 0 (
-    echo %RED% ERROR: Node.js is not installed or not in PATH!
+    echo %RED% LỖI: Node.js chưa được cài đặt hoặc không có trong PATH!
     echo.
-    echo Please download and install Node.js from:
-    echo https://nodejs.org
+    echo Vui lòng tải và cài đặt Node.js từ:
+    echo https://nodejs.org (khuyến nghị phiên bản LTS)
     echo.
     pause
     exit /b 1
 )
 
-echo %GREEN% Node.js found!
+echo %GREEN% Node.js đã được cài đặt!
+echo Phiên bản: 
 node --version
+npm --version
 echo.
 goto :eof
 
 :setup_env
-echo %BLUE% Checking environment configuration...
+echo %BLUE% Đang kiểm tra cấu hình môi trường...
 
 if not exist ".env" (
-    echo %YELLOW% .env file not found, creating from template...
+    echo %YELLOW% Không tìm thấy file .env, đang tạo từ template...
     
     if not exist ".env.example" (
-        echo %RED% ERROR: .env.example template not found!
-        pause
-        exit /b 1
+        echo %RED% LỖI: Không tìm thấy file .env.example!
+        echo %YELLOW% Tạo file .env cơ bản...
+        (
+            echo # Database Configuration
+            echo DATABASE_URL=postgresql://user:password@localhost:5432/wedding_db
+            echo.
+            echo # Session Secret
+            echo SESSION_SECRET=your-secret-key-here-change-this
+            echo.
+            echo # Environment
+            echo NODE_ENV=development
+            echo PORT=5000
+        ) > .env
+        echo %GREEN% Đã tạo file .env cơ bản
+    ) else (
+        copy ".env.example" ".env" >nul
+        echo %GREEN% Đã tạo file .env từ template
     )
     
-    copy ".env.example" ".env" >nul
-    echo %GREEN% Created .env file from template
-    
     echo.
-    echo %YELLOW% IMPORTANT: Please configure your database credentials in .env
+    echo %YELLOW% QUAN TRỌNG: Vui lòng cấu hình thông tin database trong .env
     echo.
-    choice /C YN /M "Would you like to edit .env file now"
+    echo Bạn có muốn mở file .env để chỉnh sửa ngay bây giờ không?
+    choice /C YN /M "Chọn Y (có) hoặc N (không)"
     if !ERRORLEVEL! EQU 1 (
         notepad ".env"
-        echo %GREEN% .env file updated
+        echo %GREEN% File .env đã được cập nhật
     )
 ) else (
-    echo %GREEN% .env file already exists
+    echo %GREEN% File .env đã tồn tại
 )
 
 echo.
 goto :eof
 
 :install_dependencies
-echo %BLUE% Installing project dependencies...
-echo This may take a few minutes, please wait...
+echo %BLUE% Đang cài đặt các thư viện cần thiết...
+echo %YELLOW% Quá trình này có thể mất vài phút, vui lòng chờ...
 echo.
 
 call npm install
 if %ERRORLEVEL% NEQ 0 (
-    echo %RED% ERROR: Failed to install dependencies!
-    echo Please check your internet connection and try again
+    echo %RED% LỖI: Không thể cài đặt dependencies!
+    echo %YELLOW% Vui lòng kiểm tra kết nối internet và thử lại
     pause
     exit /b 1
 )
 
-echo %GREEN% Dependencies installed successfully!
+echo %GREEN% Đã cài đặt dependencies thành công!
 echo.
 goto :eof
 
 :setup_database
-echo %BLUE% Database Setup
+echo %BLUE% Thiết Lập Database
 echo.
-echo Please choose an option:
-echo   1. Push schema only %YELLOW%(recommended for first time)%
-echo   2. Push schema + seed with sample data
-echo   3. Skip database setup
+echo Vui lòng chọn một tùy chọn:
+echo   1. Chỉ tạo schema %YELLOW%(khuyến nghị cho lần đầu)%[0m
+echo   2. Tạo schema + seed dữ liệu mẫu
+echo   3. Bỏ qua thiết lập database
 echo.
 
 :db_choice_prompt
-set /p "DB_CHOICE=Enter your choice (1-3): "
+set /p "DB_CHOICE=Nhập lựa chọn của bạn (1-3): "
 
 if "%DB_CHOICE%"=="1" (
     call :push_schema
@@ -118,9 +136,9 @@ if "%DB_CHOICE%"=="1" (
         call :seed_database
     )
 ) else if "%DB_CHOICE%"=="3" (
-    echo %YELLOW% Database setup skipped
+    echo %YELLOW% Đã bỏ qua thiết lập database
 ) else (
-    echo %RED% Invalid choice, please try again
+    echo %RED% Lựa chọn không hợp lệ, vui lòng thử lại
     echo.
     goto :db_choice_prompt
 )
@@ -129,38 +147,49 @@ echo.
 goto :eof
 
 :push_schema
-echo %BLUE% Pushing database schema...
+echo %BLUE% Đang push database schema...
 call npm run db:push
 if %ERRORLEVEL% NEQ 0 (
-    echo %RED% ERROR: Failed to push database schema!
-    echo Please check your DATABASE_URL in .env file
-    pause
+    echo %RED% LỖI: Không thể push database schema!
+    echo %YELLOW% Vui lòng kiểm tra DATABASE_URL trong file .env
+    echo %YELLOW% Đảm bảo PostgreSQL đang chạy và thông tin kết nối chính xác
+    echo.
+    echo Bạn có muốn tiếp tục mà không thiết lập database không?
+    choice /C YN /M "Chọn Y (có) hoặc N (không)"
+    if !ERRORLEVEL! EQU 2 (
+        pause
+        exit /b 1
+    )
     exit /b 1
 )
-echo %GREEN% Database schema pushed successfully!
+echo %GREEN% Đã push database schema thành công!
 goto :eof
 
 :seed_database
-echo %BLUE% Seeding database with sample data...
+echo %BLUE% Đang seed database với dữ liệu mẫu...
 call npx tsx server/seed.ts
 if %ERRORLEVEL% NEQ 0 (
-    echo %RED% ERROR: Failed to seed database!
+    echo %RED% LỖI: Không thể seed database!
+    echo %YELLOW% Database schema đã được tạo, nhưng dữ liệu mẫu không thể thêm vào
     pause
     exit /b 1
 )
-echo %GREEN% Database seeded successfully!
+echo %GREEN% Đã seed database thành công!
 goto :eof
 
 :start_server
-echo %BLUE% Starting development server...
+echo %BLUE% Đang khởi động development server...
 echo.
 echo ╔═══════════════════════════════════════╗
-echo ║           SERVER STARTING             ║
+echo ║          SERVER ĐANG KHỞI ĐỘNG       ║
 echo ╠═══════════════════════════════════════╣
 echo ║  Local: http://localhost:5000        ║
 echo ║                                       ║
-echo ║  Press Ctrl+C to stop the server     ║
+echo ║  Nhấn Ctrl+C để dừng server          ║
 echo ╚═══════════════════════════════════════╝
+echo.
+echo %GREEN% Truy cập http://localhost:5000 để xem website
+echo %CYAN% Admin panel: http://localhost:5000/admin
 echo.
 
 call npm run dev
