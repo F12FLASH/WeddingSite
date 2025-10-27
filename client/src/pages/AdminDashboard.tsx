@@ -292,17 +292,16 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
 
   if (isLoading || !isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-primary/10">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: "spring", stiffness: 200, damping: 15 }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
           className="text-center space-y-6"
         >
           <motion.div
             animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 10, -10, 0]
+              scale: [1, 1.1, 1],
             }}
             transition={{
               duration: 2,
@@ -311,13 +310,13 @@ export default function AdminDashboard({ children }: { children: React.ReactNode
             }}
             className="relative"
           >
-            <Heart size={80} className="text-primary mx-auto" fill="currentColor" />
+            <Heart size={80} className="text-rose-500 dark:text-rose-400 mx-auto" fill="currentColor" />
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
               className="absolute inset-0"
             >
-              <Sparkles size={80} className="text-primary/30" />
+              <Sparkles size={80} className="text-pink-400/30 dark:text-pink-300/20" />
             </motion.div>
           </motion.div>
           <motion.p
