@@ -1,5 +1,8 @@
-/* Vietnamese Wedding Fonts - Support tiếng Việt */
-@import url('https://fonts.googleapis.com/css2?family=Parisienne&family=Alex+Brush&family=Great+Vibes&family=Satisfy&family=Allura&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
+/* Vietnamese Wedding Fonts - Support tiếng Việt 
+ * Fonts are now loaded dynamically via FontProvider based on admin settings
+ * Default fallback fonts loaded here for initial render
+ */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Dancing+Script:wght@400;500;600;700&display=swap&subset=vietnamese');
 
 @tailwind base;
 @tailwind components;
@@ -104,11 +107,12 @@ section, div, main, article {
   --chart-4: 280 65% 60%;
   --chart-5: 25 85% 55%;
 
-  /* Font Families - Vietnamese wedding fonts */
-  --font-sans: 'Cormorant Garamond', 'Noto Serif', Georgia, serif;
-  --font-serif: 'Playfair Display', 'Noto Serif', Georgia, serif;
-  --font-cursive: 'Parisienne', 'Alex Brush', 'Allura', 'Great Vibes', 'Satisfy', cursive;
-  --font-body: 'Cormorant Garamond', 'Noto Serif', Georgia, serif;
+  /* Font Families - Vietnamese wedding fonts (dynamically loaded via FontProvider) */
+  --font-sans: 'Noto Serif', Georgia, serif;
+  --font-serif: 'Noto Serif', Georgia, serif;
+  --font-cursive: 'Dancing Script', cursive;
+  --font-body: 'Noto Serif', Georgia, serif;
+  --font-serif-alt: 'Noto Serif', Georgia, serif;
   --font-mono: Menlo, monospace;
   --font-admin: 'Times New Roman', Times, serif;
   --radius: .5rem;

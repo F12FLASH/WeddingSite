@@ -88,6 +88,7 @@ export default function AdminSettings() {
       fontHeading: "",
       fontBody: "",
       fontCursive: "",
+      fontSerif: "",
     },
   });
 
@@ -125,6 +126,7 @@ export default function AdminSettings() {
         fontHeading: settings.fontHeading || "",
         fontBody: settings.fontBody || "",
         fontCursive: settings.fontCursive || "",
+        fontSerif: settings.fontSerif || "",
       });
     }
   }, [settings, form]);
@@ -823,11 +825,9 @@ export default function AdminSettings() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="Parisienne">Parisienne (Lãng mạn)</SelectItem>
-                                <SelectItem value="Alex Brush">Alex Brush (Viết tay)</SelectItem>
-                                <SelectItem value="Great Vibes">Great Vibes (Tinh tế)</SelectItem>
-                                <SelectItem value="Allura">Allura (Thanh lịch)</SelectItem>
-                                <SelectItem value="Satisfy">Satisfy (Độc đáo)</SelectItem>
+                                <SelectItem value="Dancing Script">Dancing Script (Lãng mạn)</SelectItem>
+                                <SelectItem value="Yellowtail">Yellowtail (Tinh tế)</SelectItem>
+                                <SelectItem value="Yesteryear">Yesteryear (Cổ điển)</SelectItem>
                               </SelectContent>
                             </Select>
                             <p className="text-xs text-muted-foreground">
@@ -838,6 +838,43 @@ export default function AdminSettings() {
                                 <p className="text-sm text-muted-foreground mb-1">Xem trước:</p>
                                 <p style={{ fontFamily: field.value, fontSize: '32px', textAlign: 'center' }}>
                                   Xuân Lâm & Ngân Lê
+                                </p>
+                              </div>
+                            )}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="fontSerif"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">📜 Font Serif Bổ Sung</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || ""}>
+                              <FormControl>
+                                <SelectTrigger className="h-12" data-testid="select-font-serif">
+                                  <SelectValue placeholder="Chọn font serif bổ sung" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="Cormorant Garamond">Cormorant Garamond (Dễ đọc)</SelectItem>
+                                <SelectItem value="Playfair Display">Playfair Display (Thanh lịch)</SelectItem>
+                                <SelectItem value="Noto Serif">Noto Serif (Tiêu chuẩn)</SelectItem>
+                                <SelectItem value="Crimson Text">Crimson Text (Sang trọng)</SelectItem>
+                                <SelectItem value="Lora">Lora (Hiện đại)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <p className="text-xs text-muted-foreground">
+                              Font serif bổ sung cho các phần văn bản đặc biệt
+                            </p>
+                            {field.value && (
+                              <div className="mt-2 p-3 bg-gray-50 rounded-lg border">
+                                <p className="text-sm text-muted-foreground mb-1">Xem trước:</p>
+                                <p style={{ fontFamily: field.value, fontSize: '18px' }}>
+                                  Đám cưới của chúng tôi sẽ được tổ chức vào ngày 25 tháng 12 năm 2025.
+                                  Chân thành cảm ơn sự hiện diện của quý khách!
                                 </p>
                               </div>
                             )}

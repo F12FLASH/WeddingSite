@@ -198,9 +198,10 @@ export const settings = pgTable("settings", {
   twitterUrl: text("twitter_url"), // Twitter link
   hashtag: varchar("hashtag"), // Wedding hashtag
   // Font customization
-  fontHeading: varchar("font_heading"), // Font for headings (Parisienne, Alex Brush, Great Vibes, etc.)
+  fontHeading: varchar("font_heading"), // Font for headings (Playfair Display, Noto Serif, etc.)
   fontBody: varchar("font_body"), // Font for body text (Cormorant Garamond, Playfair Display, etc.)
-  fontCursive: varchar("font_cursive"), // Font for cursive elements (Parisienne, Allura, Satisfy, etc.)
+  fontCursive: varchar("font_cursive"), // Font for cursive elements (Dancing Script, Yellowtail, Yesteryear)
+  fontSerif: varchar("font_serif"), // Font for additional serif text (Crimson Text, Lora, etc.)
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 

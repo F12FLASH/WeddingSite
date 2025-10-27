@@ -9,6 +9,47 @@ export function FontProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (settings) {
+      const fontsToLoad: string[] = [];
+      
+      // Collect all selected fonts
+      if (settings.fontHeading && settings.fontHeading !== 'Georgia' && settings.fontHeading !== 'Times New Roman') {
+        fontsToLoad.push(settings.fontHeading);
+      }
+      if (settings.fontBody && settings.fontBody !== 'Georgia' && settings.fontBody !== 'Times New Roman') {
+        fontsToLoad.push(settings.fontBody);
+      }
+      if (settings.fontCursive) {
+        fontsToLoad.push(settings.fontCursive);
+      }
+      if (settings.fontSerif && settings.fontSerif !== 'Georgia' && settings.fontSerif !== 'Times New Roman') {
+        fontsToLoad.push(settings.fontSerif);
+      }
+
+      // Remove duplicates
+      const uniqueFonts = [...new Set(fontsToLoad)];
+
+      // Remove existing Google Fonts link if present
+      const existingLink = document.getElementById('google-fonts-dynamic');
+      if (existingLink) {
+        existingLink.remove();
+      }
+
+      // Load fonts from Google Fonts if there are any to load
+      if (uniqueFonts.length > 0) {
+        const link = document.createElement('link');
+        link.id = 'google-fonts-dynamic';
+        link.rel = 'stylesheet';
+        
+        // Build Google Fonts URL with Vietnamese subset
+        const fontFamilies = uniqueFonts
+          .map(font => `family=${encodeURIComponent(font)}:wght@400;500;600;700`)
+          .join('&');
+        link.href = `https://fonts.googleapis.com/css2?${fontFamilies}&display=swap&subset=vietnamese`;
+        
+        document.head.appendChild(link);
+      }
+
+      // Apply fonts to CSS variables
       const root = document.documentElement;
       
       if (settings.fontHeading) {
@@ -21,7 +62,11 @@ export function FontProvider({ children }: { children: React.ReactNode }) {
       }
       
       if (settings.fontCursive) {
-        root.style.setProperty('--font-cursive', `'${settings.fontCursive}', 'Parisienne', cursive`);
+        root.style.setProperty('--font-cursive', `'${settings.fontCursive}', 'Dancing Script', cursive`);
+      }
+      
+      if (settings.fontSerif) {
+        root.style.setProperty('--font-serif-alt', `'${settings.fontSerif}', 'Noto Serif', Georgia, serif`);
       }
     }
   }, [settings]);

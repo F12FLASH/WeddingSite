@@ -210,11 +210,13 @@ var settings = pgTable("settings", {
   // Wedding hashtag
   // Font customization
   fontHeading: varchar("font_heading"),
-  // Font for headings (Parisienne, Alex Brush, Great Vibes, etc.)
+  // Font for headings (Playfair Display, Noto Serif, etc.)
   fontBody: varchar("font_body"),
   // Font for body text (Cormorant Garamond, Playfair Display, etc.)
   fontCursive: varchar("font_cursive"),
-  // Font for cursive elements (Parisienne, Allura, Satisfy, etc.)
+  // Font for cursive elements (Dancing Script, Yellowtail, Yesteryear)
+  fontSerif: varchar("font_serif"),
+  // Font for additional serif text (Crimson Text, Lora, etc.)
   updatedAt: timestamp("updated_at").defaultNow()
 });
 var insertSettingsSchema = createInsertSchema(settings).omit({
