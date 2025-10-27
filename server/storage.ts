@@ -12,6 +12,9 @@ import {
   popups,
   faqs,
   musicTracks,
+  giftMoney,
+  guestPhotos,
+  livestreamInfo,
   type User,
   type UpsertUser,
   type CoupleInfo,
@@ -36,6 +39,12 @@ import {
   type InsertFaq,
   type MusicTrack,
   type InsertMusicTrack,
+  type GiftMoney,
+  type InsertGiftMoney,
+  type GuestPhoto,
+  type InsertGuestPhoto,
+  type LivestreamInfo,
+  type InsertLivestreamInfo,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
@@ -116,6 +125,24 @@ export interface IStorage {
   createMusicTrack(track: InsertMusicTrack): Promise<MusicTrack>;
   updateMusicTrack(id: string, track: Partial<InsertMusicTrack>): Promise<MusicTrack | undefined>;
   deleteMusicTrack(id: string): Promise<void>;
+
+  // Gift Money
+  getAllGiftMoney(): Promise<GiftMoney[]>;
+  getGiftMoney(id: string): Promise<GiftMoney | undefined>;
+  createGiftMoney(gift: InsertGiftMoney): Promise<GiftMoney>;
+  updateGiftMoney(id: string, gift: Partial<InsertGiftMoney>): Promise<GiftMoney | undefined>;
+  deleteGiftMoney(id: string): Promise<void>;
+
+  // Guest Photos
+  getAllGuestPhotos(approvedOnly?: boolean): Promise<GuestPhoto[]>;
+  getGuestPhoto(id: string): Promise<GuestPhoto | undefined>;
+  createGuestPhoto(photo: InsertGuestPhoto): Promise<GuestPhoto>;
+  approveGuestPhoto(id: string, approved: boolean): Promise<GuestPhoto | undefined>;
+  deleteGuestPhoto(id: string): Promise<void>;
+
+  // Livestream Info
+  getLivestreamInfo(): Promise<LivestreamInfo | undefined>;
+  upsertLivestreamInfo(info: InsertLivestreamInfo): Promise<LivestreamInfo>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -440,6 +467,85 @@ export class DatabaseStorage implements IStorage {
 
   async deleteMusicTrack(id: string): Promise<void> {
     await db.delete(musicTracks).where(eq(musicTracks.id, id));
+  }
+
+  // Gift Money operations
+  async getAllGiftMoney(): Promise<GiftMoney[]> {
+    return await db.select().from(giftMoney).orderBy(desc(giftMoney.createdAt));
+  }
+
+  async getGiftMoney(id: string): Promise<GiftMoney | undefined> {
+    const [gift] = await db.select().from(giftMoney).where(eq(giftMoney.id, id));
+    return gift;
+  }
+
+  async createGiftMoney(giftData: InsertGiftMoney): Promise<GiftMoney> {
+    const [created] = await db.insert(giftMoney).values(giftData).returning();
+    return created;
+  }
+
+  async updateGiftMoney(id: string, giftData: Partial<InsertGiftMoney>): Promise<GiftMoney | undefined> {
+    const [updated] = await db
+      .update(giftMoney)
+      .set({ ...giftData, updatedAt: new Date() })
+      .where(eq(giftMoney.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteGiftMoney(id: string): Promise<void> {
+    await db.delete(giftMoney).where(eq(giftMoney.id, id));
+  }
+
+  // Guest Photos operations
+  async getAllGuestPhotos(approvedOnly: boolean = false): Promise<GuestPhoto[]> {
+    if (approvedOnly) {
+      return await db.select().from(guestPhotos).where(eq(guestPhotos.approved, true)).orderBy(desc(guestPhotos.createdAt));
+    }
+    return await db.select().from(guestPhotos).orderBy(desc(guestPhotos.createdAt));
+  }
+
+  async getGuestPhoto(id: string): Promise<GuestPhoto | undefined> {
+    const [photo] = await db.select().from(guestPhotos).where(eq(guestPhotos.id, id));
+    return photo;
+  }
+
+  async createGuestPhoto(photoData: InsertGuestPhoto): Promise<GuestPhoto> {
+    const [created] = await db.insert(guestPhotos).values(photoData).returning();
+    return created;
+  }
+
+  async approveGuestPhoto(id: string, approved: boolean): Promise<GuestPhoto | undefined> {
+    const [updated] = await db
+      .update(guestPhotos)
+      .set({ approved })
+      .where(eq(guestPhotos.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteGuestPhoto(id: string): Promise<void> {
+    await db.delete(guestPhotos).where(eq(guestPhotos.id, id));
+  }
+
+  // Livestream Info operations
+  async getLivestreamInfo(): Promise<LivestreamInfo | undefined> {
+    const [info] = await db.select().from(livestreamInfo).limit(1);
+    return info;
+  }
+
+  async upsertLivestreamInfo(info: InsertLivestreamInfo): Promise<LivestreamInfo> {
+    const existing = await this.getLivestreamInfo();
+    if (existing) {
+      const [updated] = await db
+        .update(livestreamInfo)
+        .set({ ...info, updatedAt: new Date() })
+        .where(eq(livestreamInfo.id, existing.id))
+        .returning();
+      return updated;
+    }
+    const [created] = await db.insert(livestreamInfo).values(info).returning();
+    return created;
   }
 }
 
