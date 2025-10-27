@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Save, Settings as SettingsIcon, Music, MapPin, Palette, Bell, Shield, Eye, Upload, Image, Trash2, Power, Heart, Instagram } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import type { Settings, Popup } from "@shared/schema";
+import type { Settings, Popup, MusicTrack } from "@shared/schema";
 import { insertSettingsSchema } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -24,6 +24,7 @@ import {
 import { uploadImageToCloudinary } from "@/lib/imageUpload";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FontPreview } from "@/components/FontPreview";
 
 // Helper function to extract embed URL from iframe HTML or convert regular Google Maps URLs
 const convertToGoogleMapsEmbed = (input: string): string => {
@@ -55,7 +56,7 @@ export default function AdminSettings() {
   const [uploadingVenueImage, setUploadingVenueImage] = useState(false);
   const audioFileInputRef = useRef<HTMLInputElement>(null);
   const venueImageInputRef = useRef<HTMLInputElement>(null);
-  const songNameDebounceRef = useRef<Record<number, NodeJS.Timeout>>({});
+  const songNameDebounceRef = useRef<Record<string, NodeJS.Timeout>>({});
 
   const { data: settings, isLoading } = useQuery<Settings | null>({
     queryKey: ["/api/settings"],
@@ -63,6 +64,10 @@ export default function AdminSettings() {
 
   const { data: popups = [] } = useQuery<Popup[]>({
     queryKey: ["/api/popups"],
+  });
+
+  const { data: musicTracks = [] } = useQuery<MusicTrack[]>({
+    queryKey: ["/api/music-tracks"],
   });
 
   const form = useForm({
@@ -164,6 +169,63 @@ export default function AdminSettings() {
     updateMutation.mutate(data);
   });
 
+  // Music Track Mutations
+  const createMusicTrackMutation = useMutation({
+    mutationFn: async (trackData: { title: string; filename: string; displayOrder: number }) => {
+      return await apiRequest("POST", "/api/music-tracks", trackData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/music-tracks"] });
+      toast({
+        title: "✅ Thành công!",
+        description: "Đã thêm bài hát vào playlist",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể tạo bài hát",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateMusicTrackMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<{ title: string; displayOrder: number; isActive: boolean }> }) => {
+      return await apiRequest("PATCH", `/api/music-tracks/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/music-tracks"] });
+    },
+    onError: () => {
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể cập nhật bài hát",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteMusicTrackMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return await apiRequest("DELETE", `/api/music-tracks/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/music-tracks"] });
+      toast({
+        title: "✅ Đã xóa",
+        description: "Đã xóa bài hát khỏi playlist",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể xóa bài hát",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleAudioFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -190,39 +252,22 @@ export default function AdminSettings() {
 
     try {
       const audioUrl = await uploadImageToCloudinary(file);
-      const currentUrls = form.getValues('backgroundMusicUrls') || [];
-      const currentNames = form.getValues('backgroundMusicNames') || [];
-      const newUrls = [...currentUrls, audioUrl];
       
-      // Extract filename as default name
-      const getSongName = (url: string) => {
+      // Extract filename as default title
+      const getSongName = (filename: string) => {
         try {
-          const urlParts = url.split('/');
-          const filename = urlParts[urlParts.length - 1];
-          const decodedName = decodeURIComponent(filename);
-          const nameWithoutExt = decodedName.replace(/\.[^/.]+$/, '');
-          return nameWithoutExt || `Bài hát ${newUrls.length}`;
+          const nameWithoutExt = filename.replace(/\.[^/.]+$/, '');
+          return nameWithoutExt || `Bài hát ${musicTracks.length + 1}`;
         } catch {
-          return `Bài hát ${newUrls.length}`;
+          return `Bài hát ${musicTracks.length + 1}`;
         }
       };
       
-      const newNames = [...currentNames, getSongName(audioUrl)];
-      form.setValue('backgroundMusicUrls', newUrls);
-      form.setValue('backgroundMusicNames', newNames);
-      form.setValue('backgroundMusicType', 'upload');
+      const title = getSongName(file.name);
+      const filename = audioUrl;
+      const displayOrder = musicTracks.length;
       
-      // Auto-save playlist to database
-      const formData = form.getValues();
-      await updateMutation.mutateAsync({
-        ...formData,
-        backgroundMusicUrls: newUrls,
-      });
-      
-      toast({
-        title: "✅ Thành công!",
-        description: "Đã thêm bài hát vào playlist",
-      });
+      await createMusicTrackMutation.mutateAsync({ title, filename, displayOrder });
     } catch (error) {
       toast({
         title: "❌ Lỗi",
@@ -237,54 +282,20 @@ export default function AdminSettings() {
     }
   };
 
-  const handleRemoveSong = async (index: number) => {
-    const currentUrls = form.getValues('backgroundMusicUrls') || [];
-    const currentNames = form.getValues('backgroundMusicNames') || [];
-    const newUrls = currentUrls.filter((_, i) => i !== index);
-    const newNames = currentNames.filter((_, i) => i !== index);
-    form.setValue('backgroundMusicUrls', newUrls);
-    form.setValue('backgroundMusicNames', newNames);
-    
-    // Auto-save playlist to database
-    const formData = form.getValues();
-    try {
-      await updateMutation.mutateAsync({
-        ...formData,
-        backgroundMusicUrls: newUrls,
-        backgroundMusicNames: newNames,
-      });
-      
-      toast({
-        title: "✅ Đã xóa",
-        description: "Đã xóa bài hát khỏi playlist",
-      });
-    } catch (error) {
-      toast({
-        title: "❌ Lỗi",
-        description: "Không thể xóa bài hát",
-        variant: "destructive",
-      });
-    }
+  const handleRemoveSong = async (trackId: string) => {
+    await deleteMusicTrackMutation.mutateAsync(trackId);
   };
   
-  const handleSongNameChange = (index: number, newName: string) => {
-    const currentNames = form.getValues('backgroundMusicNames') || [];
-    const newNames = [...currentNames];
-    newNames[index] = newName;
-    form.setValue('backgroundMusicNames', newNames);
-    
-    // Clear existing timeout for this song index
-    if (songNameDebounceRef.current[index]) {
-      clearTimeout(songNameDebounceRef.current[index]);
+  const handleSongNameChange = (trackId: string, newTitle: string) => {
+    if (songNameDebounceRef.current[trackId]) {
+      clearTimeout(songNameDebounceRef.current[trackId]);
     }
     
-    // Auto-save to database after user stops typing for 1 second
-    songNameDebounceRef.current[index] = setTimeout(async () => {
-      const formData = form.getValues();
+    songNameDebounceRef.current[trackId] = setTimeout(async () => {
       try {
-        await updateMutation.mutateAsync({
-          ...formData,
-          backgroundMusicNames: newNames,
+        await updateMusicTrackMutation.mutateAsync({
+          id: trackId,
+          data: { title: newTitle },
         });
         toast({
           title: "✅ Đã lưu",
@@ -292,11 +303,6 @@ export default function AdminSettings() {
         });
       } catch (error) {
         console.error("Failed to save song name:", error);
-        toast({
-          title: "❌ Lỗi",
-          description: "Không thể lưu tên bài hát",
-          variant: "destructive",
-        });
       }
     }, 1000);
   };
@@ -763,12 +769,11 @@ export default function AdminSettings() {
                               Font này sẽ được sử dụng cho các tiêu đề lớn trên trang
                             </p>
                             {field.value && (
-                              <div className="mt-2 p-3 bg-gray-50 rounded-lg border">
-                                <p className="text-sm text-muted-foreground mb-1">Xem trước:</p>
-                                <p style={{ fontFamily: field.value, fontSize: '24px' }}>
-                                  Xuân Lâm & Ngân Lê
-                                </p>
-                              </div>
+                              <FontPreview 
+                                fontFamily={field.value}
+                                text="Xuân Lâm & Ngân Lê"
+                                fontSize="24px"
+                              />
                             )}
                             <FormMessage />
                           </FormItem>
@@ -799,13 +804,11 @@ export default function AdminSettings() {
                               Font này sẽ được sử dụng cho phần nội dung và đoạn văn
                             </p>
                             {field.value && (
-                              <div className="mt-2 p-3 bg-gray-50 rounded-lg border">
-                                <p className="text-sm text-muted-foreground mb-1">Xem trước:</p>
-                                <p style={{ fontFamily: field.value, fontSize: '16px' }}>
-                                  Chúng tôi rất vui mừng được chia sẻ niềm hạnh phúc này cùng bạn.
-                                  Hãy đến và cùng chúng tôi tạo nên những kỷ niệm đẹp!
-                                </p>
-                              </div>
+                              <FontPreview 
+                                fontFamily={field.value}
+                                text="Chúng tôi rất vui mừng được chia sẻ niềm hạnh phúc này cùng bạn. Hãy đến và cùng chúng tôi tạo nên những kỷ niệm đẹp!"
+                                fontSize="16px"
+                              />
                             )}
                             <FormMessage />
                           </FormItem>
@@ -834,12 +837,12 @@ export default function AdminSettings() {
                               Font này sẽ được sử dụng cho tên cô dâu/chú rể và các phần nhấn mạnh
                             </p>
                             {field.value && (
-                              <div className="mt-2 p-3 bg-gray-50 rounded-lg border">
-                                <p className="text-sm text-muted-foreground mb-1">Xem trước:</p>
-                                <p style={{ fontFamily: field.value, fontSize: '32px', textAlign: 'center' }}>
-                                  Xuân Lâm & Ngân Lê
-                                </p>
-                              </div>
+                              <FontPreview 
+                                fontFamily={field.value}
+                                text="Xuân Lâm & Ngân Lê"
+                                fontSize="32px"
+                                className="text-center"
+                              />
                             )}
                             <FormMessage />
                           </FormItem>
@@ -870,13 +873,11 @@ export default function AdminSettings() {
                               Font serif bổ sung cho các phần văn bản đặc biệt
                             </p>
                             {field.value && (
-                              <div className="mt-2 p-3 bg-gray-50 rounded-lg border">
-                                <p className="text-sm text-muted-foreground mb-1">Xem trước:</p>
-                                <p style={{ fontFamily: field.value, fontSize: '18px' }}>
-                                  Đám cưới của chúng tôi sẽ được tổ chức vào ngày 25 tháng 12 năm 2025.
-                                  Chân thành cảm ơn sự hiện diện của quý khách!
-                                </p>
-                              </div>
+                              <FontPreview 
+                                fontFamily={field.value}
+                                text="Đám cưới của chúng tôi sẽ được tổ chức vào ngày 25 tháng 12 năm 2025. Chân thành cảm ơn sự hiện diện của quý khách!"
+                                fontSize="18px"
+                              />
                             )}
                             <FormMessage />
                           </FormItem>
@@ -1078,45 +1079,27 @@ export default function AdminSettings() {
 
                         {/* Playlist Display */}
                         <div className="space-y-2">
-                          {(form.watch('backgroundMusicUrls') || []).length === 0 ? (
+                          {musicTracks.length === 0 ? (
                             <div className="p-4 border border-dashed rounded-lg text-center text-muted-foreground">
                               <Music size={32} className="mx-auto mb-2 opacity-50" />
                               <p className="text-sm">Chưa có bài hát nào</p>
                               <p className="text-xs">Nhấn "Thêm Bài Hát" để upload nhạc</p>
                             </div>
                           ) : (
-                            (form.watch('backgroundMusicUrls') || []).map((url, index) => {
-                              // Get song name from array or extract from URL
-                              const songNames = form.watch('backgroundMusicNames') || [];
-                              const getSongName = (url: string, index: number) => {
-                                if (songNames[index]) {
-                                  return songNames[index];
-                                }
-                                try {
-                                  const urlParts = url.split('/');
-                                  const filename = urlParts[urlParts.length - 1];
-                                  const decodedName = decodeURIComponent(filename);
-                                  const nameWithoutExt = decodedName.replace(/\.[^/.]+$/, '');
-                                  return nameWithoutExt || `Bài hát ${index + 1}`;
-                                } catch {
-                                  return `Bài hát ${index + 1}`;
-                                }
-                              };
-                              
-                              return (
+                            musicTracks.map((track, index) => (
                               <div 
-                                key={index}
+                                key={track.id}
                                 className="flex items-center gap-3 p-3 bg-muted rounded-lg group hover:bg-muted/70 transition-colors"
                               >
                                 <Music size={18} className="text-primary flex-shrink-0" />
                                 <div className="flex-1 min-w-0">
                                   <input
                                     type="text"
-                                    value={getSongName(url, index)}
-                                    onChange={(e) => handleSongNameChange(index, e.target.value)}
+                                    defaultValue={track.title}
+                                    onChange={(e) => handleSongNameChange(track.id, e.target.value)}
                                     className="text-sm font-medium bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 py-1 w-full"
                                     placeholder="Tên bài hát"
-                                    data-testid={`input-song-name-${index}`}
+                                    data-testid={`input-song-name-${track.id}`}
                                   />
                                   <p className="text-xs text-muted-foreground px-2">
                                     Track #{index + 1}
@@ -1127,19 +1110,19 @@ export default function AdminSettings() {
                                   variant="ghost"
                                   size="icon"
                                   className="flex-shrink-0 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
-                                  onClick={() => handleRemoveSong(index)}
-                                  data-testid={`button-remove-song-${index}`}
+                                  onClick={() => handleRemoveSong(track.id)}
+                                  data-testid={`button-remove-song-${track.id}`}
                                 >
                                   <Trash2 size={16} className="text-destructive" />
                                 </Button>
                               </div>
-                            )})
+                            ))
                           )}
                         </div>
                         
-                        {(form.watch('backgroundMusicUrls') || []).length > 0 && (
+                        {musicTracks.length > 0 && (
                           <p className="text-xs text-muted-foreground mt-2">
-                            📊 Tổng: {(form.watch('backgroundMusicUrls') || []).length} bài hát trong playlist
+                            📊 Tổng: {musicTracks.length} bài hát trong playlist
                           </p>
                         )}
                       </div>

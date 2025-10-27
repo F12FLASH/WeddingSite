@@ -26,7 +26,7 @@ export function FontProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Remove duplicates
-      const uniqueFonts = [...new Set(fontsToLoad)];
+      const uniqueFonts = Array.from(new Set(fontsToLoad));
 
       // Remove existing Google Fonts link if present
       const existingLink = document.getElementById('google-fonts-dynamic');

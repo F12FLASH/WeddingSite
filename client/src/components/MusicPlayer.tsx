@@ -3,7 +3,7 @@ import { Play, Pause, Volume2, VolumeX, SkipBack, SkipForward, Music } from "luc
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import type { Settings } from "@shared/schema";
+import type { MusicTrack } from "@shared/schema";
 
 export default function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(() => {
@@ -23,13 +23,27 @@ export default function MusicPlayer() {
   });
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const { data: settings } = useQuery<Settings | null>({
-    queryKey: ["/api/settings"],
+  const { data: musicTracks = [] } = useQuery<MusicTrack[]>({
+    queryKey: ["/api/music-tracks"],
   });
 
-  // Build playlist - use custom music from settings if available
+  // Build playlist from music tracks database
   const playlist = (() => {
-    const defaultPlaylist = [
+    // If music tracks exist in database, use those
+    if (musicTracks && musicTracks.length > 0) {
+      const activeTracks = musicTracks.filter(track => track.isActive);
+      if (activeTracks.length > 0) {
+        return activeTracks.map(track => ({
+          title: track.title,
+          artist: track.artist || "Đám Cưới",
+          src: track.filename,
+          duration: track.duration ? `${Math.floor(track.duration / 60)}:${(track.duration % 60).toString().padStart(2, '0')}` : "--:--"
+        }));
+      }
+    }
+
+    // Fallback to default wedding playlist if no active custom tracks
+    return [
       {
         title: "A Thousand Years",
         artist: "Christina Perri",
@@ -55,51 +69,6 @@ export default function MusicPlayer() {
         duration: "3:52"
       }
     ];
-
-    // If custom background music URLs array is set in settings, use those
-    if (settings?.backgroundMusicUrls && settings.backgroundMusicUrls.length > 0) {
-      const customSongs = settings.backgroundMusicUrls.map((url, index) => {
-        // Use custom name from settings or extract filename from URL
-        const getSongTitle = (url: string, index: number) => {
-          // First, check if there's a custom name
-          if (settings?.backgroundMusicNames && settings.backgroundMusicNames[index]) {
-            return settings.backgroundMusicNames[index];
-          }
-          
-          // Otherwise, extract filename from URL
-          try {
-            const urlParts = url.split('/');
-            const filename = urlParts[urlParts.length - 1];
-            const decodedName = decodeURIComponent(filename);
-            const nameWithoutExt = decodedName.replace(/\.[^/.]+$/, '');
-            return nameWithoutExt || `Nhạc Nền ${index + 1}`;
-          } catch {
-            return `Nhạc Nền ${index + 1}`;
-          }
-        };
-        
-        return {
-          title: getSongTitle(url, index),
-          artist: "Đám Cưới",
-          src: url,
-          duration: "--:--"
-        };
-      });
-      return customSongs;
-    }
-
-    // Fallback: If single background music URL is set (backward compatibility)
-    if (settings?.backgroundMusicUrl) {
-      const customSong = {
-        title: "Nhạc Nền Đám Cưới",
-        artist: "Custom",
-        src: settings.backgroundMusicUrl,
-        duration: "--:--"
-      };
-      return [customSong, ...defaultPlaylist];
-    }
-
-    return defaultPlaylist;
   })();
 
   // Validate and clamp currentSongIndex to prevent crashes when playlist length changes
@@ -138,19 +107,19 @@ export default function MusicPlayer() {
     }
   }, [isPlaying]);
 
-  // Reload audio and restart playback when backgroundMusicUrl or backgroundMusicUrls changes
+  // Reload audio and restart playback when music tracks change
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    // Force reload audio element when URL changes
+    // Force reload audio element when tracks change
     audio.load();
     
     // Restart playback if music was playing
     if (isPlaying) {
       audio.play().catch(console.error);
     }
-  }, [settings?.backgroundMusicUrl, settings?.backgroundMusicUrls]);
+  }, [musicTracks]);
 
   useEffect(() => {
     const audio = audioRef.current;

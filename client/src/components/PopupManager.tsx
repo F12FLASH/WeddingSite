@@ -86,25 +86,10 @@ export default function PopupManager() {
         <div className="relative">
           <img
             src={popup.imageUrl}
-            alt={popup.title || "Popup"}
+            alt="Popup"
             className="w-full max-h-[80vh] object-contain"
             data-testid={`img-popup-${popup.type}`}
           />
-          
-          {(popup.title || popup.description) && (
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6 text-white">
-              {popup.title && (
-                <h3 className="text-2xl font-bold mb-2" data-testid={`heading-popup-title-${popup.type}`}>
-                  {popup.title}
-                </h3>
-              )}
-              {popup.description && (
-                <p className="text-lg" data-testid={`text-popup-description-${popup.type}`}>
-                  {popup.description}
-                </p>
-              )}
-            </div>
-          )}
         </div>
       </motion.div>
     </motion.div>
