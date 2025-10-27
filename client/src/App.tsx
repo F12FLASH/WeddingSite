@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import LoadingScreen from "@/components/LoadingScreen";
+import { FontProvider } from "@/components/FontProvider";
 import NotFound from "@/pages/not-found";
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
@@ -139,11 +140,13 @@ function Router() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <LoadingScreen />
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <FontProvider>
+        <TooltipProvider>
+          <LoadingScreen />
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </FontProvider>
     </QueryClientProvider>
   );
 }
