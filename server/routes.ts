@@ -14,7 +14,6 @@ import {
   insertPopupSchema,
   insertFaqSchema,
   insertMusicTrackSchema,
-  insertGiftMoneySchema,
   insertGuestPhotoSchema,
   insertLivestreamInfoSchema,
 } from "@shared/schema";
@@ -528,67 +527,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ===== Gift Money Routes =====
-  app.get("/api/gift-money", isAuthenticated, async (req, res) => {
-    try {
-      const gifts = await storage.getAllGiftMoney();
-      res.json(gifts);
-    } catch (error) {
-      console.error("Error fetching gift money:", error);
-      res.status(500).json({ message: "Failed to fetch gift money" });
-    }
-  });
-
-  app.get("/api/gift-money/:id", isAuthenticated, async (req, res) => {
-    try {
-      const { id } = req.params;
-      const gift = await storage.getGiftMoney(id);
-      if (!gift) {
-        return res.status(404).json({ message: "Gift money not found" });
-      }
-      res.json(gift);
-    } catch (error) {
-      console.error("Error fetching gift money:", error);
-      res.status(500).json({ message: "Failed to fetch gift money" });
-    }
-  });
-
-  app.post("/api/gift-money", isAuthenticated, async (req, res) => {
-    try {
-      const validated = insertGiftMoneySchema.parse(req.body);
-      const gift = await storage.createGiftMoney(validated);
-      res.json(gift);
-    } catch (error: any) {
-      console.error("Error creating gift money:", error);
-      res.status(400).json({ message: error.message || "Failed to create gift money" });
-    }
-  });
-
-  app.patch("/api/gift-money/:id", isAuthenticated, async (req, res) => {
-    try {
-      const { id } = req.params;
-      const validated = insertGiftMoneySchema.partial().parse(req.body);
-      const gift = await storage.updateGiftMoney(id, validated);
-      if (!gift) {
-        return res.status(404).json({ message: "Gift money not found" });
-      }
-      res.json(gift);
-    } catch (error: any) {
-      console.error("Error updating gift money:", error);
-      res.status(400).json({ message: error.message || "Failed to update gift money" });
-    }
-  });
-
-  app.delete("/api/gift-money/:id", isAuthenticated, async (req, res) => {
-    try {
-      const { id } = req.params;
-      await storage.deleteGiftMoney(id);
-      res.json({ message: "Gift money deleted" });
-    } catch (error) {
-      console.error("Error deleting gift money:", error);
-      res.status(500).json({ message: "Failed to delete gift money" });
-    }
-  });
 
   // ===== Guest Photos Routes =====
   app.get("/api/guest-photos", async (req, res) => {

@@ -205,18 +205,6 @@ Cảm ơn tất cả những ai đã và đang đồng hành cùng chúng tôi t
   });
   console.log("✅ Created music track: Beautiful in White");
 
-  // Create gift money entries
-  const giftMoneyEntries = [
-    { guestName: "Nguyễn Văn An", amount: 1000000, relationship: "Bạn thân", side: "both", giftType: "money", notes: "Chúc hai bạn hạnh phúc!" },
-    { guestName: "Trần Thị Bích", amount: 2000000, relationship: "Đồng nghiệp", side: "bride", giftType: "money", notes: "Mừng cưới cô dâu xinh đẹp" },
-    { guestName: "Phạm Minh Tuấn", amount: 3000000, relationship: "Họ hàng", side: "groom", giftType: "money", notes: "Chúc mừng em trai" },
-    { guestName: "Lê Thị Hương", amount: 500000, relationship: "Bạn học", side: "both", giftType: "money", notes: "Chúc hai bạn trăm năm hạnh phúc" },
-    { guestName: "Hoàng Văn Nam", amount: 1500000, relationship: "Anh em", side: "groom", giftType: "money", notes: "Mừng đám cưới em" },
-  ];
-  for (const entry of giftMoneyEntries) {
-    await storage.createGiftMoney(entry);
-  }
-  console.log(`✅ Created ${giftMoneyEntries.length} gift money entries`);
 
   // Create guest photos (sample data - need actual photos uploaded by guests)
   const guestPhotoSamples = [
@@ -257,7 +245,6 @@ Cảm ơn tất cả những ai đã và đang đồng hành cùng chúng tôi t
   console.log("   - 2 popups");
   console.log("   - 1 music track");
   console.log("   - Settings configured");
-  console.log("   - 5 gift money entries");
   console.log("   - 3 guest photo samples");
   console.log("   - Livestream info configured");
 }

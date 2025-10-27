@@ -19,7 +19,6 @@ import AdminGallery from "@/pages/AdminGallery";
 import AdminRegistry from "@/pages/AdminRegistry";
 import AdminSettings from "@/pages/AdminSettings";
 import AdminWeddingParty from "@/pages/AdminWeddingParty";
-import AdminGiftMoney from "@/pages/AdminGiftMoney";
 import AdminGuestPhotos from "@/pages/AdminGuestPhotos";
 import AdminLivestream from "@/pages/AdminLivestream";
 
@@ -129,15 +128,6 @@ function Router() {
           <ProtectedRoute>
             <AdminDashboard>
               <AdminWeddingParty />
-            </AdminDashboard>
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/gift-money">
-        {() => (
-          <ProtectedRoute>
-            <AdminDashboard>
-              <AdminGiftMoney />
             </AdminDashboard>
           </ProtectedRoute>
         )}

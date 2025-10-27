@@ -140,7 +140,7 @@ export default function GuestPhotoUpload() {
                         <img
                           src={formData.url}
                           alt="Preview"
-                          className="w-full max-h-64 object-cover"
+                          className="w-full max-h-64 object-contain bg-muted"
                           onError={(e) => {
                             (e.target as HTMLImageElement).style.display = "none";
                           }}

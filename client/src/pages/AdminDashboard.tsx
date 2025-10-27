@@ -113,14 +113,6 @@ const menuItems = [
     bgColor: "bg-yellow-50 dark:bg-yellow-950/20"
   },
   {
-    title: "Sổ Mừng Cưới",
-    url: "/admin/gift-money",
-    icon: DollarSign,
-    description: "Quản lý tiền mừng cưới",
-    color: "text-emerald-500",
-    bgColor: "bg-emerald-50 dark:bg-emerald-950/20"
-  },
-  {
     title: "Ảnh Khách Upload",
     url: "/admin/guest-photos",
     icon: ImagePlus,

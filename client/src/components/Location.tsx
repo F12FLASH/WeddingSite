@@ -152,7 +152,7 @@ export default function Location() {
               <motion.img
                 src={settings?.venueImage || "https://placehold.co/800x600/e3e3e3/999999?text=Venue+Image"}
                 alt="Địa Điểm Cưới"
-                className="w-full h-80 object-cover"
+                className="w-full h-80 object-contain bg-muted"
                 data-testid="img-venue"
                 whileHover={{ scale: 1.1 }}
                 transition={{ duration: 0.5 }}

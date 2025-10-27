@@ -86,7 +86,7 @@ export default function Livestream() {
                   <img
                     src={livestream.thumbnailUrl}
                     alt="Livestream thumbnail"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                   />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                     <div className="text-center text-white">

@@ -515,7 +515,7 @@ export default function AdminCouple() {
                         <img 
                           src={formData.heroImage} 
                           alt="Hero preview" 
-                          className="w-full h-48 object-cover rounded-lg border-2 border-primary/20"
+                          className="w-full h-48 object-contain bg-muted rounded-lg border-2 border-primary/20"
                         />
                         <Button
                           type="button"

@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Video, Save, ExternalLink, Calendar, MessageCircle } from "lucide-react";
+import { Video, Save, ExternalLink, Calendar, MessageCircle, Upload, X } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import type { LivestreamInfo } from "@shared/schema";
+import type { LivestreamInfo, CoupleInfo } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,13 +18,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { uploadImageToCloudinary } from "@/lib/imageUpload";
 
 export default function AdminLivestream() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const { data: livestream, isLoading } = useQuery<LivestreamInfo>({
     queryKey: ["/api/livestream"],
+  });
+
+  const { data: coupleInfo } = useQuery<CoupleInfo>({
+    queryKey: ["/api/couple"],
   });
 
   const [formData, setFormData] = useState({
@@ -49,11 +57,11 @@ export default function AdminLivestream() {
         streamDescription: livestream.streamDescription || "",
         startTime: livestream.startTime ? new Date(livestream.startTime).toISOString().slice(0, 16) : "",
         endTime: livestream.endTime ? new Date(livestream.endTime).toISOString().slice(0, 16) : "",
-        thumbnailUrl: livestream.thumbnailUrl || "",
+        thumbnailUrl: livestream.thumbnailUrl || coupleInfo?.heroImage || "",
         chatEnabled: livestream.chatEnabled,
       });
     }
-  }, [livestream]);
+  }, [livestream, coupleInfo]);
 
   const saveMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
@@ -82,6 +90,56 @@ export default function AdminLivestream() {
       });
     },
   });
+
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Vui lòng chọn file hình ảnh",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Kích thước file không được vượt quá 5MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const imageUrl = await uploadImageToCloudinary(file, (progress) => {
+        setUploadProgress(progress);
+      });
+
+      setFormData({ ...formData, thumbnailUrl: imageUrl });
+
+      toast({
+        title: "✅ Tải lên thành công!",
+        description: "Ảnh thumbnail đã được tải lên",
+      });
+    } catch (error) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể tải lên ảnh",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+      if (event.target) {
+        event.target.value = '';
+      }
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -229,21 +287,64 @@ export default function AdminLivestream() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="thumbnailUrl">Link Ảnh Thumbnail</Label>
-              <Input
-                data-testid="input-thumbnail-url"
-                id="thumbnailUrl"
-                type="url"
-                placeholder="https://example.com/thumbnail.jpg"
-                value={formData.thumbnailUrl}
-                onChange={(e) => setFormData({ ...formData, thumbnailUrl: e.target.value })}
-              />
+              <Label htmlFor="thumbnailUrl">Ảnh Thumbnail</Label>
+              <p className="text-xs text-muted-foreground">
+                Mặc định sử dụng ảnh background đám cưới. Bạn có thể tải ảnh mới hoặc nhập URL.
+              </p>
+              <div className="flex gap-2">
+                <Input
+                  data-testid="input-thumbnail-url"
+                  id="thumbnailUrl"
+                  type="url"
+                  placeholder={coupleInfo?.heroImage || "https://example.com/thumbnail.jpg"}
+                  value={formData.thumbnailUrl}
+                  onChange={(e) => setFormData({ ...formData, thumbnailUrl: e.target.value })}
+                />
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileSelect}
+                  accept="image/*"
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  data-testid="button-upload-thumbnail"
+                >
+                  {uploading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
+                      {uploadProgress}%
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-4 h-4 mr-2" />
+                      Tải lên
+                    </>
+                  )}
+                </Button>
+                {formData.thumbnailUrl && formData.thumbnailUrl !== coupleInfo?.heroImage && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setFormData({ ...formData, thumbnailUrl: coupleInfo?.heroImage || "" })}
+                    data-testid="button-reset-thumbnail"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
               {formData.thumbnailUrl && (
                 <div className="mt-2 rounded-lg overflow-hidden border">
                   <img
                     src={formData.thumbnailUrl}
                     alt="Thumbnail preview"
-                    className="w-full max-h-48 object-cover"
+                    className="w-full max-h-48 object-contain bg-muted"
+                    data-testid="img-thumbnail-preview"
                   />
                 </div>
               )}
@@ -285,26 +386,81 @@ export default function AdminLivestream() {
       {formData.isActive && formData.streamUrl && (
         <Card>
           <CardHeader>
-            <CardTitle>Xem Trước</CardTitle>
+            <CardTitle>Xem Trước Livestream</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-              <div className="text-center space-y-2">
-                <Video className="w-16 h-16 mx-auto text-muted-foreground" />
-                <p className="text-muted-foreground">
-                  Livestream sẽ hiển thị cho khách mời trên trang chủ
-                </p>
-                <Button
-                  data-testid="button-view-on-site"
-                  variant="outline"
-                  onClick={() => window.open('/', '_blank')}
-                  className="gap-2"
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  Xem Trên Trang Web
-                </Button>
-              </div>
+          <CardContent className="space-y-4">
+            <div className="aspect-video bg-muted rounded-lg overflow-hidden relative">
+              {formData.thumbnailUrl ? (
+                <>
+                  <img
+                    src={formData.thumbnailUrl}
+                    alt="Livestream preview"
+                    className="w-full h-full object-contain"
+                  />
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                    <div className="text-center text-white">
+                      <Video className="w-16 h-16 mx-auto mb-4" />
+                      <p className="text-xl font-semibold">
+                        Xem Trước Livestream
+                      </p>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center space-y-2">
+                    <Video className="w-16 h-16 mx-auto text-muted-foreground" />
+                    <p className="text-muted-foreground">
+                      Chưa có ảnh thumbnail
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
+
+            <div className="space-y-3 p-4 bg-muted/50 rounded-lg">
+              <div>
+                <h3 className="font-semibold text-lg">
+                  {formData.streamTitle || "Trực Tiếp Đám Cưới"}
+                </h3>
+                {formData.streamDescription && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {formData.streamDescription}
+                  </p>
+                )}
+              </div>
+
+              {(formData.startTime || formData.endTime) && (
+                <div className="flex gap-4 text-sm">
+                  {formData.startTime && (
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-primary" />
+                      <span>
+                        Bắt đầu: {new Date(formData.startTime).toLocaleString('vi-VN')}
+                      </span>
+                    </div>
+                  )}
+                  {formData.endTime && (
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-primary" />
+                      <span>
+                        Kết thúc: {new Date(formData.endTime).toLocaleString('vi-VN')}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <Button
+              data-testid="button-view-on-site"
+              variant="outline"
+              onClick={() => window.open('/', '_blank')}
+              className="w-full gap-2"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Xem Trên Trang Web
+            </Button>
           </CardContent>
         </Card>
       )}

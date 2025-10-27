@@ -12,7 +12,6 @@ import {
   popups,
   faqs,
   musicTracks,
-  giftMoney,
   guestPhotos,
   livestreamInfo,
   type User,
@@ -39,8 +38,6 @@ import {
   type InsertFaq,
   type MusicTrack,
   type InsertMusicTrack,
-  type GiftMoney,
-  type InsertGiftMoney,
   type GuestPhoto,
   type InsertGuestPhoto,
   type LivestreamInfo,
@@ -125,13 +122,6 @@ export interface IStorage {
   createMusicTrack(track: InsertMusicTrack): Promise<MusicTrack>;
   updateMusicTrack(id: string, track: Partial<InsertMusicTrack>): Promise<MusicTrack | undefined>;
   deleteMusicTrack(id: string): Promise<void>;
-
-  // Gift Money
-  getAllGiftMoney(): Promise<GiftMoney[]>;
-  getGiftMoney(id: string): Promise<GiftMoney | undefined>;
-  createGiftMoney(gift: InsertGiftMoney): Promise<GiftMoney>;
-  updateGiftMoney(id: string, gift: Partial<InsertGiftMoney>): Promise<GiftMoney | undefined>;
-  deleteGiftMoney(id: string): Promise<void>;
 
   // Guest Photos
   getAllGuestPhotos(approvedOnly?: boolean): Promise<GuestPhoto[]>;
@@ -467,34 +457,6 @@ export class DatabaseStorage implements IStorage {
 
   async deleteMusicTrack(id: string): Promise<void> {
     await db.delete(musicTracks).where(eq(musicTracks.id, id));
-  }
-
-  // Gift Money operations
-  async getAllGiftMoney(): Promise<GiftMoney[]> {
-    return await db.select().from(giftMoney).orderBy(desc(giftMoney.createdAt));
-  }
-
-  async getGiftMoney(id: string): Promise<GiftMoney | undefined> {
-    const [gift] = await db.select().from(giftMoney).where(eq(giftMoney.id, id));
-    return gift;
-  }
-
-  async createGiftMoney(giftData: InsertGiftMoney): Promise<GiftMoney> {
-    const [created] = await db.insert(giftMoney).values(giftData).returning();
-    return created;
-  }
-
-  async updateGiftMoney(id: string, giftData: Partial<InsertGiftMoney>): Promise<GiftMoney | undefined> {
-    const [updated] = await db
-      .update(giftMoney)
-      .set({ ...giftData, updatedAt: new Date() })
-      .where(eq(giftMoney.id, id))
-      .returning();
-    return updated;
-  }
-
-  async deleteGiftMoney(id: string): Promise<void> {
-    await db.delete(giftMoney).where(eq(giftMoney.id, id));
   }
 
   // Guest Photos operations

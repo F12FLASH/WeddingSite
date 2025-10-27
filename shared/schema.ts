@@ -299,29 +299,6 @@ export const insertMusicTrackSchema = createInsertSchema(musicTracks).omit({
 export type InsertMusicTrack = z.infer<typeof insertMusicTrackSchema>;
 export type MusicTrack = typeof musicTracks.$inferSelect;
 
-// Gift Money Tracking - Sổ mừng cưới
-export const giftMoney = pgTable("gift_money", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  guestName: varchar("guest_name").notNull(), // Tên khách mời
-  amount: integer("amount").notNull(), // Số tiền mừng (VNĐ)
-  relationship: varchar("relationship"), // Quan hệ (bạn bè, đồng nghiệp, họ hàng, etc.)
-  notes: text("notes"), // Ghi chú thêm
-  giftType: varchar("gift_type").notNull().default("money"), // 'money' hoặc 'gift' (quà vật chất)
-  giftDescription: text("gift_description"), // Mô tả quà nếu là 'gift'
-  side: varchar("side").notNull().default("both"), // 'bride', 'groom', hoặc 'both'
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-export const insertGiftMoneySchema = createInsertSchema(giftMoney).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export type InsertGiftMoney = z.infer<typeof insertGiftMoneySchema>;
-export type GiftMoney = typeof giftMoney.$inferSelect;
-
 // Guest Photos - Ảnh khách mời upload
 export const guestPhotos = pgTable("guest_photos", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
