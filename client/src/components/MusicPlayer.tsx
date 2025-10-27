@@ -141,6 +141,41 @@ export default function MusicPlayer() {
     localStorage.setItem('musicPlayer_currentSongIndex', String(currentSongIndex));
   }, [currentSongIndex]);
 
+  // Auto-play after first user interaction
+  useEffect(() => {
+    const tryAutoPlay = async () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      try {
+        await audio.play();
+        setIsPlaying(true);
+      } catch (error) {
+        // If autoplay fails, set up listeners for user interaction
+        const enableAudio = async () => {
+          try {
+            await audio.play();
+            setIsPlaying(true);
+            // Remove listeners after successful play
+            document.removeEventListener('click', enableAudio);
+            document.removeEventListener('touchstart', enableAudio);
+            document.removeEventListener('scroll', enableAudio);
+          } catch (err) {
+            console.error('Failed to play audio:', err);
+          }
+        };
+
+        document.addEventListener('click', enableAudio, { once: true });
+        document.addEventListener('touchstart', enableAudio, { once: true });
+        document.addEventListener('scroll', enableAudio, { once: true });
+      }
+    };
+
+    // Try to autoplay after a short delay
+    const timer = setTimeout(tryAutoPlay, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
   };
