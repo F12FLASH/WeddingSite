@@ -280,6 +280,7 @@ export default function AdminGallery() {
         ref={fileInputRef}
         onChange={handleFileSelect}
         accept="image/*"
+        multiple
         className="hidden"
       />
 
