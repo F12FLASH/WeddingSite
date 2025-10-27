@@ -36,10 +36,10 @@ export default function Livestream() {
   const getEmbedUrl = (url: string, platform: string) => {
     if (platform === "youtube") {
       const videoId = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/)?.[1];
-      return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&controls=1&rel=0&modestbranding=1` : url;
+      return videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=1&rel=0&modestbranding=1` : url;
     }
     if (platform === "facebook") {
-      return url.includes('facebook.com') ? url.replace('watch', 'embed') + '?autoplay=true' : url;
+      return url.includes('facebook.com') ? url.replace('watch', 'embed') + '?autoplay=true&muted=1' : url;
     }
     return url;
   };
@@ -72,8 +72,9 @@ export default function Livestream() {
                 <div className="aspect-video bg-black">
                   <iframe
                     src={getEmbedUrl(livestream.streamUrl, livestream.platform)}
+                    title={livestream.streamTitle || "Wedding Livestream"}
                     className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                     allowFullScreen
                     data-testid="iframe-livestream"
                   />
