@@ -251,7 +251,7 @@ export default function Gallery() {
               <motion.div
                 key={photo.id}
                 variants={itemVariants}
-                className="group relative overflow-hidden rounded-3xl cursor-pointer shadow-2xl bg-background aspect-[4/3]"
+                className="group relative overflow-hidden rounded-3xl cursor-pointer shadow-2xl bg-background"
                 style={{
                   transformStyle: "preserve-3d",
                   perspective: "1500px"
@@ -295,7 +295,7 @@ export default function Gallery() {
                   <motion.img
                     src={photo.url}
                     alt={photo.caption || "Ảnh cưới"}
-                    className="w-full h-full object-cover"
+                    className="w-full h-auto object-contain"
                     style={{ transformStyle: "preserve-3d" }}
                     initial={{ 
                       filter: "brightness(0.95) saturate(0.95) contrast(1)",

@@ -380,7 +380,7 @@ section, div, main, article {
 }
 
 .profile-image {
-  @apply w-full h-full object-cover;
+  @apply w-full h-full object-contain;
 }
 
 .profile-name {
