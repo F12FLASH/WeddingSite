@@ -20,6 +20,8 @@ import {
   ExternalLink,
   CheckCircle,
   ImagePlus,
+  DollarSign,
+  Video,
 } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import {
@@ -109,6 +111,30 @@ const menuItems = [
     description: "Quản lý danh sách quà",
     color: "text-yellow-500",
     bgColor: "bg-yellow-50 dark:bg-yellow-950/20"
+  },
+  {
+    title: "Sổ Mừng Cưới",
+    url: "/admin/gift-money",
+    icon: DollarSign,
+    description: "Quản lý tiền mừng cưới",
+    color: "text-emerald-500",
+    bgColor: "bg-emerald-50 dark:bg-emerald-950/20"
+  },
+  {
+    title: "Ảnh Khách Upload",
+    url: "/admin/guest-photos",
+    icon: ImagePlus,
+    description: "Quản lý ảnh khách tải lên",
+    color: "text-indigo-500",
+    bgColor: "bg-indigo-50 dark:bg-indigo-950/20"
+  },
+  {
+    title: "Livestream",
+    url: "/admin/livestream",
+    icon: Video,
+    description: "Cài đặt trực tiếp online",
+    color: "text-red-500",
+    bgColor: "bg-red-50 dark:bg-red-950/20"
   },
   {
     title: "Cài Đặt",
