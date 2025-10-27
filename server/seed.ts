@@ -205,6 +205,44 @@ Cảm ơn tất cả những ai đã và đang đồng hành cùng chúng tôi t
   });
   console.log("✅ Created music track: Beautiful in White");
 
+  // Create gift money entries
+  const giftMoneyEntries = [
+    { guestName: "Nguyễn Văn An", amount: 1000000, relationship: "Bạn thân", side: "both", giftType: "money", notes: "Chúc hai bạn hạnh phúc!" },
+    { guestName: "Trần Thị Bích", amount: 2000000, relationship: "Đồng nghiệp", side: "bride", giftType: "money", notes: "Mừng cưới cô dâu xinh đẹp" },
+    { guestName: "Phạm Minh Tuấn", amount: 3000000, relationship: "Họ hàng", side: "groom", giftType: "money", notes: "Chúc mừng em trai" },
+    { guestName: "Lê Thị Hương", amount: 500000, relationship: "Bạn học", side: "both", giftType: "money", notes: "Chúc hai bạn trăm năm hạnh phúc" },
+    { guestName: "Hoàng Văn Nam", amount: 1500000, relationship: "Anh em", side: "groom", giftType: "money", notes: "Mừng đám cưới em" },
+  ];
+  for (const entry of giftMoneyEntries) {
+    await storage.createGiftMoney(entry);
+  }
+  console.log(`✅ Created ${giftMoneyEntries.length} gift money entries`);
+
+  // Create guest photos (sample data - need actual photos uploaded by guests)
+  const guestPhotoSamples = [
+    { url: "https://placehold.co/800x600/ff6b9d/white?text=Guest+Photo+1", caption: "Khoảnh khắc đẹp trong tiệc!", guestName: "Nguyễn Anh", approved: true },
+    { url: "https://placehold.co/800x600/c44569/white?text=Guest+Photo+2", caption: "Cô dâu chú rể xinh đẹp quá!", guestName: "Trần Bình", approved: true },
+    { url: "https://placehold.co/800x600/6c5ce7/white?text=Guest+Photo+3", caption: "Ảnh chụp cùng cặp đôi", guestName: "Lê Cường", approved: false },
+  ];
+  for (const photo of guestPhotoSamples) {
+    await storage.createGuestPhoto(photo);
+  }
+  console.log(`✅ Created ${guestPhotoSamples.length} guest photo samples`);
+
+  // Create livestream info
+  await storage.upsertLivestreamInfo({
+    isActive: true,
+    platform: "youtube",
+    streamUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    streamTitle: "Trực Tiếp Đám Cưới Xuân Lâm & Xuân Lợi",
+    streamDescription: "Theo dõi trực tiếp lễ cưới của chúng tôi! Buổi lễ sẽ bắt đầu lúc 17:00 ngày 01/01/2026.",
+    startTime: new Date("2026-01-01T17:00:00"),
+    endTime: new Date("2026-01-01T21:00:00"),
+    thumbnailUrl: "/attached_assets/wedding_images/background/anhnen.jpg",
+    chatEnabled: true,
+  });
+  console.log("✅ Created livestream info");
+
   console.log("🎉 Database seeding completed successfully!");
   console.log("📝 Summary:");
   console.log("   - Admin user created");
@@ -219,6 +257,9 @@ Cảm ơn tất cả những ai đã và đang đồng hành cùng chúng tôi t
   console.log("   - 2 popups");
   console.log("   - 1 music track");
   console.log("   - Settings configured");
+  console.log("   - 5 gift money entries");
+  console.log("   - 3 guest photo samples");
+  console.log("   - Livestream info configured");
 }
 
 seed().catch(console.error);
