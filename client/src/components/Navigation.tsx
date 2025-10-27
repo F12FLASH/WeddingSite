@@ -6,12 +6,12 @@ import { useQuery } from "@tanstack/react-query";
 import type { CoupleInfo } from "@shared/schema";
 
 const navLinks = [
-  { name: "Chủ", href: "#home" },
+  { name: "Trang chủ", href: "#home" },
   { name: "Chúng tôi", href: "#about" },
-  { name: "Lịch", href: "#schedule" },
+  { name: "Lịch cưới", href: "#schedule" },
   { name: "Ảnh", href: "#gallery" },
   { name: "Lời chúc", href: "#messages" },
-  { name: "Xác nhận", href: "#rsvp" },
+  { name: "Tham gia", href: "#rsvp" },
   { name: "Địa điểm", href: "#location" },
 ];
 
