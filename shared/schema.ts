@@ -298,3 +298,73 @@ export const insertMusicTrackSchema = createInsertSchema(musicTracks).omit({
 
 export type InsertMusicTrack = z.infer<typeof insertMusicTrackSchema>;
 export type MusicTrack = typeof musicTracks.$inferSelect;
+
+// Gift Money Tracking - Sổ mừng cưới
+export const giftMoney = pgTable("gift_money", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  guestName: varchar("guest_name").notNull(), // Tên khách mời
+  amount: integer("amount").notNull(), // Số tiền mừng (VNĐ)
+  relationship: varchar("relationship"), // Quan hệ (bạn bè, đồng nghiệp, họ hàng, etc.)
+  notes: text("notes"), // Ghi chú thêm
+  giftType: varchar("gift_type").notNull().default("money"), // 'money' hoặc 'gift' (quà vật chất)
+  giftDescription: text("gift_description"), // Mô tả quà nếu là 'gift'
+  side: varchar("side").notNull().default("both"), // 'bride', 'groom', hoặc 'both'
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertGiftMoneySchema = createInsertSchema(giftMoney).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertGiftMoney = z.infer<typeof insertGiftMoneySchema>;
+export type GiftMoney = typeof giftMoney.$inferSelect;
+
+// Guest Photos - Ảnh khách mời upload
+export const guestPhotos = pgTable("guest_photos", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  url: text("url").notNull(), // URL ảnh
+  caption: text("caption"), // Chú thích
+  guestName: varchar("guest_name"), // Tên người upload (tùy chọn)
+  approved: boolean("approved").notNull().default(false), // Admin duyệt ảnh
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertGuestPhotoSchema = createInsertSchema(guestPhotos).omit({
+  id: true,
+  createdAt: true,
+  approved: true,
+});
+
+export type InsertGuestPhoto = z.infer<typeof insertGuestPhotoSchema>;
+export type GuestPhoto = typeof guestPhotos.$inferSelect;
+
+// Livestream Information - Thông tin phát trực tiếp
+export const livestreamInfo = pgTable("livestream_info", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  isActive: boolean("is_active").notNull().default(true), // Bật/tắt tính năng livestream
+  platform: varchar("platform").notNull().default("youtube"), // 'youtube', 'facebook', 'zoom', 'custom'
+  streamUrl: text("stream_url").notNull(), // Link xem trực tiếp
+  streamTitle: varchar("stream_title"), // Tiêu đề livestream
+  streamDescription: text("stream_description"), // Mô tả
+  startTime: timestamp("start_time"), // Thời gian bắt đầu phát
+  endTime: timestamp("end_time"), // Thời gian kết thúc
+  thumbnailUrl: text("thumbnail_url"), // Ảnh thumbnail
+  chatEnabled: boolean("chat_enabled").notNull().default(true), // Cho phép chat
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertLivestreamInfoSchema = createInsertSchema(livestreamInfo).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+}).extend({
+  startTime: z.coerce.date().optional(),
+  endTime: z.coerce.date().optional(),
+});
+
+export type InsertLivestreamInfo = z.infer<typeof insertLivestreamInfoSchema>;
+export type LivestreamInfo = typeof livestreamInfo.$inferSelect;
