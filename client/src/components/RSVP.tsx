@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar, Mail, Phone, Users, Utensils, Heart, Clock, MapPin, CheckCircle, XCircle, AlertCircle, User, Send, Sparkles } from "lucide-react";
+import { Calendar, Mail, Phone, Users, Utensils, Heart, Clock, MapPin, CheckCircle, XCircle, AlertCircle, User, Send, Sparkles, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MotionButton } from "@/components/ui/motion-button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { motion, AnimatePresence } from "framer-motion";
-import type { CoupleInfo, Settings } from "@shared/schema";
+import type { CoupleInfo, Settings, LivestreamInfo } from "@shared/schema";
 
 export default function RSVP() {
   const { data: coupleInfo } = useQuery<CoupleInfo | null>({
@@ -26,6 +26,10 @@ export default function RSVP() {
   
   const { data: settings } = useQuery<Settings | null>({
     queryKey: ["/api/settings"],
+  });
+
+  const { data: livestream } = useQuery<LivestreamInfo>({
+    queryKey: ["/api/livestream"],
   });
   const [formData, setFormData] = useState({
     guestName: "",
@@ -437,7 +441,7 @@ export default function RSVP() {
                   )}
                 </AnimatePresence>
 
-                <motion.div variants={itemVariants}>
+                <motion.div variants={itemVariants} className="space-y-3">
                   <MotionButton
                     type="submit"
                     className="w-full rounded-xl h-14 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group"
@@ -469,6 +473,29 @@ export default function RSVP() {
                       )}
                     </div>
                   </MotionButton>
+
+                  {livestream?.isActive && livestream?.streamUrl && (
+                    <MotionButton
+                      type="button"
+                      variant="outline"
+                      className="w-full rounded-xl h-14 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 relative overflow-hidden group border-2 border-red-500 hover:bg-red-50 dark:hover:bg-red-950/20"
+                      size="lg"
+                      data-testid="button-watch-livestream"
+                      onClick={() => {
+                        const livestreamSection = document.getElementById('livestream');
+                        if (livestreamSection) {
+                          livestreamSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <div className="flex items-center gap-3 relative z-10 text-red-600 dark:text-red-400">
+                        <Video size={20} />
+                        🔴 Xem Livestream
+                      </div>
+                    </MotionButton>
+                  )}
                 </motion.div>
               </motion.form>
             </motion.div>

@@ -214,17 +214,17 @@ export default function Landing() {
         <Gallery />
       </motion.section>
 
-      {/* Messages Section */}
+      {/* Guest Photo Gallery Section - Moved below Gallery */}
       <motion.section
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={sectionVariants}
       >
-        <Messages />
+        <GuestPhotoGallery />
       </motion.section>
 
-      {/* Guest Photo Upload Section */}
+      {/* Guest Photo Upload Section - Moved below GuestPhotoGallery */}
       <motion.section
         initial="hidden"
         whileInView="visible"
@@ -234,14 +234,14 @@ export default function Landing() {
         <GuestPhotoUpload />
       </motion.section>
 
-      {/* Guest Photo Gallery Section */}
+      {/* Messages Section */}
       <motion.section
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={sectionVariants}
       >
-        <GuestPhotoGallery />
+        <Messages />
       </motion.section>
 
       {/* RSVP Section */}
@@ -264,15 +264,6 @@ export default function Landing() {
         <Location />
       </motion.section>
 
-      {/* Registry Section */}
-      <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={sectionVariants}
-      >
-        <Registry />
-      </motion.section>
 
       {/* Footer */}
       <motion.section
