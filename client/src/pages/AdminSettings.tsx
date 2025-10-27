@@ -773,10 +773,18 @@ export default function AdminSettings() {
                         name="fontHeading"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-sm font-medium">🎨 Font Tiêu Đề Chính</FormLabel>
+                            <FormLabel className="flex items-center gap-2 text-base font-semibold">
+                              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white">
+                                🎨
+                              </div>
+                              Font Tiêu Đề Chính
+                            </FormLabel>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 ml-10">
+                              Hiển thị ở phần Hero (đầu trang), tên cặp đôi và các tiêu đề lớn
+                            </p>
                             <Select onValueChange={field.onChange} value={field.value || ""}>
                               <FormControl>
-                                <SelectTrigger className="h-12" data-testid="select-font-heading">
+                                <SelectTrigger className="h-12 ml-10" data-testid="select-font-heading">
                                   <SelectValue placeholder="Chọn font cho tiêu đề" />
                                 </SelectTrigger>
                               </FormControl>
@@ -790,14 +798,10 @@ export default function AdminSettings() {
                                 <SelectItem value="Cormorant Garamond">Cormorant Garamond (Truyền thống)</SelectItem>
                               </SelectContent>
                             </Select>
-                            <p className="text-xs text-muted-foreground">
-                              Font này sẽ được sử dụng cho các tiêu đề lớn trên trang
-                            </p>
                             {field.value && (
                               <FontPreview 
                                 fontFamily={field.value}
-                                text="Xuân Lâm & Ngân Lê"
-                                fontSize="24px"
+                                previewType="heading"
                               />
                             )}
                             <FormMessage />
@@ -810,10 +814,18 @@ export default function AdminSettings() {
                         name="fontBody"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-sm font-medium">📝 Font Nội Dung</FormLabel>
+                            <FormLabel className="flex items-center gap-2 text-base font-semibold">
+                              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white">
+                                📝
+                              </div>
+                              Font Nội Dung Chính
+                            </FormLabel>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 ml-10">
+                              Dùng cho tất cả đoạn văn, mô tả, thông tin sự kiện và nội dung chi tiết
+                            </p>
                             <Select onValueChange={field.onChange} value={field.value || ""}>
                               <FormControl>
-                                <SelectTrigger className="h-12" data-testid="select-font-body">
+                                <SelectTrigger className="h-12 ml-10" data-testid="select-font-body">
                                   <SelectValue placeholder="Chọn font cho nội dung" />
                                 </SelectTrigger>
                               </FormControl>
@@ -825,14 +837,10 @@ export default function AdminSettings() {
                                 <SelectItem value="Times New Roman">Times New Roman (Truyền thống)</SelectItem>
                               </SelectContent>
                             </Select>
-                            <p className="text-xs text-muted-foreground">
-                              Font này sẽ được sử dụng cho phần nội dung và đoạn văn
-                            </p>
                             {field.value && (
                               <FontPreview 
                                 fontFamily={field.value}
-                                text="Chúng tôi rất vui mừng được chia sẻ niềm hạnh phúc này cùng bạn. Hãy đến và cùng chúng tôi tạo nên những kỷ niệm đẹp!"
-                                fontSize="16px"
+                                previewType="body"
                               />
                             )}
                             <FormMessage />
@@ -845,10 +853,18 @@ export default function AdminSettings() {
                         name="fontCursive"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-sm font-medium">✨ Font Chữ Nghệ Thuật</FormLabel>
+                            <FormLabel className="flex items-center gap-2 text-base font-semibold">
+                              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center text-white">
+                                ✨
+                              </div>
+                              Font Chữ Nghệ Thuật
+                            </FormLabel>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 ml-10">
+                              Chữ viết tay lãng mạn cho tên cô dâu/chú rể và lời mời đặc biệt
+                            </p>
                             <Select onValueChange={field.onChange} value={field.value || ""}>
                               <FormControl>
-                                <SelectTrigger className="h-12" data-testid="select-font-cursive">
+                                <SelectTrigger className="h-12 ml-10" data-testid="select-font-cursive">
                                   <SelectValue placeholder="Chọn font chữ nghệ thuật" />
                                 </SelectTrigger>
                               </FormControl>
@@ -858,15 +874,10 @@ export default function AdminSettings() {
                                 <SelectItem value="Yesteryear">Yesteryear (Cổ điển)</SelectItem>
                               </SelectContent>
                             </Select>
-                            <p className="text-xs text-muted-foreground">
-                              Font này sẽ được sử dụng cho tên cô dâu/chú rể và các phần nhấn mạnh
-                            </p>
                             {field.value && (
                               <FontPreview 
                                 fontFamily={field.value}
-                                text="Xuân Lâm & Ngân Lê"
-                                fontSize="32px"
-                                className="text-center"
+                                previewType="cursive"
                               />
                             )}
                             <FormMessage />
@@ -879,10 +890,18 @@ export default function AdminSettings() {
                         name="fontSerif"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-sm font-medium">📜 Font Serif Bổ Sung</FormLabel>
+                            <FormLabel className="flex items-center gap-2 text-base font-semibold">
+                              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-white">
+                                📜
+                              </div>
+                              Font Serif Bổ Sung
+                            </FormLabel>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 ml-10">
+                              Dùng cho lời cảm ơn, thông tin quan trọng và tin nhắn đặc biệt
+                            </p>
                             <Select onValueChange={field.onChange} value={field.value || ""}>
                               <FormControl>
-                                <SelectTrigger className="h-12" data-testid="select-font-serif">
+                                <SelectTrigger className="h-12 ml-10" data-testid="select-font-serif">
                                   <SelectValue placeholder="Chọn font serif bổ sung" />
                                 </SelectTrigger>
                               </FormControl>
@@ -894,14 +913,10 @@ export default function AdminSettings() {
                                 <SelectItem value="Lora">Lora (Hiện đại)</SelectItem>
                               </SelectContent>
                             </Select>
-                            <p className="text-xs text-muted-foreground">
-                              Font serif bổ sung cho các phần văn bản đặc biệt
-                            </p>
                             {field.value && (
                               <FontPreview 
                                 fontFamily={field.value}
-                                text="Đám cưới của chúng tôi sẽ được tổ chức vào ngày 25 tháng 12 năm 2025. Chân thành cảm ơn sự hiện diện của quý khách!"
-                                fontSize="18px"
+                                previewType="serif"
                               />
                             )}
                             <FormMessage />
