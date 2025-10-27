@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form";
 import { uploadImageToCloudinary } from "@/lib/imageUpload";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Helper function to extract embed URL from iframe HTML or convert regular Google Maps URLs
 const convertToGoogleMapsEmbed = (input: string): string => {
@@ -84,6 +85,9 @@ export default function AdminSettings() {
       instagramUrl: "",
       twitterUrl: "",
       hashtag: "",
+      fontHeading: "",
+      fontBody: "",
+      fontCursive: "",
     },
   });
 
@@ -118,6 +122,9 @@ export default function AdminSettings() {
         instagramUrl: settings.instagramUrl || "",
         twitterUrl: settings.twitterUrl || "",
         hashtag: settings.hashtag || "",
+        fontHeading: settings.fontHeading || "",
+        fontBody: settings.fontBody || "",
+        fontCursive: settings.fontCursive || "",
       });
     }
   }, [settings, form]);
@@ -340,6 +347,7 @@ export default function AdminSettings() {
 
   const tabs = [
     { id: "general", label: "Địa Điểm", icon: SettingsIcon },
+    { id: "fonts", label: "Font Chữ", icon: Palette },
     { id: "footer", label: "Chân Trang", icon: Heart },
     { id: "popups", label: "Popup Thiệp", icon: Image },
     { id: "features", label: "Âm thanh", icon: Music },
@@ -704,6 +712,139 @@ export default function AdminSettings() {
                           )}
                         />
                       </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
+              {activeTab === "fonts" && (
+                <div className="space-y-6">
+                  <Card>
+                    <CardHeader className="bg-gradient-to-r from-purple-500/5 to-purple-500/10 border-b">
+                      <CardTitle className="flex items-center gap-2">
+                        <Palette className="text-purple-500" size={20} />
+                        Tùy Chỉnh Font Chữ
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6 pt-6">
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                        <h4 className="text-sm font-semibold text-blue-900 mb-2">ℹ️ Hướng Dẫn</h4>
+                        <p className="text-sm text-blue-800">
+                          Chọn font chữ phù hợp với tiếng Việt để hiển thị đẹp và rõ ràng trên trang web của bạn.
+                          Tất cả các font đều hỗ trợ đầy đủ dấu tiếng Việt.
+                        </p>
+                      </div>
+
+                      <FormField
+                        control={form.control}
+                        name="fontHeading"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">🎨 Font Tiêu Đề Chính</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || ""}>
+                              <FormControl>
+                                <SelectTrigger className="h-12" data-testid="select-font-heading">
+                                  <SelectValue placeholder="Chọn font cho tiêu đề" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="Parisienne">Parisienne (Cursive lãng mạn)</SelectItem>
+                                <SelectItem value="Alex Brush">Alex Brush (Chữ viết tay)</SelectItem>
+                                <SelectItem value="Great Vibes">Great Vibes (Thanh lịch)</SelectItem>
+                                <SelectItem value="Allura">Allura (Sang trọng)</SelectItem>
+                                <SelectItem value="Satisfy">Satisfy (Hiện đại)</SelectItem>
+                                <SelectItem value="Playfair Display">Playfair Display (Cổ điển)</SelectItem>
+                                <SelectItem value="Cormorant Garamond">Cormorant Garamond (Truyền thống)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <p className="text-xs text-muted-foreground">
+                              Font này sẽ được sử dụng cho các tiêu đề lớn trên trang
+                            </p>
+                            {field.value && (
+                              <div className="mt-2 p-3 bg-gray-50 rounded-lg border">
+                                <p className="text-sm text-muted-foreground mb-1">Xem trước:</p>
+                                <p style={{ fontFamily: field.value, fontSize: '24px' }}>
+                                  Xuân Lâm & Ngân Lê
+                                </p>
+                              </div>
+                            )}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="fontBody"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">📝 Font Nội Dung</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || ""}>
+                              <FormControl>
+                                <SelectTrigger className="h-12" data-testid="select-font-body">
+                                  <SelectValue placeholder="Chọn font cho nội dung" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="Cormorant Garamond">Cormorant Garamond (Dễ đọc)</SelectItem>
+                                <SelectItem value="Playfair Display">Playfair Display (Thanh lịch)</SelectItem>
+                                <SelectItem value="Noto Serif">Noto Serif (Tiêu chuẩn)</SelectItem>
+                                <SelectItem value="Georgia">Georgia (Cổ điển)</SelectItem>
+                                <SelectItem value="Times New Roman">Times New Roman (Truyền thống)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <p className="text-xs text-muted-foreground">
+                              Font này sẽ được sử dụng cho phần nội dung và đoạn văn
+                            </p>
+                            {field.value && (
+                              <div className="mt-2 p-3 bg-gray-50 rounded-lg border">
+                                <p className="text-sm text-muted-foreground mb-1">Xem trước:</p>
+                                <p style={{ fontFamily: field.value, fontSize: '16px' }}>
+                                  Chúng tôi rất vui mừng được chia sẻ niềm hạnh phúc này cùng bạn.
+                                  Hãy đến và cùng chúng tôi tạo nên những kỷ niệm đẹp!
+                                </p>
+                              </div>
+                            )}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="fontCursive"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">✨ Font Chữ Nghệ Thuật</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || ""}>
+                              <FormControl>
+                                <SelectTrigger className="h-12" data-testid="select-font-cursive">
+                                  <SelectValue placeholder="Chọn font chữ nghệ thuật" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="Parisienne">Parisienne (Lãng mạn)</SelectItem>
+                                <SelectItem value="Alex Brush">Alex Brush (Viết tay)</SelectItem>
+                                <SelectItem value="Great Vibes">Great Vibes (Tinh tế)</SelectItem>
+                                <SelectItem value="Allura">Allura (Thanh lịch)</SelectItem>
+                                <SelectItem value="Satisfy">Satisfy (Độc đáo)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <p className="text-xs text-muted-foreground">
+                              Font này sẽ được sử dụng cho tên cô dâu/chú rể và các phần nhấn mạnh
+                            </p>
+                            {field.value && (
+                              <div className="mt-2 p-3 bg-gray-50 rounded-lg border">
+                                <p className="text-sm text-muted-foreground mb-1">Xem trước:</p>
+                                <p style={{ fontFamily: field.value, fontSize: '32px', textAlign: 'center' }}>
+                                  Xuân Lâm & Ngân Lê
+                                </p>
+                              </div>
+                            )}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     </CardContent>
                   </Card>
                 </div>

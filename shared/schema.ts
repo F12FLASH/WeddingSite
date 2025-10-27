@@ -197,6 +197,10 @@ export const settings = pgTable("settings", {
   instagramUrl: text("instagram_url"), // Instagram link
   twitterUrl: text("twitter_url"), // Twitter link
   hashtag: varchar("hashtag"), // Wedding hashtag
+  // Font customization
+  fontHeading: varchar("font_heading"), // Font for headings (Parisienne, Alex Brush, Great Vibes, etc.)
+  fontBody: varchar("font_body"), // Font for body text (Cormorant Garamond, Playfair Display, etc.)
+  fontCursive: varchar("font_cursive"), // Font for cursive elements (Parisienne, Allura, Satisfy, etc.)
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
