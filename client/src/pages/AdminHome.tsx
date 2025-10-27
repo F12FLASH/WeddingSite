@@ -1,4 +1,4 @@
-import { Users, MessageSquare, Calendar, Heart, Gift, Image, TrendingUp, Clock, CheckCircle, XCircle, Eye } from "lucide-react";
+import { Users, MessageSquare, Calendar, Heart, Gift, Image, TrendingUp, Clock, CheckCircle, XCircle, Eye, LayoutDashboard } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -246,13 +246,18 @@ export default function AdminHome() {
         initial="hidden"
         animate="visible"
       >
-        <motion.div variants={itemVariants}>
-          <h2 className="text-4xl font-serif font-bold text-foreground mb-3">
-            🎊 Tổng Quan Bảng Điều Khiển
-          </h2>
-          <p className="text-xl text-muted-foreground">
-            Chào mừng trở lại! Đây là tổng quan về đám cưới của bạn.
-          </p>
+        <motion.div variants={itemVariants} className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-gradient-to-br from-rose-500 via-pink-500 to-rose-400 rounded-3xl flex items-center justify-center shadow-2xl ring-4 ring-rose-500/20">
+            <LayoutDashboard size={32} className="text-white" />
+          </div>
+          <div>
+            <h2 className="text-4xl font-serif font-bold text-foreground mb-2">
+              Tổng Quan Bảng Điều Khiển
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Chào mừng trở lại! Đây là tổng quan về đám cưới của bạn.
+            </p>
+          </div>
         </motion.div>
       </motion.div>
 

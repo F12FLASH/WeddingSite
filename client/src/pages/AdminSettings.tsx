@@ -354,12 +354,12 @@ export default function AdminSettings() {
   };
 
   const tabs = [
-    { id: "general", label: "Địa Điểm", icon: SettingsIcon },
-    { id: "fonts", label: "Font Chữ", icon: Palette },
-    { id: "footer", label: "Chân Trang", icon: Heart },
-    { id: "popups", label: "Popup Thiệp", icon: Image },
-    { id: "features", label: "Âm thanh", icon: Music },
-    { id: "security", label: "Bảo Mật", icon: Shield },
+    { id: "general", label: "Địa Điểm", icon: SettingsIcon, color: "text-blue-500", bgColor: "bg-blue-50 dark:bg-blue-950/30" },
+    { id: "fonts", label: "Font Chữ", icon: Palette, color: "text-purple-500", bgColor: "bg-purple-50 dark:bg-purple-950/30" },
+    { id: "footer", label: "Chân Trang", icon: Heart, color: "text-pink-500", bgColor: "bg-pink-50 dark:bg-pink-950/30" },
+    { id: "popups", label: "Popup Thiệp", icon: Image, color: "text-orange-500", bgColor: "bg-orange-50 dark:bg-orange-950/30" },
+    { id: "features", label: "Âm thanh", icon: Music, color: "text-green-500", bgColor: "bg-green-50 dark:bg-green-950/30" },
+    { id: "security", label: "Bảo Mật", icon: Shield, color: "text-gray-500", bgColor: "bg-gray-50 dark:bg-gray-950/30" },
   ];
 
   const containerVariants = {
@@ -423,32 +423,57 @@ export default function AdminSettings() {
         initial="hidden"
         animate="visible"
       >
-        <motion.div variants={itemVariants}>
-          <h2 className="admin-heading mb-2 text-foreground">⚙️ Cài Đặt Website</h2>
-          <p className="text-muted-foreground text-lg">Tùy chỉnh và cấu hình trang web đám cưới của bạn</p>
+        <motion.div variants={itemVariants} className="flex items-center justify-between">
+          <div>
+            <h2 className="admin-heading mb-2 text-foreground flex items-center gap-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/70 rounded-2xl flex items-center justify-center shadow-lg">
+                <SettingsIcon size={24} className="text-white" />
+              </div>
+              Cài Đặt Website
+            </h2>
+            <p className="text-muted-foreground text-base">Tùy chỉnh và cấu hình trang web đám cưới của bạn</p>
+          </div>
         </motion.div>
       </motion.div>
 
-      <div className="grid lg:grid-cols-4 gap-6">
-        <motion.div variants={itemVariants}>
-          <Card className="sticky top-6">
-            <CardContent className="p-4">
-              <nav className="space-y-2">
+      <div className="grid lg:grid-cols-5 gap-6">
+        <motion.div variants={itemVariants} className="lg:col-span-1">
+          <Card className="sticky top-6 shadow-lg border-2">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Danh Mục</CardTitle>
+            </CardHeader>
+            <CardContent className="p-3">
+              <nav className="space-y-1.5">
                 {tabs.map((tab) => {
                   const IconComponent = tab.icon;
+                  const isActive = activeTab === tab.id;
                   return (
-                    <button
+                    <motion.button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all duration-200 ${
-                        activeTab === tab.id
-                          ? "bg-primary text-primary-foreground shadow-lg"
-                          : "text-foreground hover:bg-muted"
+                      whileHover={{ scale: 1.02, x: 4 }}
+                      whileTap={{ scale: 0.98 }}
+                      className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-left transition-all duration-300 border-2 ${
+                        isActive
+                          ? `${tab.bgColor} border-${tab.color.split('-')[1]}-300 shadow-md`
+                          : "border-transparent hover:bg-muted/50 hover:border-border"
                       }`}
+                      data-testid={`tab-${tab.id}`}
                     >
-                      <IconComponent size={18} />
-                      <span className="font-medium">{tab.label}</span>
-                    </button>
+                      <div className={`p-1.5 rounded-lg ${isActive ? 'bg-white/80 dark:bg-black/20' : 'bg-transparent'}`}>
+                        <IconComponent size={18} className={tab.color} />
+                      </div>
+                      <span className={`font-medium text-sm ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
+                        {tab.label}
+                      </span>
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeTab"
+                          className="ml-auto w-2 h-2 bg-primary rounded-full"
+                          transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                        />
+                      )}
+                    </motion.button>
                   );
                 })}
               </nav>
@@ -457,7 +482,7 @@ export default function AdminSettings() {
         </motion.div>
 
         <motion.div 
-          className="lg:col-span-3"
+          className="lg:col-span-4"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
