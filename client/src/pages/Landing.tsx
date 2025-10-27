@@ -11,6 +11,9 @@ import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import MusicPlayer from "@/components/MusicPlayer";
 import PopupManager from "@/components/PopupManager";
+import Livestream from "@/components/Livestream";
+import GuestPhotoUpload from "@/components/GuestPhotoUpload";
+import GuestPhotoGallery from "@/components/GuestPhotoGallery";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { useEffect, useState } from "react";
 
@@ -171,6 +174,16 @@ export default function Landing() {
         <About />
       </motion.section>
 
+      {/* Livestream Section */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={sectionVariants}
+      >
+        <Livestream />
+      </motion.section>
+
       {/* Schedule Section */}
       <motion.section
         initial="hidden"
@@ -209,6 +222,26 @@ export default function Landing() {
         variants={sectionVariants}
       >
         <Messages />
+      </motion.section>
+
+      {/* Guest Photo Upload Section */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={sectionVariants}
+      >
+        <GuestPhotoUpload />
+      </motion.section>
+
+      {/* Guest Photo Gallery Section */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={sectionVariants}
+      >
+        <GuestPhotoGallery />
       </motion.section>
 
       {/* RSVP Section */}
