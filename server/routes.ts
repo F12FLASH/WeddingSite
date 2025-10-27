@@ -14,6 +14,9 @@ import {
   insertPopupSchema,
   insertFaqSchema,
   insertMusicTrackSchema,
+  insertGiftMoneySchema,
+  insertGuestPhotoSchema,
+  insertLivestreamInfoSchema,
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -522,6 +525,153 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting music track:", error);
       res.status(500).json({ message: "Failed to delete music track" });
+    }
+  });
+
+  // ===== Gift Money Routes =====
+  app.get("/api/gift-money", isAuthenticated, async (req, res) => {
+    try {
+      const gifts = await storage.getAllGiftMoney();
+      res.json(gifts);
+    } catch (error) {
+      console.error("Error fetching gift money:", error);
+      res.status(500).json({ message: "Failed to fetch gift money" });
+    }
+  });
+
+  app.get("/api/gift-money/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const gift = await storage.getGiftMoney(id);
+      if (!gift) {
+        return res.status(404).json({ message: "Gift money not found" });
+      }
+      res.json(gift);
+    } catch (error) {
+      console.error("Error fetching gift money:", error);
+      res.status(500).json({ message: "Failed to fetch gift money" });
+    }
+  });
+
+  app.post("/api/gift-money", isAuthenticated, async (req, res) => {
+    try {
+      const validated = insertGiftMoneySchema.parse(req.body);
+      const gift = await storage.createGiftMoney(validated);
+      res.json(gift);
+    } catch (error: any) {
+      console.error("Error creating gift money:", error);
+      res.status(400).json({ message: error.message || "Failed to create gift money" });
+    }
+  });
+
+  app.patch("/api/gift-money/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const validated = insertGiftMoneySchema.partial().parse(req.body);
+      const gift = await storage.updateGiftMoney(id, validated);
+      if (!gift) {
+        return res.status(404).json({ message: "Gift money not found" });
+      }
+      res.json(gift);
+    } catch (error: any) {
+      console.error("Error updating gift money:", error);
+      res.status(400).json({ message: error.message || "Failed to update gift money" });
+    }
+  });
+
+  app.delete("/api/gift-money/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteGiftMoney(id);
+      res.json({ message: "Gift money deleted" });
+    } catch (error) {
+      console.error("Error deleting gift money:", error);
+      res.status(500).json({ message: "Failed to delete gift money" });
+    }
+  });
+
+  // ===== Guest Photos Routes =====
+  app.get("/api/guest-photos", async (req, res) => {
+    try {
+      const approvedOnly = req.query.approved === "true";
+      const photos = await storage.getAllGuestPhotos(approvedOnly);
+      res.json(photos);
+    } catch (error) {
+      console.error("Error fetching guest photos:", error);
+      res.status(500).json({ message: "Failed to fetch guest photos" });
+    }
+  });
+
+  app.get("/api/guest-photos/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const photo = await storage.getGuestPhoto(id);
+      if (!photo) {
+        return res.status(404).json({ message: "Guest photo not found" });
+      }
+      res.json(photo);
+    } catch (error) {
+      console.error("Error fetching guest photo:", error);
+      res.status(500).json({ message: "Failed to fetch guest photo" });
+    }
+  });
+
+  app.post("/api/guest-photos", async (req, res) => {
+    try {
+      const validated = insertGuestPhotoSchema.parse(req.body);
+      const photo = await storage.createGuestPhoto(validated);
+      res.json(photo);
+    } catch (error: any) {
+      console.error("Error creating guest photo:", error);
+      res.status(400).json({ message: error.message || "Failed to create guest photo" });
+    }
+  });
+
+  app.patch("/api/guest-photos/:id/approve", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { approved } = req.body;
+      const photo = await storage.approveGuestPhoto(id, approved);
+      if (!photo) {
+        return res.status(404).json({ message: "Guest photo not found" });
+      }
+      res.json(photo);
+    } catch (error: any) {
+      console.error("Error approving guest photo:", error);
+      res.status(400).json({ message: error.message || "Failed to approve guest photo" });
+    }
+  });
+
+  app.delete("/api/guest-photos/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.deleteGuestPhoto(id);
+      res.json({ message: "Guest photo deleted" });
+    } catch (error) {
+      console.error("Error deleting guest photo:", error);
+      res.status(500).json({ message: "Failed to delete guest photo" });
+    }
+  });
+
+  // ===== Livestream Info Routes =====
+  app.get("/api/livestream", async (req, res) => {
+    try {
+      const info = await storage.getLivestreamInfo();
+      res.json(info || null);
+    } catch (error) {
+      console.error("Error fetching livestream info:", error);
+      res.status(500).json({ message: "Failed to fetch livestream info" });
+    }
+  });
+
+  app.post("/api/livestream", isAuthenticated, async (req, res) => {
+    try {
+      const validated = insertLivestreamInfoSchema.parse(req.body);
+      const info = await storage.upsertLivestreamInfo(validated);
+      res.json(info);
+    } catch (error: any) {
+      console.error("Error updating livestream info:", error);
+      res.status(400).json({ message: error.message || "Failed to update livestream info" });
     }
   });
 
