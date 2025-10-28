@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,12 +7,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, Camera, Check, Image as ImageIcon } from "lucide-react";
+import { Upload, Camera, Check, Image as ImageIcon, FileImage } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { uploadImageToCloudinary } from "@/lib/imageUpload";
 
 export default function GuestPhotoUpload() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [formData, setFormData] = useState({
     url: "",
     caption: "",
@@ -43,12 +47,62 @@ export default function GuestPhotoUpload() {
     },
   });
 
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Vui lòng chọn file hình ảnh",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Kích thước file không được vượt quá 5MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+    setUploadProgress(0);
+
+    try {
+      const imageUrl = await uploadImageToCloudinary(file, (progress) => {
+        setUploadProgress(progress);
+      });
+
+      setFormData({ ...formData, url: imageUrl });
+
+      toast({
+        title: "✅ Tải lên thành công!",
+        description: "Ảnh đã được tải lên, hãy điền thông tin và gửi",
+      });
+    } catch (error) {
+      toast({
+        title: "❌ Lỗi",
+        description: "Không thể tải lên ảnh",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+      if (event.target) {
+        event.target.value = '';
+      }
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.url.trim()) {
       toast({
         title: "⚠️ Thiếu thông tin",
-        description: "Vui lòng nhập link ảnh",
+        description: "Vui lòng tải ảnh lên hoặc nhập link ảnh",
         variant: "destructive",
       });
       return;
@@ -116,7 +170,43 @@ export default function GuestPhotoUpload() {
                     className="space-y-6"
                   >
                     <div className="space-y-2">
-                      <Label htmlFor="url">Link Ảnh *</Label>
+                      <Label htmlFor="photo-upload">Tải Ảnh Lên *</Label>
+                      <div className="flex gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="flex-1 gap-2"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploading}
+                          data-testid="button-upload-from-device"
+                        >
+                          {uploading ? (
+                            <>
+                              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                              Đang tải {uploadProgress}%
+                            </>
+                          ) : (
+                            <>
+                              <FileImage className="w-4 h-4" />
+                              Chọn Ảnh Từ Thiết Bị
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileSelect}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Hoặc nhập link ảnh bên dưới nếu ảnh đã được upload lên dịch vụ khác
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="url">Link Ảnh (Tùy chọn)</Label>
                       <Input
                         data-testid="input-photo-url"
                         id="url"
@@ -124,11 +214,7 @@ export default function GuestPhotoUpload() {
                         placeholder="https://example.com/your-photo.jpg"
                         value={formData.url}
                         onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                        required
                       />
-                      <p className="text-xs text-muted-foreground">
-                        Upload ảnh lên dịch vụ như Imgur, Google Photos, hoặc Dropbox và dán link vào đây
-                      </p>
                     </div>
 
                     {formData.url && (

@@ -124,20 +124,32 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24">
       {/* Background Image with Gradient Overlay */}
-      <motion.div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: coupleInfo?.heroImage ? `url(${coupleInfo.heroImage})` : 'linear-gradient(135deg, hsl(var(--primary) / 0.3), hsl(var(--primary) / 0.1))' }}
-        initial={{ scale: 1.1 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 1.5, ease: "easeOut" }}
-      >
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-b from-primary/40 via-primary/20 to-background/90"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2 }}
+      {/* Background Image - using img tag for better control */}
+      {coupleInfo?.heroImage && (
+        <motion.img
+          src={coupleInfo.heroImage}
+          alt="Wedding Background"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
         />
-      </motion.div>
+      )}
+      {!coupleInfo?.heroImage && (
+        <motion.div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(135deg, hsl(var(--primary) / 0.3), hsl(var(--primary) / 0.1))' }}
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
+        />
+      )}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-b from-primary/40 via-primary/20 to-background/90"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2 }}
+      />
 
       {/* Animated Background Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -377,6 +389,25 @@ export default function Hero() {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
             <span className="relative z-10 text-base md:text-lg font-semibold">
               Xác Nhận Tham Dự
+            </span>
+          </motion.a>
+
+          <motion.a
+            href="#livestream"
+            className="group relative inline-flex items-center justify-center min-h-10 md:min-h-12 px-6 md:px-10 rounded-full bg-red-600 text-white border border-red-700 font-medium shadow-2xl overflow-hidden"
+            data-testid="button-livestream"
+            variants={itemVariants}
+            whileHover={{ 
+              scale: 1.05,
+              y: -2
+            }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {/* Button shine effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+            <span className="relative z-10 text-base md:text-lg font-semibold flex items-center gap-2">
+              <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+              Xem Livestream
             </span>
           </motion.a>
 

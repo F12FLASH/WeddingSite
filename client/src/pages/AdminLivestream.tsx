@@ -395,7 +395,8 @@ export default function AdminLivestream() {
                   <img
                     src={formData.thumbnailUrl}
                     alt="Livestream preview"
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover"
+                    data-testid="img-livestream-preview"
                   />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                     <div className="text-center text-white">
