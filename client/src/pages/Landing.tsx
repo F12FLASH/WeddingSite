@@ -25,41 +25,7 @@ export default function Landing() {
     restDelta: 0.001
   });
 
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate loading time for assets
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-      
-      // Request fullscreen after loading (only on user interaction)
-      // Note: Browsers require user interaction before allowing fullscreen
-      const requestFullscreen = () => {
-        const elem = document.documentElement;
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen().catch(() => {
-            // Fullscreen request failed - user may have denied or browser doesn't support it
-          });
-        }
-      };
-      
-      // Try to go fullscreen on first user interaction
-      const enableFullscreenOnInteraction = () => {
-        requestFullscreen();
-        // Remove listeners after first interaction
-        document.removeEventListener('click', enableFullscreenOnInteraction);
-        document.removeEventListener('touchstart', enableFullscreenOnInteraction);
-        document.removeEventListener('keydown', enableFullscreenOnInteraction);
-      };
-      
-      // Add listeners for user interaction
-      document.addEventListener('click', enableFullscreenOnInteraction, { once: true });
-      document.addEventListener('touchstart', enableFullscreenOnInteraction, { once: true });
-      document.addEventListener('keydown', enableFullscreenOnInteraction, { once: true });
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
 
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },

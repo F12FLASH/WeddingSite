@@ -33,6 +33,11 @@ section, div, main, article {
   max-width: 100%;
 }
 
+/* Add scroll offset for sections to account for fixed navigation */
+section[id] {
+  scroll-margin-top: 80px;
+}
+
 /* LIGHT MODE + Font Families */
 :root {
   --button-outline: rgba(0,0,0, .10);

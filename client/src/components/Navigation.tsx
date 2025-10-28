@@ -51,7 +51,8 @@ export default function Navigation() {
   const scrollToSection = (href: string) => {
     const element = document.querySelector(href);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      // Use scroll-margin-top CSS property for accurate offset
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
     setIsOpen(false);
   };
