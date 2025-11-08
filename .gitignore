@@ -1,0 +1,36 @@
+node_modules
+dist
+.DS_Store
+server/public
+vite.config.ts.*
+*.tar.gz
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Editor files
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database backups (optional - keep local backups private)
+backups/
+
+# Temporary files
+scripts/image_data.json
+/tmp/
+
+# OS files
+Thumbs.db
+
+# Build files
+*.tsbuildinfo
+.vercel
